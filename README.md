@@ -4,7 +4,7 @@
    1.1. Kalender schöner
    1.2. UI einheitlich
 
-3. Features
+2. Features
    2.1. Automatisch Kalender synchronisieren
    2.2. Bemerkungen für einzelne Termine (Proben usw)
    2.3. Hochämter erkenntlicher
@@ -14,12 +14,12 @@
    2.7. Push-Benachrichtigungen besser
    2.8. Administration + Root + OMIs besser
    2.9. Termine usw in App bearbeiten
-   2.10. Verschiedene Server für Gemeinden
+   2.10. Verschiedene Server für Gemeinden (Database und Websocket immer getrennt)
    2.11. Neue Benutzernamen (mit Gemeindekürzel?) (v.nachname, vorname.n)
    2.12. benutzername und Passwort per Papier an Eltern (mit Infos + Bedienungsanleitung), verbindbar mit Einverständniserklärung etc.
    
 
-4. Interne Änderungen:
+3. Interne Änderungen:
    3.1. von .txt aus .json umsteigen
    3.2. Rollen genauer in App (für z.B. Weihrauch)
    3.3. Bei Tauschen Dienste beachten
@@ -29,5 +29,6 @@
    3.7. Administration für Laien möglich
    3.8. Server-Restarts regelmäßig
    3.9. Automatisches Logging (mindestens am Anfang)
-   4.0. (Database Backups)
+   3.10. (Database Backups)
+   3.11. Verbindung mit C# überarbeiten
    
