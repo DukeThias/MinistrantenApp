@@ -44,41 +44,4 @@ app.*.map.json
 /android/app/profile
 /android/app/release
 
-# .gitignore für C# ASP.NET Core Projekt mit lokaler SQL-Datenbank
-
-# Build-Ausgaben
-bin/
-obj/
-*.exe
-*.dll
-
-# Benutzer- und IDE-spezifische Dateien
-.vscode/
-*.user
-*.suo
-*.userprefs
-
-# Logs und temporäre Dateien
-*.log
-*.tmp
-
-# ASP.NET-Build-Dateien
-project.lock.json
-project.fragment.lock.json
-
-# Datenbankdateien
-*.db
-*.sqlite
-*.mdf
-*.ldf
-
-# Rider/JetBrains
-.idea/
-
-# macOS/Linux system files
-.DS_Store
-Thumbs.db
-
-# dotenv-Dateien (falls verwendet)
-.env
 
