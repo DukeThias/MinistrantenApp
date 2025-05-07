@@ -17,6 +17,7 @@
    2.10. Verschiedene Server für Gemeinden (Database und Websocket immer getrennt)
    2.11. Neue Benutzernamen (mit Gemeindekürzel?) (v.nachname, vorname.n)
    2.12. benutzername und Passwort per Papier an Eltern (mit Infos + Bedienungsanleitung), verbindbar mit Einverständniserklärung etc.
+   2.13. notizen zu Gottesdiensten 
    
 
 3. Interne Änderungen:
