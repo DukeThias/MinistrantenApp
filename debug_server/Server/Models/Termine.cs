@@ -1,10 +1,11 @@
 public class Termin
 {
-        public string Name { get; set; }
-        public string Beschreibung { get; set; }
-        public string Ort { get; set; }
-        public DateTime Start { get; set; }
-        public string Teilnehmer { get; set; }
+        required public string Name { get; set; }
+        required public string Beschreibung { get; set; }
+        required public string Ort { get; set; }
+        required public DateTime Start { get; set; }
+        required public string Teilnehmer { get; set; }
+        required public int GemeindeID { get; set; }
 
         
 }
