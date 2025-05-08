@@ -18,6 +18,9 @@
    2.11. Neue Benutzernamen (mit Gemeindekürzel?) (v.nachname, vorname.n)
    2.12. benutzername und Passwort per Papier an Eltern (mit Infos + Bedienungsanleitung), verbindbar mit Einverständniserklärung etc.
    2.13. notizen zu Gottesdiensten 
+   2.14. automatisch eine Mail versenden (mabe eigener Mail Client)
+   2.15. Gewandgrößen vermerken alle 6 Monate Pushnachricht zu erneuerung 
+   2.16 Einstellungen erweitern 
    
 
 3. Interne Änderungen:
@@ -33,3 +36,6 @@
    3.10. (Database Backups)
    3.11. Verbindung mit C# überarbeiten
    
+
+4. Einstellungen:
+   4.1. Bestimmte benachrichtigungen ein/ ausschalten 
