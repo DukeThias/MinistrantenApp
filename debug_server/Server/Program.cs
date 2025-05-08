@@ -23,8 +23,6 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
-app.UseHttpsRedirection();
-
 // WebSocket-Unterstützung aktivieren
 app.UseWebSockets();
 app.Use(async (context, next) =>
