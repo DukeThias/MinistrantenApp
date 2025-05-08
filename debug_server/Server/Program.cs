@@ -1,10 +1,14 @@
-using YourNamespace;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection; //#Werbung
+using Microsoft.Extensions.Hosting;
+using System.Net.WebSockets;
+using System.Text;
+using YourNamespace; // Ersetze durch deinen tatsächlichen Namespace
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Add services to the container.
-// Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
+// Services registrieren
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options =>
@@ -12,7 +16,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+// Swagger aktivieren im Development-Modus
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -21,4 +25,41 @@ if (app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 
+// WebSocket-Unterstützung aktivieren
+app.UseWebSockets();
+app.Use(async (context, next) =>
+{
+    if (context.Request.Path == "/ws")
+    {
+        if (context.WebSockets.IsWebSocketRequest)
+        {
+            using var webSocket = await context.WebSockets.AcceptWebSocketAsync();
+            await EchoLoop(webSocket);
+        }
+        else
+        {
+            context.Response.StatusCode = 400;
+        }
+    }
+    else
+    {
+        await next();
+    }
+});
+
 app.Run();
+
+// WebSocket-Kommunikationsmethode
+static async Task EchoLoop(WebSocket socket)
+{
+    var buffer = new byte[1024 * 4];
+    while (socket.State == WebSocketState.Open)
+    {
+        var result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
+        var message = Encoding.UTF8.GetString(buffer, 0, result.Count);
+        Console.WriteLine($"Von Flutter empfangen: {message}");
+
+        var antwort = Encoding.UTF8.GetBytes("Hallo zurück vom Server!");
+        await socket.SendAsync(new ArraySegment<byte>(antwort), WebSocketMessageType.Text, true, CancellationToken.None);
+    }
+}
