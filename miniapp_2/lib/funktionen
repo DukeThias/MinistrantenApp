@@ -1,0 +1,6 @@
+services/websocketverbindung:
+bool verbunden
+List _nachrichten
+void verbinde
+void senden
+void trennen

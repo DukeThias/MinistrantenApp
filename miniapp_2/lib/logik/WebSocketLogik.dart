@@ -1,17 +1,17 @@
-import 'package:flutter/material.dart';
+import 'dart:convert';
 
-class CounterProvider with ChangeNotifier {
-  int _count = 0;
-
-  int get count => _count;
-
-  void increment() {
-    _count++;
-    notifyListeners();
-  }
-
-  void decrement() {
-    _count--;
-    notifyListeners();
+String verarbeiteNachricht(String rohdaten) {
+  try {
+    var data = jsonDecode(rohdaten);
+    switch (data['aktion']) {
+      case 'infos':
+        return "Nachricht: ${data['content']}";
+      case 'update':
+        return "Fehler: ${data['content']}";
+      default:
+        return "Unbekannter Typ: ${data['type']}";
+    }
+  } catch (_) {
+    return "Rohtext: $rohdaten";
   }
 }
