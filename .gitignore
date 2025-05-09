@@ -36,3 +36,5 @@ Thumbs.db
 # dotenv-Dateien (falls verwendet)
 .env
 
+debug_server/Server/bin/
+debug_server/Server/obj/
