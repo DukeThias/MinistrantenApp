@@ -45,3 +45,5 @@ app.*.map.json
 /android/app/release
 
 
+debug_server/Server/bin/
+debug_server/Server/obj/

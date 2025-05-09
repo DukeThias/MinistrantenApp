@@ -20,10 +20,12 @@ class Websocketverbindung with ChangeNotifier {
         _nachrichten.add(message);
         notifyListeners();
       },
+
       onDone: () {
         _verbunden = false;
         notifyListeners();
       },
+
       onError: (error) {
         _verbunden = false;
         notifyListeners();
