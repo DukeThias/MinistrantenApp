@@ -77,6 +77,13 @@ static async Task EchoLoop(string id, WebSocket socket)
         var message = Encoding.UTF8.GetString(buffer, 0, result.Count);
         Console.WriteLine($"[{id}]Von Flutter empfangen: {message}");
         
+
+        if (message == "lol"){
+            //tu etwas
+        }
+        else if(message == "ping"){
+            //tu was anderes
+        }
     }
 }
 

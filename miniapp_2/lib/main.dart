@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:miniapp_2/services/WebSocketVerbindung.dart';
-import 'package:miniapp_2/ui/ladebildschirm.dart';
+import 'package:miniapp_2/ui/anmeldeseite.dart';
+import 'package:miniapp_2/ui/hauptseite.dart';
 import 'package:provider/provider.dart';
 
 void main() {
@@ -15,6 +16,6 @@ void main() {
 class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(title: 'Provider Example', home: Ladebildschirm());
+    return MaterialApp(title: 'Provider Example', home: Anmeldeseite());
   }
 }

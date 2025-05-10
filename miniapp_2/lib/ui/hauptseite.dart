@@ -4,19 +4,16 @@ import '../services/WebSocketVerbindung.dart';
 import '../logik/WebSocketLogik.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
-import 'package:uuid/uuid.dart';
 
-class Ladebildschirm extends StatelessWidget {
+class Hauptseite extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ws = context.watch<Websocketverbindung>();
-    final String uniqueId = Uuid().v4();
-    if (!ws.verbunden) {
-      ws.verbinde("ws://localhost:5205/ws?id=$uniqueId");
-    } else {}
     return Scaffold(
       body: Center(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          mainAxisAlignment: MainAxisAlignment.center,
           children: [
             Text(ws.verbunden ? "Verbunden" : "Nicht verbunden"),
 
