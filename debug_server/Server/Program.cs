@@ -77,13 +77,51 @@ static async Task EchoLoop(string id, WebSocket socket)
         var message = Encoding.UTF8.GetString(buffer, 0, result.Count);
         Console.WriteLine($"[{id}] Von Flutter empfangen: {message}");
 
-        if (message == "lol")
+        try
         {
-            // tu etwas
+            // JSON-String in ein Dictionary deserialisieren
+            var data = JsonSerializer.Deserialize<Dictionary<string, object>>(message);
+
+            if (data != null && data.ContainsKey("art") && data.ContainsKey("inhalt"))
+            {
+                string? type = data["art"].ToString();
+                string? inhalt = data["inhalt"].ToString();
+                switch (type)
+                {
+                    case "lol":
+                        Console.WriteLine("Aktion für 'lol' ausführen");
+                        // Führe Aktion für "lol" aus
+                        break;
+
+                    case "ping":
+                        Console.WriteLine("Aktion für 'ping' ausführen");
+                        await SendMessageToUser(id, "antwort", "ping "+inhalt, socket);
+                        break;
+
+                    default:
+                        Console.WriteLine($"Unbekannter Typ: {type}");
+                        break;
+                }
+            }
+            else
+            {
+                Console.WriteLine("Ungültige JSON-Daten oder 'type'-Feld fehlt.");
+            }
         }
-        else if (message == "ping")
+        catch (JsonException ex)
         {
-            // tu was anderes
+            Console.WriteLine($"Fehler beim Verarbeiten der JSON-Daten: {ex.Message}");
         }
     }
 }
+
+
+
+static async Task SendMessageToUser(string id, string typ, string nachricht, WebSocket socket)
+{
+    Console.WriteLine("senden...");
+    var nachrichtjson = JsonSerializer.Serialize(new { art = typ, inhalt = nachricht, timestamp = DateTime.UtcNow });
+    Console.WriteLine(nachrichtjson);
+    await socket.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes(nachrichtjson)), WebSocketMessageType.Text, true, CancellationToken.None);
+}
+
