@@ -2,8 +2,8 @@ namespace Server.Models
 {
     public class Nachricht
     {
-        public string Art { get; set; }
-        public string Inhalt { get; set; }
-        public DateTime Timestamp { get; set; }
+        required public string Art { get; set; }
+        required public string Inhalt { get; set; }
+        required public DateTime Timestamp { get; set; }
     }
 }
