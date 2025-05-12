@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 
-namespace YourNamespace{
+namespace Server.Data{
 public class AppDbContext : DbContext
 {
     public DbSet<Person> Personen { get; set; }

@@ -1,6 +1,8 @@
-public class Gemeinden
+namespace Server.Models
 {
-required public string Name { get; set; }
-required public int Id { get; set; }
-
+    public class Gemeinden
+    {
+        required public string Name { get; set; }
+        required public int Id { get; set; }
+    }
 }

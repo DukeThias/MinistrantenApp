@@ -1,11 +1,9 @@
-using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.Extensions.DependencyInjection; //nothing
-using Microsoft.Extensions.Hosting;
+using Server.Data; // Für AppDbContext
+using Server.Extensions; // Für MapApiEndpoints
 using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
-using YourNamespace;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -61,6 +59,9 @@ app.Use(async (context, next) =>
         await next();
     }
 });
+
+// API-Endpunkte registrieren
+app.MapApiEndpoints();
 
 app.Run();
 
