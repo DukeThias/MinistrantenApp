@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:miniapp_2/ui/hauptseite.dart';
 import '../services/WebSocketVerbindung.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
@@ -34,6 +35,15 @@ class _AnmeldeseiteState extends State<Anmeldeseite> {
           children: [
             Text("Login"),
             Icon(Icons.circle, color: ws.verbunden ? Colors.green : Colors.red),
+            ElevatedButton(
+              onPressed: () {
+                Navigator.pushReplacement(
+                  context,
+                  MaterialPageRoute(builder: (context) => Hauptseite()),
+                );
+              },
+              child: Text("Anmelden"),
+            ),
           ],
         ),
       ),

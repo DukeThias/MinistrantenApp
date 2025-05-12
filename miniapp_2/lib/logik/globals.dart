@@ -15,5 +15,6 @@ class Globals with ChangeNotifier {
     set("benutzername", "");
     set("namensliste", []);
     set("miniplan", []);
+    set("pong", "nüscht");
   }
 }

@@ -16,6 +16,8 @@ class WebSocketLogik {
       case 'rollen':
         _handleRollen(nachricht);
         break;
+      case 'pong':
+        _handlePong(nachricht);
       default:
         print("Unbekannte Nachrichtsart: ${nachricht.art}");
     }
@@ -31,5 +33,9 @@ class WebSocketLogik {
 
   void _handleRollen(Nachricht nachricht) {
     globals.set("rollen", nachricht.inhalt);
+  }
+
+  void _handlePong(Nachricht nachricht) {
+    globals.set("pong", nachricht.inhalt);
   }
 }

@@ -1,3 +1,4 @@
+import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/WebSocketVerbindung.dart';
@@ -19,7 +20,9 @@ class Hauptseite extends StatelessWidget {
             Text(ws.verbunden ? "Verbunden" : "Nicht verbunden"),
 
             ElevatedButton(
-              onPressed: () => ws.senden("Begrüßung", "Hallo vom Client"),
+              onPressed: () {
+                ws.senden("ping", Random().nextInt(100).toString());
+              },
               child: Text("Senden"),
             ),
             Row(children: [SpinKitCircle(color: Get.iconColor, size: 50)]),
