@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Server.Data; // Für AppDbContext
+using Server.Models;
 using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
@@ -14,7 +15,7 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=datenbank.db"));
 
-var app = builder.Build();
+var app = builder.Build(); // Dieser Aufruf muss nach der Service-Registrierung erfolgen.
 
 // Swagger aktivieren im Development-Modus
 if (app.Environment.IsDevelopment())
@@ -60,13 +61,11 @@ app.Use(async (context, next) =>
 });
 
 // API-Endpunkte registrieren
+app.MapGet("/", () => "Server läuft!");
 
 app.Run();
 
 // WebSocket-Kommunikationsmethode
-// BITTE LESEN LUKAS !!!!!!!!! aösldkfjLIEHFOIÖAHEFLKJASLDFJALÖKDSJFLIAHÖVOIHALKSDHFHIADSFJALSKJDFKASJDÖFKJAS
-// hier in der funktion werden nutzer separat gehalten. also hier muss man nix mehr angeben, wenn mehrere Nutzer angemeldet sind, startet das programm diese funktion mehrmals parallel
-// und die id bestimmt einzelne geräte (noch nix mit authentifikation)
 static async Task EchoLoop(string id, WebSocket socket)
 {
     var buffer = new byte[1024 * 4];
@@ -75,19 +74,18 @@ static async Task EchoLoop(string id, WebSocket socket)
         var result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
         var message = Encoding.UTF8.GetString(buffer, 0, result.Count);
         Console.WriteLine($"[{id}]Von Flutter empfangen: {message}");
-        
 
-        if (message == "lol"){
-            //tu etwas
+        if (message == "lol")
+        {
+            // tu etwas
         }
-        else if(message == "ping"){
-            //tu was anderes
+        else if (message == "ping")
+        {
+            // tu was anderes
         }
     }
 }
 
-async Task SendMessageToUser(string id, string typ, string nachricht, WebSocket socket)
-{
-    var nachrichtjson = JsonSerializer.Serialize(new { typ = typ, nachricht = nachricht, zeit = DateTime.UtcNow });
-    await socket.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes(nachrichtjson)), WebSocketMessageType.Text, true, CancellationToken.None);
-}
+
+
+

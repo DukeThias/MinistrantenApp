@@ -3,8 +3,9 @@ namespace Server.Models
     public class Ministranten
     {
         required public int Id { get; set; }
-        required public string Name { get; set; }
         required public string Vorname { get; set; }
+        required public string Name { get; set; }
+        required public string Username { get; set; }
         required public string Geschlecht { get; set; }
         required public DateTime Geburtsdatum { get; set; }
         required public string Adresse { get; set; }
