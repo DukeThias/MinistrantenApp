@@ -1,6 +1,5 @@
 using Microsoft.EntityFrameworkCore;
 using Server.Data; // Für AppDbContext
-using Server.Extensions; // Für MapApiEndpoints
 using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
@@ -61,7 +60,6 @@ app.Use(async (context, next) =>
 });
 
 // API-Endpunkte registrieren
-app.MapApiEndpoints();
 
 app.Run();
 
