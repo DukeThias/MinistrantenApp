@@ -1,7 +1,8 @@
-namespace Termin.model
+namespace Server.Models
 {
     public class Termin
     {
+        required public int Id { get; set; }
         required public string Name { get; set; }
         required public string Beschreibung { get; set; }
         required public string Ort { get; set; }

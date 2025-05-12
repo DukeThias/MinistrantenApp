@@ -15,7 +15,7 @@
     </PackageReference>
     <PackageReference Include="SQLitePCLRaw.lib.e_sqlite3" Version="2.1.11" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.6.2" />
-    <PackageREference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="7.0.12" />
+    <PackageREference Include="Microsoft.EntityFrameworkCore.Sqlite" Version="8.0.4" />
 
   </ItemGroup>
 	
