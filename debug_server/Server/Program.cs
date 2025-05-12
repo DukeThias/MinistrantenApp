@@ -1,9 +1,9 @@
 using Microsoft.EntityFrameworkCore;
 using Server.Data; // Für AppDbContext
-using Server.Models;
+using Server.Models; // Für die Models
 using System.Net.WebSockets;
 using System.Text;
-using System.Text.Json;
+using Server.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -15,7 +15,9 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=datenbank.db"));
 
-var app = builder.Build(); // Dieser Aufruf muss nach der Service-Registrierung erfolgen.
+var app = builder.Build(); // Muss nach der Service-Registrierung erfolgen
+
+app.MapApiEndpoints(); // Registriert alle API-Endpunkte (z. B. /api/personen usw.)
 
 // Swagger aktivieren im Development-Modus
 if (app.Environment.IsDevelopment())
@@ -60,7 +62,7 @@ app.Use(async (context, next) =>
     }
 });
 
-// API-Endpunkte registrieren
+// API-Basisendpunkt
 app.MapGet("/", () => "Server läuft!");
 
 app.Run();
@@ -73,7 +75,7 @@ static async Task EchoLoop(string id, WebSocket socket)
     {
         var result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
         var message = Encoding.UTF8.GetString(buffer, 0, result.Count);
-        Console.WriteLine($"[{id}]Von Flutter empfangen: {message}");
+        Console.WriteLine($"[{id}] Von Flutter empfangen: {message}");
 
         if (message == "lol")
         {
@@ -85,7 +87,3 @@ static async Task EchoLoop(string id, WebSocket socket)
         }
     }
 }
-
-
-
-

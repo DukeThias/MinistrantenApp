@@ -1,7 +1,7 @@
 using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
-using Server.Data; // Für AppDbContext
-using Server.Models; // Für Person, Termin, Gemeinden
+using Server.Data;
+using Server.Models;
 
 namespace Server.Extensions
 {
@@ -15,11 +15,24 @@ namespace Server.Extensions
                 return await db.Ministranten.ToListAsync();
             });
 
-            app.MapPost("/api/personen", async (AppDbContext db, Ministranten person) =>
+            app.MapPost("/api/personen", async (AppDbContext db, Ministranten ministranten) =>
             {
-                db.Ministranten.Add(person);
+                db.Ministranten.Add(ministranten);
                 await db.SaveChangesAsync();
-                return Results.Created($"/api/personen/{person.Id}", person);
+                return Results.Created($"/api/ministranten/{ministranten.Id}", ministranten);
+            });
+
+            app.MapDelete("/api/personen/{id}", async (AppDbContext db, int id) =>
+            {
+                var person = await db.Ministranten.FindAsync(id);
+                if (person is null)
+                {
+                    return Results.NotFound();
+                }
+
+                db.Ministranten.Remove(person);
+                await db.SaveChangesAsync();
+                return Results.Ok(person);
             });
 
             // Termine
@@ -46,6 +59,19 @@ namespace Server.Extensions
                 db.Gemeinden.Add(gemeinde);
                 await db.SaveChangesAsync();
                 return Results.Created($"/api/gemeinden/{gemeinde.Id}", gemeinde);
+            });
+
+            // Nachrichten
+            app.MapGet("/api/nachrichten", async (AppDbContext db) =>
+            {
+                return await db.Nachrichten.ToListAsync();
+            });
+
+            app.MapPost("/api/nachrichten", async (AppDbContext db, Nachrichten nachricht) =>
+            {
+                db.Nachrichten.Add(nachricht);
+                await db.SaveChangesAsync();
+                return Results.Created($"/api/nachrichten/{nachricht.Id}", nachricht);
             });
         }
     }
