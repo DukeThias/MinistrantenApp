@@ -43,7 +43,6 @@ class Websocketverbindung with ChangeNotifier {
           if (error is WebSocketChannelException) {
             print("WebSocketChannelException aufgetreten: ${error.message}");
           }
-
           _versucheWiederzuverbinden(url);
         },
       );
@@ -69,7 +68,10 @@ class Websocketverbindung with ChangeNotifier {
   }
 
   void _versucheWiederzuverbinden(String url) {
-    if (_reconnectTimer != null && _reconnectTimer!.isActive) return;
+    if (_reconnectTimer != null && _reconnectTimer!.isActive) {
+      print("Wiederverbindung bereits aktiv. Kein neuer Timer gestartet.");
+      return;
+    }
 
     // Wiederverbindung alle 5 Sekunden versuchen
     _reconnectTimer = Timer.periodic(Duration(seconds: 5), (timer) {
@@ -81,6 +83,7 @@ class Websocketverbindung with ChangeNotifier {
           print("Fehler beim Wiederverbinden: $e");
         }
       } else {
+        print("Verbindung wiederhergestellt. Timer wird gestoppt.");
         timer.cancel();
       }
     });
