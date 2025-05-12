@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/WebSocketVerbindung.dart';
-import '../logik/WebSocketLogik.dart';
+import '../logik/globals.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 
@@ -9,6 +9,7 @@ class Hauptseite extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ws = context.watch<Websocketverbindung>();
+    final globals = context.watch<Globals>();
     return Scaffold(
       body: Center(
         child: Column(
@@ -18,7 +19,7 @@ class Hauptseite extends StatelessWidget {
             Text(ws.verbunden ? "Verbunden" : "Nicht verbunden"),
 
             ElevatedButton(
-              onPressed: () => ws.senden("Hallo vom Flutter Client2!"),
+              onPressed: () => ws.senden("Begrüßung", "Hallo vom Client"),
               child: Text("Senden"),
             ),
             Row(children: [SpinKitCircle(color: Get.iconColor, size: 50)]),
@@ -27,9 +28,7 @@ class Hauptseite extends StatelessWidget {
               child: ListView.builder(
                 itemCount: ws.nachrichten.length,
                 itemBuilder:
-                    (_, i) => ListTile(
-                      title: Text(verarbeiteNachricht(ws.nachrichten[i])),
-                    ),
+                    (_, i) => ListTile(title: Text(ws.nachrichten[i].inhalt)),
               ),
             ),
           ],

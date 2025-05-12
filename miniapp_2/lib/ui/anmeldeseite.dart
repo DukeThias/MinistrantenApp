@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import '../services/WebSocketVerbindung.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
+import '../logik/globals.dart';
 
 class Anmeldeseite extends StatefulWidget {
   @override
@@ -15,7 +16,7 @@ class _AnmeldeseiteState extends State<Anmeldeseite> {
   void initState() {
     super.initState();
     uniqheId = Uuid().v4();
-
+    Globals().variablenInitiieren();
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final ws = context.read<Websocketverbindung>();
       if (!ws.verbunden) {

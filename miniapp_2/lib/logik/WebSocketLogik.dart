@@ -1,17 +1,35 @@
-import 'dart:convert';
+import 'package:miniapp_2/logik/Nachricht.dart';
+import 'package:miniapp_2/logik/globals.dart';
 
-String verarbeiteNachricht(String rohdaten) {
-  try {
-    var data = jsonDecode(rohdaten);
-    switch (data['aktion']) {
-      case 'infos':
-        return "Nachricht: ${data['content']}";
-      case 'update':
-        return "Fehler: ${data['content']}";
+class WebSocketLogik {
+  final Globals globals = Globals();
+  void verarbeiteNachricht(Nachricht nachricht) {
+    // Aktion basierend auf der Art der Nachricht ausführen
+
+    switch (nachricht.art) {
+      case 'miniplan':
+        _handleMiniplan(nachricht);
+        break;
+      case 'namensliste':
+        _handleNamensliste(nachricht);
+        break;
+      case 'rollen':
+        _handleRollen(nachricht);
+        break;
       default:
-        return "Unbekannter Typ: ${data['type']}";
+        print("Unbekannte Nachrichtsart: ${nachricht.art}");
     }
-  } catch (_) {
-    return "Rohtext: $rohdaten";
+  }
+
+  void _handleMiniplan(Nachricht nachricht) {
+    globals.set("miniplan", nachricht.inhalt);
+  }
+
+  void _handleNamensliste(Nachricht nachricht) {
+    globals.set("namensliste", nachricht.inhalt);
+  }
+
+  void _handleRollen(Nachricht nachricht) {
+    globals.set("rollen", nachricht.inhalt);
   }
 }

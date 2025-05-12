@@ -1,15 +1,20 @@
 import 'package:flutter/material.dart';
+import 'package:miniapp_2/logik/Nachricht.dart';
+import 'package:miniapp_2/logik/WebSocketLogik.dart';
 import 'dart:async';
+import 'dart:convert';
 import 'package:web_socket_channel/web_socket_channel.dart';
 
 class Websocketverbindung with ChangeNotifier {
   late WebSocketChannel _channel;
   bool _verbunden = false;
-  List<String> _nachrichten = [];
+  List<Nachricht> _nachrichten = [];
   Timer? _reconnectTimer;
 
+  final WebSocketLogik _logik = WebSocketLogik();
+
   bool get verbunden => _verbunden;
-  List<String> get nachrichten => _nachrichten;
+  List<Nachricht> get nachrichten => _nachrichten;
 
   void verbinde(String url) {
     try {
@@ -20,8 +25,15 @@ class Websocketverbindung with ChangeNotifier {
       // Nachrichten empfangen
       _channel.stream.listen(
         (message) {
-          _nachrichten.add(message);
-          notifyListeners();
+          try {
+            final decoded = jsonDecode(message);
+            final nachricht = Nachricht.fromJson(decoded);
+            _nachrichten.add(nachricht);
+            notifyListeners();
+            _logik.verarbeiteNachricht(message);
+          } catch (e) {
+            print("Ungültige Nachricht: $e");
+          }
         },
         onDone: () {
           print("Verbindung geschlossen (onDone).");
@@ -54,9 +66,15 @@ class Websocketverbindung with ChangeNotifier {
     }
   }
 
-  void senden(String nachricht) {
+  void senden(String art, String inhalt) {
     if (_verbunden) {
-      _channel.sink.add(nachricht);
+      final nachricht = Nachricht(
+        art: art,
+        inhalt: inhalt,
+        timestamp: DateTime.now(),
+      );
+      final jsonString = jsonEncode(nachricht.toJson());
+      _channel.sink.add(jsonString);
     }
   }
 
