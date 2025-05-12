@@ -1,0 +1,9 @@
+App --> Server:
+
+Server --> App:
+art: miniplan:
+    inhalt: ...
+art: namensliste:
+    inhalt: []
+usw...
+(befüllen wenn logik vorhanden ist)
