@@ -1,6 +1,6 @@
 namespace Server.Models
 {
-    public class Nachricht
+    public class Nachrichten
     {
         required public string Art { get; set; }
         required public string Inhalt { get; set; }

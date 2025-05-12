@@ -86,7 +86,8 @@ static async Task EchoLoop(string id, WebSocket socket)
     }
 }
 
-async void SendMessageToUser (string id, string typ, string nachricht, WebSocket socket){
-    var nachrichtjson = JsonSerializer.Serialize(new { typ = typ, nachricht = nachricht , zeit = DateTime.UtcNow}); 
+async Task SendMessageToUser(string id, string typ, string nachricht, WebSocket socket)
+{
+    var nachrichtjson = JsonSerializer.Serialize(new { typ = typ, nachricht = nachricht, zeit = DateTime.UtcNow });
     await socket.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes(nachrichtjson)), WebSocketMessageType.Text, true, CancellationToken.None);
 }
