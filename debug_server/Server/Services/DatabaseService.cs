@@ -19,7 +19,7 @@ namespace Server.Services
             return await _db.Ministranten.ToListAsync();
         }
 
-        // Einen Ministranten nach ID abrufen
+        // Einen Ministranten nach Gemeinde abrufen
         public async Task<Ministranten?> GetMinistrantByGemeindeAsync(int gemeindeID)
         {
             return await _db.Ministranten.FindAsync(gemeindeID);

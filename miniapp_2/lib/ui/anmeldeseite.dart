@@ -52,23 +52,37 @@ class _AnmeldeseiteState extends State<Anmeldeseite> {
     return Scaffold(
       appBar: AppBar(
         title: Row(
-          children: [
-            Text("Login"),
-            Icon(Icons.circle, color: ws.verbunden ? Colors.green : Colors.red),
-            ElevatedButton(
-              onPressed: () {
-                final anmeldedaten = {
-                  "benutzername": "benutzername",
-                  "passwort": "passwort",
-                };
-                ws.senden("anmeldung", jsonEncode(anmeldedaten));
-              },
-              child: Text("Anmelden"),
-            ),
-          ],
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [Text("Ministranten - Anmeldung")],
         ),
       ),
-      body: Center(child: Text("anmelden")),
+      body: Stack(
+        children: [
+          if (!ws.verbunden)
+            Center(
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.center,
+                crossAxisAlignment: CrossAxisAlignment.center,
+                children: [
+                  CircularProgressIndicator(),
+                  Text("Verbindung wird hergestellt..."),
+                ],
+              ),
+            )
+          else
+            Column(children: [Text("verbunden")]),
+        ],
+      ),
     );
   }
 }
+// ElevatedButton(
+//               onPressed: () {
+//                 final anmeldedaten = {
+//                   "benutzername": "benutzername",
+//                   "passwort": "passwort",
+//                 };
+//                 ws.senden("anmeldung", jsonEncode(anmeldedaten));
+//               },
+//               child: Text("Anmelden"),
+//             ),
