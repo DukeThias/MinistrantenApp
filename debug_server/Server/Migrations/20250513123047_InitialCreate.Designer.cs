@@ -11,7 +11,7 @@ using Server.Data;
 namespace Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250512204820_InitialCreate")]
+    [Migration("20250513123047_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -66,13 +66,17 @@ namespace Server.Migrations
                     b.Property<string>("Geschlecht")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Gewandgroese")
-                        .HasColumnType("TEXT");
+                    b.Property<int>("Gewandgroese")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("Passwort")
+                        .HasColumnType("TEXT");
+
                     b.Property<string>("Rolle")
+                        .IsRequired()
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Telefonnummer")
@@ -81,11 +85,11 @@ namespace Server.Migrations
                     b.Property<string>("Username")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Vegan")
-                        .HasColumnType("TEXT");
+                    b.Property<bool>("Vegan")
+                        .HasColumnType("INTEGER");
 
-                    b.Property<string>("Vegetarisch")
-                        .HasColumnType("TEXT");
+                    b.Property<bool>("Vegetarisch")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Vorname")
                         .HasColumnType("TEXT");
@@ -101,13 +105,13 @@ namespace Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
-                    b.Property<string>("Art")
+                    b.Property<string>("art")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Inhalt")
+                    b.Property<string>("inhalt")
                         .HasColumnType("TEXT");
 
-                    b.Property<DateTime>("Timestamp")
+                    b.Property<DateTime>("timestamp")
                         .HasColumnType("TEXT");
 
                     b.HasKey("Id");
