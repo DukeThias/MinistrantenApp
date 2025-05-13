@@ -28,7 +28,7 @@ namespace Server.Extensions
                 return Results.Ok(ministranten);
             });
 
-            app.MapGet("/api/ministranten/gemeinde/{gemeindeId}", async (DatabaseService dbService, int gemeindeId) =>
+             app.MapGet("/api/ministranten/gemeinde/{gemeindeId}", async (DatabaseService dbService, int gemeindeId) =>
             {
                 var ministranten = await dbService.GetMinistrantenByGemeindeAsync(gemeindeId); // Korrekte Methode
                 return Results.Ok(ministranten);
