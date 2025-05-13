@@ -12,8 +12,10 @@ namespace Server.Extensions
             // Personen
             app.MapGet("/api/personen", async (AppDbContext db) =>
             {
+                Console.WriteLine("GET /api/personen");
                 return await db.Ministranten.ToListAsync();
-            });
+            }
+            );
 
             app.MapPost("/api/personen", async (AppDbContext db, Ministranten ministranten) =>
             {

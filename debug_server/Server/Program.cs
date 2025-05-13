@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Server.Data; // Für AppDbContext
 using Server.Models; // Für die Models
 using System.Net.WebSockets;
+using System.Text.Json;
 using System.Text;
 using Server.Extensions;
 
@@ -13,7 +14,9 @@ Dictionary<string, WebSocket> _connections = new Dictionary<string, WebSocket>()
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options =>
-    options.UseSqlite("Data Source=datenbank.db"));
+    options.UseSqlite("Data Source=datenbank.db")
+           .EnableSensitiveDataLogging()
+           .LogTo(Console.WriteLine));
 
 var app = builder.Build(); // Muss nach der Service-Registrierung erfolgen
 
