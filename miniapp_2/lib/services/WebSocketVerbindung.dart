@@ -19,12 +19,15 @@ class Websocketverbindung with ChangeNotifier {
   Future<void> verbinde(String url) async {
     try {
       _channel = WebSocketChannel.connect(Uri.parse(url));
-      _verbunden = true;
-      notifyListeners();
 
       // Nachrichten empfangen
       _channel.stream.listen(
         (message) {
+          if (!_verbunden) {
+            _verbunden = true;
+            notifyListeners();
+          }
+
           try {
             final decoded = jsonDecode(message);
             final nachricht = Nachricht.fromJson(decoded);
@@ -38,7 +41,7 @@ class Websocketverbindung with ChangeNotifier {
         onDone: () {
           print("Verbindung geschlossen (onDone).");
           try {
-            _channel.sink.close(); // Schließe den WebSocket-Kanal
+            _channel.sink.close();
           } catch (e) {
             print("Fehler beim Schließen des WebSocket-Kanals: $e");
           }
@@ -50,13 +53,9 @@ class Websocketverbindung with ChangeNotifier {
           print("Fehler im WebSocket-Stream: $error");
           _verbunden = false;
           notifyListeners();
-
-          // Verhindere, dass die App abstürzt
-          if (error is WebSocketChannelException) {
-            print("WebSocketChannelException aufgetreten: ${error.message}");
-          }
           _versucheWiederzuverbinden(url);
         },
+        cancelOnError: true,
       );
     } catch (e) {
       print("Fehler beim Verbindungsaufbau: $e");
@@ -67,6 +66,8 @@ class Websocketverbindung with ChangeNotifier {
   }
 
   void senden(String art, inhalt) {
+    print("yeah");
+
     if (_verbunden) {
       final nachricht = Nachricht(
         art: art,

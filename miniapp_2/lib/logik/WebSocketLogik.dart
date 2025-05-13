@@ -23,6 +23,7 @@ class WebSocketLogik with ChangeNotifier {
         break;
       case 'pong':
         _handlePong(nachricht);
+      case 'handshake':
       default:
         print("Unbekannte Nachrichtsart: ${nachricht.art}");
     }

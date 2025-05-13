@@ -1,10 +1,10 @@
-import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:miniapp_2/logik/WebSocketLogik.dart';
 import '../services/WebSocketVerbindung.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';
 import '../logik/globals.dart';
+import 'anmeldeforum.dart';
 
 class Anmeldeseite extends StatefulWidget {
   @override
@@ -15,14 +15,6 @@ class _AnmeldeseiteState extends State<Anmeldeseite> {
   late String uniqheId;
 
   late WebSocketLogik wsLogik;
-
-  bool angemeldetbleiben = false;
-
-  bool passwortausblenden = true;
-
-  final TextEditingController _controllerBenutzername = TextEditingController();
-
-  final TextEditingController _controllerPasswort = TextEditingController();
 
   @override
   void initState() {
@@ -40,8 +32,6 @@ class _AnmeldeseiteState extends State<Anmeldeseite> {
 
   @override
   void dispose() {
-    _controllerBenutzername.dispose();
-    _controllerPasswort.dispose();
     super.dispose();
   }
 
@@ -53,7 +43,7 @@ class _AnmeldeseiteState extends State<Anmeldeseite> {
       appBar: AppBar(
         title: Row(
           mainAxisAlignment: MainAxisAlignment.center,
-          children: [Text("Ministranten - Anmeldung")],
+          children: [if (ws.verbunden) Text("Ministranten - Anmeldung")],
         ),
       ),
       body: Stack(
@@ -70,7 +60,7 @@ class _AnmeldeseiteState extends State<Anmeldeseite> {
               ),
             )
           else
-            Column(children: [Text("verbunden")]),
+            Padding(padding: EdgeInsets.all(16), child: AnmeldeFormular()),
         ],
       ),
     );
