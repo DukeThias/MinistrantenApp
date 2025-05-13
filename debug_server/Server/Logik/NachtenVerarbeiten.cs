@@ -3,13 +3,16 @@ using System.Text;
 using System.Text.Json;
 using Server.Services;
 using Server.Models;
+using Server.Data;
+
+
 
 namespace Server.Logik
 {
     public static class NachrichtenVerarbeiten
     {
         public
-static async Task EchoLoop(string id, WebSocket socket, WebSocketService service)
+static async Task EchoLoop(string id, WebSocket socket, WebSocketService service, DatabaseService dbs)
         {
             var buffer = new byte[1024 * 4];
             while (socket.State == WebSocketState.Open)
@@ -33,8 +36,7 @@ static async Task EchoLoop(string id, WebSocket socket, WebSocketService service
                     {
                         case "anmeldung":
                             
-                            Console.WriteLine("Sende authentifizierung");
-                            await service.SendMessageAsync(id, "authentifizierung", "true");
+                            _CaseAnmeldung(empfangen, dbs);
                             break;
 
                         case "anfrage":
@@ -66,30 +68,34 @@ static async Task EchoLoop(string id, WebSocket socket, WebSocketService service
                 }
             }
         }
-
-        private static void _CaseAnmeldung()
+        private async static void _CaseAnmeldung(Nachrichten empfangen, DatabaseService dbs)
         {
-            // Logic for "anmeldung" case
+            Console.WriteLine("Anmeldung empfangen: " + empfangen.inhalt);
+            List<Ministranten> ministranten = await dbs.GetAllMinistrantenAsync();
         }
 
-        private static void _CaseAnfrage()
+        private static void _CaseAnfrage(Nachrichten empfangen)
         {
-            // Logic for "anfrage" case
+            Console.WriteLine("Anfrage empfangen: " + empfangen.inhalt);
+            // Additional logic for "anfrage" case
         }
 
-        private static void _CaseBroadcast()
+        private static void _CaseBroadcast(Nachrichten empfangen)
         {
-            // Logic for "broadcast" case
+            Console.WriteLine("Broadcast empfangen: " + empfangen.inhalt);
+            // Additional logic for "broadcast" case
         }
 
-        private static void _CasePing()
+        private static void _CasePing(Nachrichten empfangen)
         {
-            // Logic for "ping" case
+            Console.WriteLine("Ping empfangen: " + empfangen.inhalt);
+            // Additional logic for "ping" case
         }
 
-        private static void _CaseDefault()
+        private static void _CaseDefault(Nachrichten empfangen)
         {
-            // Logic for default case
+            Console.WriteLine("Unbekannter Nachrichtentyp empfangen: " + empfangen.inhalt);
+            // Additional logic for default case
         }
-    }
+        }
 }

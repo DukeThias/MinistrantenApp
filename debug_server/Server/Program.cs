@@ -19,8 +19,13 @@ builder.Services.AddDbContext<AppDbContext>(options =>
            .EnableSensitiveDataLogging()
            .LogTo(Console.WriteLine));
 
-var app = builder.Build(); // Muss nach der Service-Registrierung erfolgen
 
+var app = builder.Build(); // Muss nach der Service-Registrierung erfolgen
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.EnsureCreated(); // Erstellt die Datenbank und Tabellen, falls sie noch nicht existieren
+}
 app.MapApiEndpoints(); // Registriert alle API-Endpunkte (z. B. /api/personen usw.)
 
 // Swagger aktivieren im Development-Modus
@@ -40,13 +45,14 @@ app.Use(async (context, next) =>
         {
             var webSocket = await context.WebSockets.AcceptWebSocketAsync();
             var id = Guid.NewGuid().ToString();
+            var dataBaseService = context.RequestServices.GetRequiredService<DatabaseService>(); // DataBaseService abrufen
 
             var webSocketService = context.RequestServices.GetRequiredService<WebSocketService>();
             webSocketService.AddConnection(id, webSocket);
 
             Console.WriteLine($"Neue WebSocket-Verbindung: {id}");
             webSocketService.SendMessageAsync(id, "handshake", "Wenn du das liest, funktioniert irgendwas nicht...").Wait();
-            await NachrichtenVerarbeiten.EchoLoop(id, webSocket, webSocketService);
+            await NachrichtenVerarbeiten.EchoLoop(id, webSocket, webSocketService, dataBaseService);
 
             webSocketService.RemoveConnection(id);
             Console.WriteLine($"WebSocket-Verbindung geschlossen: {id}");

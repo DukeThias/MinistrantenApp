@@ -62,5 +62,11 @@ namespace Server.Services
                 await _db.SaveChangesAsync();
             }
         }
+        public async Task<string?> GetPasswordByMinistrantNameAsync(string name)
+        {
+            var ministrant = await _db.Ministranten
+                .FirstOrDefaultAsync(m => m.Name == name); // Suche nach dem Namen
+            return ministrant?.Passwort; // Gib das Passwort zurück, falls gefunden
+        }
     }
 }
