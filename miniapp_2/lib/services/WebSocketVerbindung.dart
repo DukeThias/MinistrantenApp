@@ -16,7 +16,7 @@ class Websocketverbindung with ChangeNotifier {
   bool get verbunden => _verbunden;
   List<Nachricht> get nachrichten => _nachrichten;
 
-  void verbinde(String url) {
+  Future<void> verbinde(String url) async {
     try {
       _channel = WebSocketChannel.connect(Uri.parse(url));
       _verbunden = true;
@@ -92,11 +92,11 @@ class Websocketverbindung with ChangeNotifier {
     }
 
     // Wiederverbindung alle 5 Sekunden versuchen
-    _reconnectTimer = Timer.periodic(Duration(seconds: 5), (timer) {
+    _reconnectTimer = Timer.periodic(Duration(seconds: 5), (timer) async {
       if (!_verbunden) {
         print("Versuche, die Verbindung wiederherzustellen...");
         try {
-          verbinde(url);
+          await verbinde(url);
         } catch (e) {
           print("Fehler beim Wiederverbinden: $e");
         }
