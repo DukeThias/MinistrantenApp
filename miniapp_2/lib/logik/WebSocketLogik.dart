@@ -12,17 +12,26 @@ class WebSocketLogik with ChangeNotifier {
       case 'miniplan':
         _handleMiniplan(nachricht);
         break;
+
       case 'authentifizierung':
         _handleAuthentifizierung(nachricht);
         break;
+
+      case 'gemeinden':
+        globals.set("gemeinden", nachricht.inhalt);
+        break;
+
       case 'namensliste':
         _handleNamensliste(nachricht);
         break;
+
       case 'rollen':
         _handleRollen(nachricht);
         break;
+
       case 'pong':
         _handlePong(nachricht);
+
       case 'handshake':
       default:
         print("Unbekannte Nachrichtsart: ${nachricht.art}");
