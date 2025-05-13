@@ -44,6 +44,7 @@ namespace Server.Migrations
                     GemeindeID = table.Column<int>(type: "INTEGER", nullable: false),
                     GruppenID = table.Column<int>(type: "INTEGER", nullable: false),
                     Rolle = table.Column<string>(type: "TEXT", nullable: false),
+                    Einweihungsjahr = table.Column<int>(type: "INTEGER", nullable: false),
                     Vegan = table.Column<bool>(type: "INTEGER", nullable: false),
                     Vegetarisch = table.Column<bool>(type: "INTEGER", nullable: false),
                     Allergien = table.Column<string>(type: "TEXT", nullable: true),

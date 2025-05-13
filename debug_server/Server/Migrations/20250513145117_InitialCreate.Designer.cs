@@ -11,7 +11,7 @@ using Server.Data;
 namespace Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250513130834_InitialCreate")]
+    [Migration("20250513145117_InitialCreate")]
     partial class InitialCreate
     {
         /// <inheritdoc />
@@ -53,6 +53,9 @@ namespace Server.Migrations
 
                     b.Property<string>("Bemerkungen")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("Einweihungsjahr")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Email")
                         .HasColumnType("TEXT");

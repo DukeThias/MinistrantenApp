@@ -64,7 +64,6 @@ app.Use(async (context, next) =>
 });
 
 // API-Basisendpunkt
-app.MapGet("/", () => "Server läuft!");
 
 app.Run();
 

@@ -51,6 +51,9 @@ namespace Server.Migrations
                     b.Property<string>("Bemerkungen")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("Einweihungsjahr")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Email")
                         .HasColumnType("TEXT");
 
