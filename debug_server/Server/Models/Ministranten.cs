@@ -1,5 +1,4 @@
-using System;
-using System.Collections.Generic;
+
 
 namespace Server.Models
 {
@@ -15,14 +14,37 @@ namespace Server.Models
         public string? Adresse { get; set; }
         public string? Telefonnummer { get; set; }
         public string? Email { get; set; }
-        public int Gewandgroese { get; set; } // Korrekt als int
+        public int Gewandgroese { get; set; }
         public int GemeindeID { get; set; }
         public int GruppenID { get; set; }
-        public List<string> Rolle { get; set; } = new(); // Muss als JSON gespeichert werden
-        public int Einweihungsjahr { get; set; } // Korrekt als int
-        public bool Vegan { get; set; } // Korrekt als bool
-        public bool Vegetarisch { get; set; } // Korrekt als bool
+        public List<string> Rolle { get; set; } = new();
+        public int Einweihungsjahr { get; set; }
+        public bool Vegan { get; set; }
+        public bool Vegetarisch { get; set; }
         public string? Allergien { get; set; }
         public string? Bemerkungen { get; set; }
+
+        // Methode zum Aktualisieren mit einem anderen Objekt
+        public void UpdateFrom(Ministranten other)
+        {
+            Vorname = other.Vorname;
+            Name = other.Name;
+            Username = other.Username;
+            Passwort = other.Passwort;
+            Geschlecht = other.Geschlecht;
+            Geburtsdatum = other.Geburtsdatum;
+            Adresse = other.Adresse;
+            Telefonnummer = other.Telefonnummer;
+            Email = other.Email;
+            Gewandgroese = other.Gewandgroese;
+            GemeindeID = other.GemeindeID;
+            GruppenID = other.GruppenID;
+            Rolle = new List<string>(other.Rolle);
+            Einweihungsjahr = other.Einweihungsjahr;
+            Vegan = other.Vegan;
+            Vegetarisch = other.Vegetarisch;
+            Allergien = other.Allergien;
+            Bemerkungen = other.Bemerkungen;
+        }
     }
 }

@@ -1,7 +1,7 @@
-using Microsoft.AspNetCore.Builder;
 using Microsoft.EntityFrameworkCore;
 using Server.Data;
 using Server.Models;
+using Server.Services;
 
 namespace Server.Extensions
 {
@@ -9,33 +9,43 @@ namespace Server.Extensions
     {
         public static void MapApiEndpoints(this WebApplication app)
         {
-            // Personen
-            app.MapGet("/api/personen", async (AppDbContext db) =>
+            // Endpunkte für Ministranten
+            app.MapGet("/api/ministranten", async (DatabaseService dbService) =>
             {
-                Console.WriteLine("GET /api/personen");
-                return await db.Ministranten.ToListAsync();
-            }
-            );
-
-            app.MapPost("/api/personen", async (AppDbContext db, Ministranten ministranten) =>
-            {
-                db.Ministranten.Add(ministranten);
-                await db.SaveChangesAsync();
-                return Results.Created($"/api/ministranten/{ministranten.Id}", ministranten);
+                return await dbService.GetAllMinistrantenAsync();
             });
 
-            app.MapDelete("/api/personen/{id}", async (AppDbContext db, int id) =>
+            app.MapGet("/api/ministranten/{id}", async (DatabaseService dbService, int id) =>
             {
-                var person = await db.Ministranten.FindAsync(id);
-                if (person is null)
-                {
-                    return Results.NotFound();
-                }
-
-                db.Ministranten.Remove(person);
-                await db.SaveChangesAsync();
-                return Results.Ok(person);
+                var ministrant = await dbService.GetMinistrantByIdAsync(id);
+                return ministrant is not null ? Results.Ok(ministrant) : Results.NotFound();
             });
+
+            app.MapPost("/api/ministranten", async (DatabaseService dbService, Ministranten ministrant) =>
+            {
+                await dbService.AddMinistrantAsync(ministrant);
+                return Results.Created($"/api/ministranten/{ministrant.Id}", ministrant);
+            });
+
+            app.MapPut("/api/ministranten/{id}", async (DatabaseService dbService, int id, Ministranten updatedMinistrant) =>
+            {
+                var success = await dbService.UpdateMinistrantAsync(id, updatedMinistrant);
+                return success ? Results.Ok(updatedMinistrant) : Results.NotFound();
+            });
+
+
+            app.MapDelete("/api/ministranten/{id}", async (DatabaseService dbService, int id) =>
+            {
+                await dbService.DeleteMinistrantAsync(id);
+                return Results.Ok();
+            });
+
+            // Optional: Update-Endpunkt, falls benötigt
+            // app.MapPut("/api/ministranten/{id}", async (DatabaseService dbService, int id, Ministranten updatedMinistrant) =>
+            // {
+            //     await dbService.UpdateMinistrantAsync(id, updatedMinistrant);
+            //     return Results.Ok();
+            // });
 
             // Termine
             app.MapGet("/api/termine", async (AppDbContext db) =>
@@ -75,6 +85,7 @@ namespace Server.Extensions
                 await db.SaveChangesAsync();
                 return Results.Created($"/api/gemeinden/{gemeinde.Id}", gemeinde);
             });
+
             app.MapDelete("/api/gemeinden/{id}", async (AppDbContext db, int id) =>
             {
                 var gemeinde = await db.Gemeinden.FindAsync(id);
@@ -100,6 +111,7 @@ namespace Server.Extensions
                 await db.SaveChangesAsync();
                 return Results.Created($"/api/nachrichten/{nachricht.Id}", nachricht);
             });
+
             app.MapDelete("/api/nachrichten/{id}", async (AppDbContext db, int id) =>
             {
                 var nachricht = await db.Nachrichten.FindAsync(id);

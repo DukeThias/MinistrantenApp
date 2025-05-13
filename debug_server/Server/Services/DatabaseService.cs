@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
-using Server.Data; // Ensure this namespace is imported
+using Server.Data;
 using Server.Models;
+
 
 namespace Server.Services
 {
@@ -19,31 +20,39 @@ namespace Server.Services
             return await _db.Ministranten.ToListAsync();
         }
 
-        // Einen Ministranten nach Gemeinde abrufen
-        public async Task<Ministranten?> GetMinistrantByGemeindeAsync(int gemeindeID)
+        // Ministranten nach GemeindeID abrufen
+        public async Task<List<Ministranten>> GetMinistrantenByGemeindeAsync(int gemeindeID)
         {
-            return await _db.Ministranten.FindAsync(gemeindeID);
+            return await _db.Ministranten
+                            .Where(m => m.GemeindeID == gemeindeID)
+                            .ToListAsync();
         }
 
-        // Einen neuen Ministranten hinzufügen
+        // Einzelnen Ministranten nach ID abrufen
+        public async Task<Ministranten?> GetMinistrantByIdAsync(int id)
+        {
+            return await _db.Ministranten.FindAsync(id);
+        }
+
+        // Neuen Ministranten hinzufügen
         public async Task AddMinistrantAsync(Ministranten ministrant)
         {
             await _db.Ministranten.AddAsync(ministrant);
             await _db.SaveChangesAsync();
         }
 
-        // Einen Ministranten aktualisieren
-        // public async Task UpdateMinistrantAsync(int id, Ministranten updatedMinistrant)
-        // {
-        //     var ministrant = await _db.Ministranten.FindAsync(id);
-        //     if (ministrant != null)
-        //     {
-        //         ministrant.Name = updatedMinistrant.Name;
-        //         await _db.SaveChangesAsync();
-        //     }
-        // }
+        // Bestehenden Ministranten aktualisieren
+        public async Task<bool> UpdateMinistrantAsync(int id, Ministranten updated)
+        {
+            var existing = await _db.Ministranten.FindAsync(id);
+            if (existing == null) return false;
 
-        // Einen Ministranten löschen
+            existing.UpdateFrom(updated);
+            await _db.SaveChangesAsync();
+            return true;
+        }
+
+        // Ministranten löschen
         public async Task DeleteMinistrantAsync(int id)
         {
             var ministrant = await _db.Ministranten.FindAsync(id);
