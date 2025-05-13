@@ -3,7 +3,7 @@ import 'package:miniapp_2/logik/globals.dart';
 import 'package:provider/provider.dart';
 import '../services/WebSocketVerbindung.dart';
 import 'dart:convert';
-import 'package:miniapp_2/services/datenspeichern.dart';
+import '../services/datenspeichern.dart';
 
 class AnmeldeFormular extends StatefulWidget {
   @override
@@ -13,7 +13,7 @@ class AnmeldeFormular extends StatefulWidget {
 class _AnmeldeFormularState extends State<AnmeldeFormular> {
   final TextEditingController _controllerBenutzername = TextEditingController();
   final TextEditingController _controllerPasswort = TextEditingController();
-  bool angemeldetbleiben = false;
+  bool angemeldetbleiben = true;
   bool _isObscured = true;
   @override
   void dispose() {
@@ -175,6 +175,19 @@ class _AnmeldeFormularState extends State<AnmeldeFormular> {
                 ),
               );
             } else {
+              if (angemeldetbleiben) {
+                saveStringToFile("benutzername", _controllerBenutzername.text);
+                globals.set("benutzername", _controllerBenutzername.text);
+                saveStringToFile("passwort", _controllerPasswort.text);
+                globals.set("passwort", _controllerPasswort.text);
+                saveBoolToFile("angemeldetbleiben", true);
+                globals.set("angemeldetbleiben", true);
+              } else {
+                deleteFile("benutzername");
+                deleteFile("passwort");
+                deleteFile("angemeldetbleiben");
+                globals.set("angemeldetbleiben", false);
+              }
               ws.senden("anmeldung", jsonEncode(anmeldedaten));
             }
           },

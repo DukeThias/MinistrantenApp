@@ -13,6 +13,7 @@ class Globals with ChangeNotifier {
   void variablenInitiieren() {
     set("rollen", []);
     set("benutzername", "");
+    set("passwort", "");
     set("namensliste", []);
     set("miniplan", []);
     set("pong", "nüscht");

@@ -38,6 +38,7 @@ static async Task EchoLoop(string id, WebSocket socket, WebSocketService service
                             
                             Console.WriteLine("Anmeldung empfangen: " + empfangen.inhalt);
                             List<Ministranten> ministranten = await dbs.GetAllMinistrantenAsync();
+                            await service.SendMessageAsync(id, "authentifizierung", "true");
                             break;
 
                         case "anfrage":
