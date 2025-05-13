@@ -66,8 +66,6 @@ class Websocketverbindung with ChangeNotifier {
   }
 
   void senden(String art, inhalt) {
-    print("yeah");
-
     if (_verbunden) {
       final nachricht = Nachricht(
         art: art,

@@ -97,8 +97,12 @@ static async Task EchoLoop(string id, WebSocket socket, WebSocketService service
 
                 case "anfrage":
                     if (empfangen.inhalt == "gemeinden"){
-                        service.SendMessageAsync(id, "gemeinden", //gemeinden logik);
+                        Console.WriteLine("Sende Gemeinden");
+                        var gemeinden = new List<string>{"Laupheim", "Biberach", "Ulm"};
+                        var antwortjson = JsonSerializer.Serialize(gemeinden);
+                        await service.SendMessageAsync(id, "gemeinden", antwortjson);
                     }
+                    break;
 
                 case "broadcast":
                     await service.BroadcastMessageAsync("Info", empfangen.inhalt!);

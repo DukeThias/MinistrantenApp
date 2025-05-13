@@ -22,6 +22,68 @@ class _AnmeldeFormularState extends State<AnmeldeFormular> {
     super.dispose();
   }
 
+  void _showNameInputDialog(
+    BuildContext context,
+    String gemeinde,
+    Websocketverbindung ws,
+  ) {
+    final TextEditingController vornameController = TextEditingController();
+    final TextEditingController nachnameController = TextEditingController();
+
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: Text("Neuer Account erstellen"),
+          content: Column(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              TextField(
+                controller: vornameController,
+                decoration: InputDecoration(labelText: "Vorname"),
+              ),
+              TextField(
+                controller: nachnameController,
+                decoration: InputDecoration(labelText: "Nachname"),
+              ),
+            ],
+          ),
+          actions: [
+            TextButton(
+              child: Text("Abbrechen"),
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+            ),
+            TextButton(
+              child: Text("Erstellen"),
+              onPressed: () {
+                final vorname = vornameController.text;
+                final nachname = nachnameController.text;
+
+                if (vorname.isEmpty || nachname.isEmpty) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    SnackBar(
+                      content: Text("Bitte Vor- und Nachname eingeben."),
+                    ),
+                  );
+                } else {
+                  final daten = {
+                    "gemeinde": gemeinde,
+                    "vorname": vorname,
+                    "nachname": nachname,
+                  };
+                  ws.senden("neuer_account", jsonEncode(daten));
+                  Navigator.of(context).pop();
+                }
+              },
+            ),
+          ],
+        );
+      },
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     final ws = context.watch<Websocketverbindung>();
@@ -119,6 +181,7 @@ class _AnmeldeFormularState extends State<AnmeldeFormular> {
           child: Text("Anmelden"),
         ),
         SizedBox(height: 16),
+
         TextButton(
           onPressed: () {
             ws.senden("anfrage", "gemeinden");
@@ -137,8 +200,9 @@ class _AnmeldeFormularState extends State<AnmeldeFormular> {
                                 return ListTile(
                                   title: Text(gemeinde),
                                   onTap: () {
-                                    ws.senden("neuer_account", gemeinde);
                                     Navigator.of(context).pop();
+
+                                    _showNameInputDialog(context, gemeinde, ws);
                                   },
                                 );
                               }).toList(),
