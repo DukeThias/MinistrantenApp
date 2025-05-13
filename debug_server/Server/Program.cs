@@ -95,6 +95,11 @@ static async Task EchoLoop(string id, WebSocket socket, WebSocketService service
                     await service.SendMessageAsync(id, "authentifizierung", "true");
                     break;
 
+                case "anfrage":
+                    if (empfangen.inhalt == "gemeinden"){
+                        service.SendMessageAsync(id, "gemeinden", //gemeinden logik);
+                    }
+
                 case "broadcast":
                     await service.BroadcastMessageAsync("Info", empfangen.inhalt!);
                     break;
