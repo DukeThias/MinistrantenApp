@@ -19,6 +19,7 @@ namespace Server.Models
         public int GemeindeID { get; set; }
         public int GruppenID { get; set; }
         public List<string> Rolle { get; set; } = new(); // Muss als JSON gespeichert werden
+        public int Einweihungsjahr { get; set; } // Korrekt als int
         public bool Vegan { get; set; } // Korrekt als bool
         public bool Vegetarisch { get; set; } // Korrekt als bool
         public string? Allergien { get; set; }
