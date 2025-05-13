@@ -4,8 +4,8 @@ namespace Server.Models
     {
         public int Id { get; set; }  // <- Primärschlüssel
 
-        public string? Art { get; set; }
-        public string? Inhalt { get; set; }
-        public DateTime Timestamp { get; set; }
+        public string? art { get; set; }
+        public string? inhalt { get; set; }
+        public DateTime timestamp { get; set; }
     }
 }

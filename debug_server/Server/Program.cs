@@ -1,10 +1,11 @@
 using Microsoft.EntityFrameworkCore;
 using Server.Data; // Für AppDbContext
-using Server.Models; // Für die Models
+using Server.Services; // Für die Models
 using System.Net.WebSockets;
 using System.Text.Json;
 using System.Text;
 using Server.Extensions;
+using Server.Models;  
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -12,6 +13,8 @@ Dictionary<string, WebSocket> _connections = new Dictionary<string, WebSocket>()
 
 // Services registrieren
 builder.Services.AddEndpointsApiExplorer();
+builder.Services.AddScoped<DatabaseService>();
+builder.Services.AddSingleton<WebSocketService>();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=datenbank.db")
@@ -37,22 +40,17 @@ app.Use(async (context, next) =>
     {
         if (context.WebSockets.IsWebSocketRequest)
         {
-            var id = context.Request.Query["id"].ToString();
-            if (string.IsNullOrEmpty(id))
-            {
-                context.Response.StatusCode = 400;
-                return;
-            }
+            var webSocket = await context.WebSockets.AcceptWebSocketAsync();
+            var id = Guid.NewGuid().ToString();
 
-            if (_connections.ContainsKey(id))
-            {
-                context.Response.StatusCode = 400;
-                Console.WriteLine($"WebSocket mit ID {id} bereits verbunden.");
-                return;
-            }
+            var webSocketService = context.RequestServices.GetRequiredService<WebSocketService>();
+            webSocketService.AddConnection(id, webSocket);
 
-            using var webSocket = await context.WebSockets.AcceptWebSocketAsync();
-            await EchoLoop(id, webSocket);
+            Console.WriteLine($"Neue WebSocket-Verbindung: {id}");
+            await EchoLoop(id, webSocket, webSocketService);
+
+            webSocketService.RemoveConnection(id);
+            Console.WriteLine($"WebSocket-Verbindung geschlossen: {id}");
         }
         else
         {
@@ -70,61 +68,46 @@ app.MapGet("/", () => "Server läuft!");
 
 app.Run();
 
-// WebSocket-Kommunikationsmethode
-static async Task EchoLoop(string id, WebSocket socket)
+static async Task EchoLoop(string id, WebSocket socket, WebSocketService service)
 {
     var buffer = new byte[1024 * 4];
     while (socket.State == WebSocketState.Open)
     {
         var result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
-        var message = Encoding.UTF8.GetString(buffer, 0, result.Count);
-        Console.WriteLine($"[{id}] Von Flutter empfangen: {message}");
+        var jsonString = Encoding.UTF8.GetString(buffer, 0, result.Count);
+
+        Console.WriteLine($"[{id}] empfangen: {jsonString}");
 
         try
         {
-            // JSON-String in ein Dictionary deserialisieren
-            var data = JsonSerializer.Deserialize<Dictionary<string, object>>(message);
-
-            if (data != null && data.ContainsKey("art") && data.ContainsKey("inhalt"))
+            var empfangen = JsonSerializer.Deserialize<Nachrichten>(jsonString);
+            if (empfangen == null)
             {
-                string? type = data["art"].ToString();
-                string? inhalt = data["inhalt"].ToString();
-                switch (type)
-                {
-                    case "lol":
-                        Console.WriteLine("Aktion für 'lol' ausführen");
-                        // Führe Aktion für "lol" aus
-                        break;
-
-                    case "ping":
-                        Console.WriteLine("Aktion für 'ping' ausführen");
-                        await SendMessageToUser(id, "antwort", "ping "+inhalt, socket);
-                        break;
-
-                    default:
-                        Console.WriteLine($"Unbekannter Typ: {type}");
-                        break;
-                }
+                Console.WriteLine("Ungültiges JSON erhalten.");
+                continue;
             }
-            else
+
+            Console.WriteLine($"Art: {empfangen.art}, Inhalt: {empfangen.inhalt}");
+
+            switch (empfangen.art?.ToLower())
             {
-                Console.WriteLine("Ungültige JSON-Daten oder 'type'-Feld fehlt.");
+                case "ping":
+                    
+                    await service.SendMessageAsync(id, "pong", empfangen.inhalt!);
+                    break;
+
+                case "broadcast":
+                    await service.BroadcastMessageAsync("Info", empfangen.inhalt!);
+                    break;
+
+                default:
+                    Console.WriteLine("Unbekannter Nachrichtentyp");
+                    break;
             }
         }
-        catch (JsonException ex)
+        catch (JsonException e)
         {
-            Console.WriteLine($"Fehler beim Verarbeiten der JSON-Daten: {ex.Message}");
+            Console.WriteLine($"Fehler beim Verarbeiten der Nachricht: {e.Message}");
         }
     }
 }
-
-
-
-static async Task SendMessageToUser(string id, string typ, string nachricht, WebSocket socket)
-{
-    Console.WriteLine("senden...");
-    var nachrichtjson = JsonSerializer.Serialize(new { art = typ, inhalt = nachricht, timestamp = DateTime.UtcNow });
-    Console.WriteLine(nachrichtjson);
-    await socket.SendAsync(new ArraySegment<byte>(Encoding.UTF8.GetBytes(nachrichtjson)), WebSocketMessageType.Text, true, CancellationToken.None);
-}
-
