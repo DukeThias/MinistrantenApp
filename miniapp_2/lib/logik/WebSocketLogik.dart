@@ -1,3 +1,5 @@
+import 'dart:convert';
+import 'package:provider/provider.dart';
 import 'package:miniapp_2/logik/Nachricht.dart';
 import 'package:miniapp_2/logik/globals.dart';
 import 'package:flutter/material.dart';
@@ -6,7 +8,8 @@ import '../ui/hauptseite.dart';
 
 class WebSocketLogik with ChangeNotifier {
   final TextEditingController _controllerBenutzername = TextEditingController();
-  final Globals globals = Globals();
+  Globals get globals => navigatorKey.currentContext!.read<Globals>();
+
   void verarbeiteNachricht(Nachricht nachricht) {
     switch (nachricht.art) {
       case 'miniplan':
@@ -18,7 +21,7 @@ class WebSocketLogik with ChangeNotifier {
         break;
 
       case 'gemeinden':
-        globals.set("gemeinden", nachricht.inhalt);
+        globals.set("gemeinden", jsonDecode(nachricht.inhalt));
         break;
 
       case 'namensliste':
