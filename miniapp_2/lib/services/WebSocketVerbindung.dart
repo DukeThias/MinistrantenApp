@@ -30,7 +30,7 @@ class Websocketverbindung with ChangeNotifier {
             final nachricht = Nachricht.fromJson(decoded);
             _nachrichten.add(nachricht);
             notifyListeners();
-            _logik.verarbeiteNachricht(message);
+            _logik.verarbeiteNachricht(nachricht);
           } catch (e) {
             print("Ungültige Nachricht: $e");
           }
@@ -66,7 +66,7 @@ class Websocketverbindung with ChangeNotifier {
     }
   }
 
-  void senden(String art, String inhalt) {
+  void senden(String art, inhalt) {
     if (_verbunden) {
       final nachricht = Nachricht(
         art: art,

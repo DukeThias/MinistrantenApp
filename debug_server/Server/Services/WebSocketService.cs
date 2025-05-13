@@ -48,28 +48,29 @@ namespace Server.Services
 
         // Nachricht an alle Verbindungen senden
         public async Task BroadcastMessageAsync(string art, string inhalt)
-{
-    var nachricht = new Nachrichten
-    {
-        art = art,
-        inhalt = inhalt,
-        timestamp = DateTime.UtcNow
-    };
-
-    var json = JsonSerializer.Serialize(nachricht);
-    var buffer = Encoding.UTF8.GetBytes(json);
-
-    foreach (var connection in _connections.Values)
-    {
-        if (connection.State == WebSocketState.Open)
         {
-            await connection.SendAsync(
-                new ArraySegment<byte>(buffer),
-                WebSocketMessageType.Text,
-                true,
-                CancellationToken.None
-            );
+            var nachricht = new Nachrichten
+            {
+                art = art,
+                inhalt = inhalt,
+                timestamp = DateTime.UtcNow
+            };
+
+            var json = JsonSerializer.Serialize(nachricht);
+            var buffer = Encoding.UTF8.GetBytes(json);
+
+            foreach (var connection in _connections.Values)
+            {
+                if (connection.State == WebSocketState.Open)
+                {
+                    await connection.SendAsync(
+                        new ArraySegment<byte>(buffer),
+                        WebSocketMessageType.Text,
+                        true,
+                        CancellationToken.None
+                    );
+                }
+            }
         }
     }
 }
-    }}

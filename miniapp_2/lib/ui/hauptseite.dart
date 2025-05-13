@@ -2,7 +2,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/WebSocketVerbindung.dart';
-import '../logik/globals.dart';
+//import '../logik/globals.dart';
 import 'package:flutter_spinkit/flutter_spinkit.dart';
 import 'package:get/get.dart';
 
@@ -10,7 +10,7 @@ class Hauptseite extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final ws = context.watch<Websocketverbindung>();
-    final globals = context.watch<Globals>();
+    //final globals = context.watch<Globals>();
     return Scaffold(
       body: Center(
         child: Column(

@@ -1,14 +1,19 @@
 import 'package:miniapp_2/logik/Nachricht.dart';
 import 'package:miniapp_2/logik/globals.dart';
+import 'package:flutter/material.dart';
+import 'package:miniapp_2/main.dart';
+import '../ui/hauptseite.dart';
 
-class WebSocketLogik {
+class WebSocketLogik with ChangeNotifier {
+  final TextEditingController _controllerBenutzername = TextEditingController();
   final Globals globals = Globals();
   void verarbeiteNachricht(Nachricht nachricht) {
-    // Aktion basierend auf der Art der Nachricht ausführen
-
     switch (nachricht.art) {
       case 'miniplan':
         _handleMiniplan(nachricht);
+        break;
+      case 'authentifizierung':
+        _handleAuthentifizierung(nachricht);
         break;
       case 'namensliste':
         _handleNamensliste(nachricht);
@@ -37,5 +42,20 @@ class WebSocketLogik {
 
   void _handlePong(Nachricht nachricht) {
     globals.set("pong", nachricht.inhalt);
+  }
+
+  void _handleAuthentifizierung(Nachricht nachricht) {
+    if (nachricht.inhalt == "true") {
+      globals.set("angemeldet", true);
+      globals.set("benutzername", _controllerBenutzername.text);
+      List teile = _controllerBenutzername.text.split(".");
+
+      globals.set("anmeldename", teile.sublist(1).join(" "));
+      navigatorKey.currentState?.pushReplacement(
+        MaterialPageRoute(builder: (context) => Hauptseite()),
+      );
+    } else {
+      print("Authentifizierung fehlgeschlagen: ${nachricht.inhalt}");
+    }
   }
 }

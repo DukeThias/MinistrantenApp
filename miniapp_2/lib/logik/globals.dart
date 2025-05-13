@@ -16,5 +16,7 @@ class Globals with ChangeNotifier {
     set("namensliste", []);
     set("miniplan", []);
     set("pong", "nüscht");
+    set("anmeldename", "");
+    set("angemeldet", false);
   }
 }

@@ -87,13 +87,12 @@ static async Task EchoLoop(string id, WebSocket socket, WebSocketService service
                 continue;
             }
 
-            Console.WriteLine($"Art: {empfangen.art}, Inhalt: {empfangen.inhalt}");
 
             switch (empfangen.art?.ToLower())
             {
-                case "ping":
-                    
-                    await service.SendMessageAsync(id, "pong", empfangen.inhalt!);
+                case "anmeldung":
+                    Console.WriteLine("Sende authentifizierung");
+                    await service.SendMessageAsync(id, "authentifizierung", "true");
                     break;
 
                 case "broadcast":

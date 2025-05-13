@@ -1,4 +1,7 @@
+import 'dart:convert';
+import 'package:miniapp_2/main.dart';
 import 'package:flutter/material.dart';
+import 'package:miniapp_2/logik/WebSocketLogik.dart';
 import 'package:miniapp_2/ui/hauptseite.dart';
 import '../services/WebSocketVerbindung.dart';
 import 'package:provider/provider.dart';
@@ -13,11 +16,22 @@ class Anmeldeseite extends StatefulWidget {
 class _AnmeldeseiteState extends State<Anmeldeseite> {
   late String uniqheId;
 
+  late WebSocketLogik wsLogik;
+
+  bool angemeldetbleiben = false;
+
+  bool passwortausblenden = true;
+
+  final TextEditingController _controllerBenutzername = TextEditingController();
+
+  final TextEditingController _controllerPasswort = TextEditingController();
+
   @override
   void initState() {
     super.initState();
     uniqheId = Uuid().v4();
     Globals().variablenInitiieren();
+    wsLogik = Provider.of<WebSocketLogik>(context, listen: false);
     WidgetsBinding.instance.addPostFrameCallback((_) {
       final ws = context.read<Websocketverbindung>();
       if (!ws.verbunden) {
@@ -27,8 +41,16 @@ class _AnmeldeseiteState extends State<Anmeldeseite> {
   }
 
   @override
+  void dispose() {
+    _controllerBenutzername.dispose();
+    _controllerPasswort.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final ws = context.watch<Websocketverbindung>();
+
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -37,10 +59,11 @@ class _AnmeldeseiteState extends State<Anmeldeseite> {
             Icon(Icons.circle, color: ws.verbunden ? Colors.green : Colors.red),
             ElevatedButton(
               onPressed: () {
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => Hauptseite()),
-                );
+                final anmeldedaten = {
+                  "benutzername": "benutzername",
+                  "passwort": "passwort",
+                };
+                ws.senden("anmeldung", jsonEncode(anmeldedaten));
               },
               child: Text("Anmelden"),
             ),
