@@ -50,6 +50,19 @@ namespace Server.Extensions
                 return Results.Created($"/api/termine/{termin.Id}", termin);
             });
 
+            app.MapDelete("/api/termine/{id}", async (AppDbContext db, int id) =>
+            {
+                var termin = await db.Termine.FindAsync(id);
+                if (termin is null)
+                {
+                    return Results.NotFound();
+                }
+
+                db.Termine.Remove(termin);
+                await db.SaveChangesAsync();
+                return Results.Ok(termin);
+            });
+
             // Gemeinden
             app.MapGet("/api/gemeinden", async (AppDbContext db) =>
             {
@@ -61,6 +74,18 @@ namespace Server.Extensions
                 db.Gemeinden.Add(gemeinde);
                 await db.SaveChangesAsync();
                 return Results.Created($"/api/gemeinden/{gemeinde.Id}", gemeinde);
+            });
+            app.MapDelete("/api/gemeinden/{id}", async (AppDbContext db, int id) =>
+            {
+                var gemeinde = await db.Gemeinden.FindAsync(id);
+                if (gemeinde is null)
+                {
+                    return Results.NotFound();
+                }
+
+                db.Gemeinden.Remove(gemeinde);
+                await db.SaveChangesAsync();
+                return Results.Ok(gemeinde);
             });
 
             // Nachrichten
@@ -74,6 +99,18 @@ namespace Server.Extensions
                 db.Nachrichten.Add(nachricht);
                 await db.SaveChangesAsync();
                 return Results.Created($"/api/nachrichten/{nachricht.Id}", nachricht);
+            });
+            app.MapDelete("/api/nachrichten/{id}", async (AppDbContext db, int id) =>
+            {
+                var nachricht = await db.Nachrichten.FindAsync(id);
+                if (nachricht is null)
+                {
+                    return Results.NotFound();
+                }
+
+                db.Nachrichten.Remove(nachricht);
+                await db.SaveChangesAsync();
+                return Results.Ok(nachricht);
             });
         }
     }
