@@ -36,14 +36,16 @@ static async Task EchoLoop(string id, WebSocket socket, WebSocketService service
                     {
                         case "anmeldung":
                             
-                            _CaseAnmeldung(empfangen, dbs);
+                            Console.WriteLine("Anmeldung empfangen: " + empfangen.inhalt);
+                            List<Ministranten> ministranten = await dbs.GetAllMinistrantenAsync();
                             break;
 
                         case "anfrage":
+                            Console.WriteLine("Anfrage empfangen: " + empfangen.inhalt);
                             if (empfangen.inhalt == "gemeinden")
                             {
                                 Console.WriteLine("Sende Gemeinden");
-                                var gemeinden = new List<string> { "Laupheim", "Biberach", "Ulm" };
+                                var gemeinden = (await dbs.GetAllGemeindenAsync()).Select(g => g.Name).ToList();
                                 var antwortjson = JsonSerializer.Serialize(gemeinden);
                                 await service.SendMessageAsync(id, "gemeinden", antwortjson);
                             }
@@ -67,17 +69,6 @@ static async Task EchoLoop(string id, WebSocket socket, WebSocketService service
                     Console.WriteLine($"Fehler beim Verarbeiten der Nachricht: {e.Message}");
                 }
             }
-        }
-        private async static void _CaseAnmeldung(Nachrichten empfangen, DatabaseService dbs)
-        {
-            Console.WriteLine("Anmeldung empfangen: " + empfangen.inhalt);
-            List<Ministranten> ministranten = await dbs.GetAllMinistrantenAsync();
-        }
-
-        private static void _CaseAnfrage(Nachrichten empfangen)
-        {
-            Console.WriteLine("Anfrage empfangen: " + empfangen.inhalt);
-            // Additional logic for "anfrage" case
         }
 
         private static void _CaseBroadcast(Nachrichten empfangen)
