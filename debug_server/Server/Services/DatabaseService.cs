@@ -20,9 +20,9 @@ namespace Server.Services
         }
 
         // Einen Ministranten nach ID abrufen
-        public async Task<Ministranten?> GetMinistrantByIdAsync(int id)
+        public async Task<Ministranten?> GetMinistrantByGemeindeAsync(int gemeindeID)
         {
-            return await _db.Ministranten.FindAsync(id);
+            return await _db.Ministranten.FindAsync(gemeindeID);
         }
 
         // Einen neuen Ministranten hinzufügen

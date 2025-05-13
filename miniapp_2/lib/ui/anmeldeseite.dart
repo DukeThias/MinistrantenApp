@@ -1,8 +1,6 @@
 import 'dart:convert';
-import 'package:miniapp_2/main.dart';
 import 'package:flutter/material.dart';
 import 'package:miniapp_2/logik/WebSocketLogik.dart';
-import 'package:miniapp_2/ui/hauptseite.dart';
 import '../services/WebSocketVerbindung.dart';
 import 'package:provider/provider.dart';
 import 'package:uuid/uuid.dart';

@@ -99,6 +99,10 @@ static async Task EchoLoop(string id, WebSocket socket, WebSocketService service
                     await service.BroadcastMessageAsync("Info", empfangen.inhalt!);
                     break;
 
+                case "ping":
+                    await service.SendMessageAsync(id, "pong", "Ja der Server lebt");
+                    break;
+
                 default:
                     Console.WriteLine("Unbekannter Nachrichtentyp");
                     break;
