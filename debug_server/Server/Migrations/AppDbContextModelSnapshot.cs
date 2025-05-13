@@ -66,6 +66,9 @@ namespace Server.Migrations
                     b.Property<int>("Gewandgroese")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("GruppenID")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Name")
                         .HasColumnType("TEXT");
 

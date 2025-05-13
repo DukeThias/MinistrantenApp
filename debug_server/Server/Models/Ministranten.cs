@@ -17,6 +17,7 @@ namespace Server.Models
         public string? Email { get; set; }
         public int Gewandgroese { get; set; } // Korrekt als int
         public int GemeindeID { get; set; }
+        public int GruppenID { get; set; }
         public List<string> Rolle { get; set; } = new(); // Muss als JSON gespeichert werden
         public bool Vegan { get; set; } // Korrekt als bool
         public bool Vegetarisch { get; set; } // Korrekt als bool
