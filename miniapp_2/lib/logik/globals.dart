@@ -18,5 +18,6 @@ class Globals with ChangeNotifier {
     set("pong", "nüscht");
     set("anmeldename", "");
     set("angemeldet", false);
+    set("gemeinden", []);
   }
 }
