@@ -17,20 +17,6 @@ class _AnmeldeseiteState extends State<Anmeldeseite> {
   late WebSocketLogik wsLogik;
 
   @override
-  void initState() {
-    super.initState();
-    uniqheId = Uuid().v4();
-    Globals().variablenInitiieren();
-    wsLogik = Provider.of<WebSocketLogik>(context, listen: false);
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final ws = context.read<Websocketverbindung>();
-      if (!ws.verbunden) {
-        ws.verbinde("ws://localhost:5205/ws?id=$uniqheId");
-      }
-    });
-  }
-
-  @override
   void dispose() {
     super.dispose();
   }
@@ -38,7 +24,11 @@ class _AnmeldeseiteState extends State<Anmeldeseite> {
   @override
   Widget build(BuildContext context) {
     final ws = context.watch<Websocketverbindung>();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final globals = context.watch<Globals>();
 
+      globals.variablenInitiieren();
+    });
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -66,13 +56,3 @@ class _AnmeldeseiteState extends State<Anmeldeseite> {
     );
   }
 }
-// ElevatedButton(
-//               onPressed: () {
-//                 final anmeldedaten = {
-//                   "benutzername": "benutzername",
-//                   "passwort": "passwort",
-//                 };
-//                 ws.senden("anmeldung", jsonEncode(anmeldedaten));
-//               },
-//               child: Text("Anmelden"),
-//             ),

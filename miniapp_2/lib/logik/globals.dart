@@ -2,7 +2,11 @@ import 'package:flutter/material.dart';
 
 class Globals with ChangeNotifier {
   final Map<String, dynamic> _variabeln = {};
+  bool initiert = false;
 
+  Globals() {
+    variablenInitiieren();
+  }
   dynamic get(String key) => _variabeln[key];
 
   void set(String key, dynamic value) {
@@ -10,15 +14,22 @@ class Globals with ChangeNotifier {
     notifyListeners();
   }
 
+  void setSilent(String key, dynamic value) {
+    _variabeln[key] = value;
+  }
+
   void variablenInitiieren() {
-    set("rollen", []);
-    set("benutzername", "");
-    set("passwort", "");
-    set("namensliste", []);
-    set("miniplan", []);
-    set("pong", "nüscht");
-    set("anmeldename", "");
-    set("angemeldet", false);
-    set("gemeinden", []);
+    setSilent("rollen", ["nutzer"]);
+    setSilent("benutzername", "");
+    setSilent("passwort", "");
+    setSilent("namensliste", []);
+    setSilent("miniplan", []);
+    setSilent("pong", "nüscht");
+    setSilent("anmeldename", "");
+    setSilent("angemeldet", false);
+    setSilent("gemeinden", []);
+    setSilent("hauptseite_index", 0);
+    initiert = true;
+    notifyListeners();
   }
 }

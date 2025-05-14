@@ -7,6 +7,9 @@ using Server.Logik;
 
 var builder = WebApplication.CreateBuilder(args);
 
+//für handy
+builder.WebHost.UseUrls("http://*:5205"); // Port 5000 für alle IP-Adressen
+
 Dictionary<string, WebSocket> _connections = new Dictionary<string, WebSocket>();
 
 // Services registrieren
@@ -21,11 +24,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 
 var app = builder.Build(); // Muss nach der Service-Registrierung erfolgen
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.EnsureCreated(); // Erstellt die Datenbank und Tabellen, falls sie noch nicht existieren
-}
+
 app.MapApiEndpoints(); // Registriert alle API-Endpunkte (z. B. /api/personen usw.)
 
 // Swagger aktivieren im Development-Modus
@@ -51,8 +50,17 @@ app.Use(async (context, next) =>
             webSocketService.AddConnection(id, webSocket);
 
             Console.WriteLine($"Neue WebSocket-Verbindung: {id}");
-            webSocketService.SendMessageAsync(id, "handshake", "Wenn du das liest, funktioniert irgendwas nicht...").Wait();
-            await NachrichtenVerarbeiten.EchoLoop(id, webSocket, webSocketService, dataBaseService);
+
+            _nachLogin(webSocketService, id);
+            try
+            {
+                await NachrichtenVerarbeiten.EchoLoop(id, webSocket, webSocketService, dataBaseService);
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Fehler beim Verarbeiten der WebSocket-Nachricht: {ex.Message}");
+                webSocketService.RemoveConnection(id); // Entfernen der Verbindung im Fehlerfall
+            }
 
             webSocketService.RemoveConnection(id);
             Console.WriteLine($"WebSocket-Verbindung geschlossen: {id}");
@@ -71,3 +79,8 @@ app.Use(async (context, next) =>
 // API-Basisendpunkt
 
 app.Run();
+
+void _nachLogin(WebSocketService webSocketService, string id){
+    webSocketService.SendMessageAsync(id, "handshake", "Wenn du das liest, funktioniert irgendwas nicht...").Wait();
+
+}

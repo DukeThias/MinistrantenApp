@@ -6,23 +6,24 @@ import 'package:miniapp_2/ui/hauptseite.dart';
 import '../logik/globals.dart';
 import 'package:provider/provider.dart';
 import 'services/datenspeichern.dart';
+import 'package:uuid/uuid.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+bool angemeldetbleiben = false;
 void main() async {
-  Globals().set(
-    "angemeldetbleiben",
-    await readBoolFromFile("angemeldetbleiben"),
-  );
-  if (Globals().get("angemeldetbleiben") != null) {
-    if (Globals().get("angemeldetbleiben")) {
-      String? benutzername = await readStringFromFile("benutzername");
-      String? passwort = await readStringFromFile("passwort");
-      if (benutzername != null && passwort != null) {
-        Globals().set("benutzername", benutzername);
-        Globals().set("passwort", passwort);
-      }
+  WidgetsFlutterBinding.ensureInitialized();
+  Map<String, dynamic>? anmeldedaten = await readJsonFromFile("anmeldedaten");
+
+  angemeldetbleiben =
+      anmeldedaten?["angemeldetbleiben"].toLowerCase() == "true";
+  if (angemeldetbleiben) {
+    if (angemeldetbleiben) {
+      String? passwort = anmeldedaten?["passwort"];
+      String? benutzername = anmeldedaten?["benutzername"];
+      if (benutzername != null && passwort != null) {}
     }
   }
+
   runApp(
     MultiProvider(
       providers: [
@@ -36,15 +37,20 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
+  final String uniqheId = Uuid().v4();
+
   @override
   Widget build(BuildContext context) {
+    Future.microtask(() {
+      final ws = Provider.of<Websocketverbindung>(context, listen: false);
+      if (!ws.verbunden) {
+        ws.verbinde("ws://192.168.2.226:5205/ws?id=$uniqheId");
+      }
+    });
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       navigatorKey: navigatorKey,
-      home:
-          Globals().get("angemeldetbleiben") == true
-              ? Hauptseite()
-              : Anmeldeseite(),
+      home: angemeldetbleiben ? Hauptseite() : Anmeldeseite(),
     );
   }
 }
