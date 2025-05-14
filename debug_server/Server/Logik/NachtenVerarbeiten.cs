@@ -60,6 +60,21 @@ static async Task EchoLoop(string id, WebSocket socket, WebSocketService service
                             await service.SendMessageAsync(id, "pong", "Ja der Server lebt");
                             break;
 
+                        case "chatmessage":
+                            if (empfangen.inhalt == null)
+                            {
+                                Console.WriteLine("Chat-Nachricht ohne Inhalt empfangen.");
+                                continue;
+                            }
+                            else{
+                            Console.WriteLine("Chat-Nachricht empfangen: " + empfangen.inhalt);
+                            var chatMessage = JsonSerializer.Deserialize<ChatMessage>(empfangen.inhalt);
+                       
+                                await dbs.AddChatMessageAsync(chatMessage);
+                          
+                            }
+                            break;
+
                         default:
                             Console.WriteLine("Unbekannter Nachrichtentyp");
                             break;
