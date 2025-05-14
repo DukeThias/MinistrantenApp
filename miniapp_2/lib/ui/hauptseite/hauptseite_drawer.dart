@@ -26,88 +26,66 @@ class drawer extends StatelessWidget {
               ),
             ),
           ),
-          Column(
-            children: [
-              TextButton(
-                onPressed: () {},
-                child: Row(
-                  children: [
-                    Text("Einstellungen"),
-                    SizedBox(width: 16),
-                    Icon(Icons.settings),
-                  ],
-                ),
-              ),
-
-              TextButton(
-                onPressed: () {},
-                child: Row(
-                  children: [
-                    Text("Hilfe"),
-                    SizedBox(width: 16),
-                    Icon(Icons.help),
-                  ],
-                ),
-              ),
-
-              TextButton(
-                onPressed: () {},
-                child: Row(
-                  children: [
-                    Text("Informationen"),
-                    SizedBox(width: 16),
-                    Icon(Icons.info),
-                  ],
-                ),
-              ),
-
-              TextButton(
-                onPressed: () {
-                  //bestätigung
-                  showDialog(
-                    context: context,
-                    builder: (BuildContext context) {
-                      return AlertDialog(
-                        title: Text("Abmelden"),
-                        content: Text("Möchten Sie sich wirklich abmelden?"),
-                        actions: [
-                          TextButton(
-                            child: Text("Ja"),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                              globals.set("angemeldet", false);
-                              globals.set("anmeldename", "");
-                              globals.set("passwort", "");
-                              globals.set("angemeldetbleiben", "false");
-                              deleteFile("anmeldedaten");
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => Anmeldeseite(),
-                                ),
-                              );
-                            },
-                          ),
-                          TextButton(
-                            child: Text("Nein"),
-                            onPressed: () {
-                              Navigator.of(context).pop();
-                            },
-                          ),
-                        ],
-                      );
-                    },
+          ListTile(
+            leading: Icon(Icons.settings),
+            title: Text("Einstellungen"),
+            onTap: () {
+              // Logik für Einstellungen
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.help),
+            title: Text("Hilfe"),
+            onTap: () {
+              // Logik für Hilfe
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.info),
+            title: Text("Informationen"),
+            onTap: () {
+              // Logik für Informationen
+            },
+          ),
+          ListTile(
+            leading: Icon(Icons.logout),
+            title: Text("Abmelden"),
+            onTap: () {
+              showDialog(
+                context: context,
+                builder: (BuildContext context) {
+                  return AlertDialog(
+                    title: Text("Abmelden"),
+                    content: Text("Möchten Sie sich wirklich abmelden?"),
+                    actions: [
+                      TextButton(
+                        child: Text("Ja"),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                          globals.set("angemeldet", false);
+                          globals.set("anmeldename", "");
+                          globals.set("passwort", "");
+                          globals.set("angemeldetbleiben", "false");
+                          deleteFile("anmeldedaten");
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Anmeldeseite(),
+                            ),
+                          );
+                        },
+                      ),
+                      TextButton(
+                        child: Text("Nein"),
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                      ),
+                    ],
                   );
                 },
-                child: Row(
-                  children: [
-                    Text("Abmelden"),
-                    SizedBox(width: 16),
-                    Icon(Icons.logout),
-                  ],
-                ),
-              ),
-            ],
+              );
+            },
           ),
         ],
       ),

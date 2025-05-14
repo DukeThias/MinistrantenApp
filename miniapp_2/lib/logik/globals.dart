@@ -24,6 +24,7 @@ class Globals with ChangeNotifier {
     setSilent("passwort", "");
     setSilent("namensliste", []);
     setSilent("miniplan", []);
+    setSilent("termine", []);
     setSilent("pong", "nüscht");
     setSilent("anmeldename", "");
     setSilent("angemeldet", false);

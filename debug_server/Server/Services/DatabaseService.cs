@@ -43,6 +43,12 @@ namespace Server.Services
             return true;
         }
 
+        //Termine abrufen
+        public async Task<List<Termin>> GetAllTermineAsync()
+        {
+            return await _db.Termine.ToListAsync();
+        }
+
         // Gemeinden löschen
         public async Task DeleteGemeindenAsync(int id)
         {

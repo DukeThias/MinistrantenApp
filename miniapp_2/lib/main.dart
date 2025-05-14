@@ -7,11 +7,14 @@ import '../logik/globals.dart';
 import 'package:provider/provider.dart';
 import 'services/datenspeichern.dart';
 import 'package:uuid/uuid.dart';
+import 'package:intl/date_symbol_data_local.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 bool angemeldetbleiben = false;
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
+
+  await initializeDateFormatting("de_DE", null);
   Map<String, dynamic>? anmeldedaten = await readJsonFromFile("anmeldedaten");
 
   angemeldetbleiben =

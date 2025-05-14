@@ -1,3 +1,4 @@
+using System.Text.Json;
 namespace Server.Models
 {
     public class Termin
@@ -9,5 +10,12 @@ namespace Server.Models
         required public DateTime Start { get; set; }
         required public string Teilnehmer { get; set; }
         required public int GemeindeID { get; set; }
+
+        public static string TerminToJsonString(Termin termin){
+            return JsonSerializer.Serialize(termin);
+        }
+        public static string TermineToJsonString(List<Termin> termine){
+            return JsonSerializer.Serialize(termine);
+        }
     }
 }

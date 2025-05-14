@@ -32,10 +32,17 @@ class WebSocketLogik with ChangeNotifier {
         _handleRollen(nachricht);
         break;
 
+      case 'termine':
+        globals.set("termine", jsonDecode(nachricht.inhalt));
+        print("Termine: ${globals.get("termine")}");
+        break;
+
       case 'pong':
         _handlePong(nachricht);
 
       case 'handshake':
+        print("Handshake erfolgreich: ${nachricht.inhalt}");
+        break;
       default:
         print("Unbekannte Nachrichtsart: ${nachricht.art}");
     }
@@ -60,6 +67,7 @@ class WebSocketLogik with ChangeNotifier {
   void _handleAuthentifizierung(Nachricht nachricht) {
     if (nachricht.inhalt == "true") {
       globals.set("angemeldet", true);
+
       globals.set("benutzername", _controllerBenutzername.text);
       List teile = _controllerBenutzername.text.split(".");
 

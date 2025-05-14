@@ -51,7 +51,7 @@ app.Use(async (context, next) =>
 
             Console.WriteLine($"Neue WebSocket-Verbindung: {id}");
 
-            _nachLogin(webSocketService, id);
+            _nachLogin(webSocketService, dataBaseService, id);
             try
             {
                 await NachrichtenVerarbeiten.EchoLoop(id, webSocket, webSocketService, dataBaseService);
@@ -80,7 +80,11 @@ app.Use(async (context, next) =>
 
 app.Run();
 
-void _nachLogin(WebSocketService webSocketService, string id){
+void _nachLogin(WebSocketService webSocketService,DatabaseService databaseService, string id){
     webSocketService.SendMessageAsync(id, "handshake", "Wenn du das liest, funktioniert irgendwas nicht...").Wait();
+    // termine aus datenbank holen
+    var termine = databaseService.GetAllTermineAsync().Result; 
+    // termine als json senden
 
+    webSocketService.SendMessageAsync(id, "termine", Server.Models.Termin.TermineToJsonString(termine)).Wait();
 }

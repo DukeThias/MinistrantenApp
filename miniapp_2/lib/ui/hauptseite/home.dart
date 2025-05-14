@@ -1,5 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:miniapp_2/ui/hauptseite/hauptseite_drawer.dart';
+import '../../logik/globals.dart';
+import 'package:provider/provider.dart';
+import 'home_termin_karte.dart';
 
 class Home extends StatefulWidget {
   @override
@@ -9,11 +12,20 @@ class Home extends StatefulWidget {
 class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
+    final globals = context.watch<Globals>();
+    final termine = globals.get("termine");
+
     return Scaffold(
       drawer: drawer(),
 
       appBar: AppBar(title: Text("Home")),
-      body: Center(child: Text("Hier ist die Hauptseite")),
+      body: ListView.builder(
+        itemCount: termine.length,
+        itemBuilder: (context, index) {
+          final termin = termine[index];
+          return TerminKarte(termin: termin);
+        },
+      ),
     );
   }
 }
