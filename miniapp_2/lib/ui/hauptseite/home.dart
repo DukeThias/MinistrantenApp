@@ -13,11 +13,18 @@ class _HomeState extends State<Home> {
   @override
   Widget build(BuildContext context) {
     final globals = context.watch<Globals>();
-    final termine = globals.get("termine");
+    final termine =
+        List<Map<String, dynamic>>.from(
+            globals.get("termine"),
+          ).where((t) => t["Start"] != null).toList()
+          ..sort(
+            (a, b) => DateTime.parse(
+              a["Start"],
+            ).compareTo(DateTime.parse(b["Start"])),
+          );
 
     return Scaffold(
       drawer: drawer(),
-
       appBar: AppBar(title: Text("Home")),
       body: ListView.builder(
         itemCount: termine.length,
