@@ -9,19 +9,33 @@ import 'package:miniapp_2/ui/hauptseite/chats.dart';
 import 'package:miniapp_2/ui/hauptseite/boerse.dart';
 import 'package:miniapp_2/ui/hauptseite/omis.dart';
 import 'hauptseite/hauptseite_drawer.dart';
+import '../logik/verbindungsstatus.dart';
 
-class Hauptseite extends StatelessWidget {
+class Hauptseite extends StatefulWidget {
+  @override
+  State<Hauptseite> createState() => _HauptseiteState();
+}
+
+class _HauptseiteState extends State<Hauptseite> {
+  bool vorherVerbunden = true;
+
   @override
   Widget build(BuildContext context) {
     final ws = context.watch<Websocketverbindung>();
     final globals = context.watch<Globals>();
+    final status = context.watch<Verbindungsstatus>();
 
-    // Noch nicht initialisiert? Dann Ladeanzeige anzeigen
     if (!globals.initiert) {
-      return Scaffold(body: Center(child: CircularProgressIndicator()));
+      return const Scaffold(body: Center(child: CircularProgressIndicator()));
     }
 
     final int index = globals.get("hauptseite_index") ?? 0;
+    if (ws.verbunden && !vorherVerbunden) {
+      WidgetsBinding.instance.addPostFrameCallback((_) {
+        context.read<Verbindungsstatus>().triggerOnlineHinweis();
+      });
+    }
+    vorherVerbunden = ws.verbunden;
 
     return Scaffold(
       drawer: drawer(),
@@ -33,7 +47,37 @@ class Hauptseite extends StatelessWidget {
         },
         selectedIndex: index,
       ),
-      body: <Widget>[Home(), Miniplan(), Chats(), Boerse(), OmiSeite()][index],
+      body: Stack(
+        children: [
+          Positioned.fill(
+            child:
+                <Widget>[
+                  Home(),
+                  Miniplan(),
+                  Chats(),
+                  Boerse(),
+                  OmiSeite(),
+                ][index],
+          ),
+          if (!ws.verbunden || status.zeigeWiederVerbunden)
+            Positioned(
+              left: 0,
+              right: 0,
+              bottom: 0,
+              child: Container(
+                padding: const EdgeInsets.all(8),
+                color: ws.verbunden ? Colors.green : Colors.red,
+                child: Text(
+                  ws.verbunden
+                      ? "Wieder verbunden"
+                      : "Verbindung getrennt (Daten könnten abweichen)",
+                  style: const TextStyle(color: Colors.white),
+                  textAlign: TextAlign.center,
+                ),
+              ),
+            ),
+        ],
+      ),
     );
   }
 }

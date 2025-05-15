@@ -29,7 +29,7 @@ Future<File> _getJsonFile(String filename) async {
 }
 
 /// Speichert JSON-Daten in eine Datei
-Future<void> saveJsonToFile(String filename, Map<String, dynamic> data) async {
+Future<void> saveJsonToFile(String filename, dynamic data) async {
   final file = await _getJsonFile(filename);
   final jsonString = jsonEncode(data);
   print("Gespeicherte JSON String: $jsonString");
@@ -37,7 +37,7 @@ Future<void> saveJsonToFile(String filename, Map<String, dynamic> data) async {
 }
 
 /// Lädt JSON-Daten aus einer Datei
-Future<Map<String, dynamic>?> readJsonFromFile(String filename) async {
+Future<dynamic> readJsonFromFile(String filename) async {
   try {
     final file = await _getJsonFile(filename);
     if (await file.exists()) {
@@ -45,6 +45,7 @@ Future<Map<String, dynamic>?> readJsonFromFile(String filename) async {
       print("JSON String: $jsonString");
       return jsonDecode(jsonString);
     } else {
+      print('Datei $filename existiert nicht.');
       return null;
     }
   } catch (e) {

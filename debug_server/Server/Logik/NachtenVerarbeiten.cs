@@ -70,7 +70,7 @@ static async Task EchoLoop(string id, WebSocket socket, WebSocketService service
                             Console.WriteLine("Chat-Nachricht empfangen: " + empfangen.inhalt);
                             var chatMessage = JsonSerializer.Deserialize<ChatMessage>(empfangen.inhalt);
                        
-                                await dbs.AddChatMessageAsync(chatMessage);
+                               // await dbs.AddChatMessageAsync(chatMessage);
                           
                             }
                             break;

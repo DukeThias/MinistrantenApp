@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import '../services/datenspeichern.dart';
 
 class Globals with ChangeNotifier {
   final Map<String, dynamic> _variabeln = {};
@@ -18,13 +19,12 @@ class Globals with ChangeNotifier {
     _variabeln[key] = value;
   }
 
-  void variablenInitiieren() {
+  void variablenInitiieren() async {
     setSilent("rollen", ["nutzer"]);
     setSilent("benutzername", "");
     setSilent("passwort", "");
     setSilent("namensliste", []);
-    setSilent("miniplan", []);
-    setSilent("termine", []);
+    setSilent("termine", await readJsonFromFile("termine") ?? []);
     setSilent("pong", "nüscht");
     setSilent("anmeldename", "");
     setSilent("angemeldet", false);

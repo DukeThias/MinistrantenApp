@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:miniapp_2/logik/WebSocketLogik.dart';
+import 'package:miniapp_2/logik/verbindungsstatus.dart';
 import 'package:miniapp_2/services/WebSocketVerbindung.dart';
 import 'package:miniapp_2/ui/anmeldeseite.dart';
 import 'package:miniapp_2/ui/hauptseite.dart';
@@ -30,6 +31,7 @@ void main() async {
   runApp(
     MultiProvider(
       providers: [
+        ChangeNotifierProvider(create: (_) => Verbindungsstatus()),
         ChangeNotifierProvider(create: (_) => WebSocketLogik()),
         ChangeNotifierProvider(create: (_) => Websocketverbindung()),
         ChangeNotifierProvider(create: (_) => Globals()),
