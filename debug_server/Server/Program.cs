@@ -21,11 +21,7 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 
 var app = builder.Build(); // Muss nach der Service-Registrierung erfolgen
-using (var scope = app.Services.CreateScope())
-{
-    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    db.Database.EnsureCreated(); // Erstellt die Datenbank und Tabellen, falls sie noch nicht existieren
-}
+
 app.MapApiEndpoints(); // Registriert alle API-Endpunkte (z. B. /api/personen usw.)
 
 // Swagger aktivieren im Development-Modus
