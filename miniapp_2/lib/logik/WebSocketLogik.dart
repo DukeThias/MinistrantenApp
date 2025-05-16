@@ -5,6 +5,7 @@ import 'package:miniapp_2/logik/globals.dart';
 import 'package:flutter/material.dart';
 import 'package:miniapp_2/main.dart';
 import '../ui/hauptseite.dart';
+import '../services/datenspeichern.dart';
 
 class WebSocketLogik with ChangeNotifier {
   final TextEditingController _controllerBenutzername = TextEditingController();
@@ -12,10 +13,6 @@ class WebSocketLogik with ChangeNotifier {
 
   void verarbeiteNachricht(Nachricht nachricht) {
     switch (nachricht.art) {
-      case 'miniplan':
-        _handleMiniplan(nachricht);
-        break;
-
       case 'authentifizierung':
         _handleAuthentifizierung(nachricht);
         break;
@@ -32,17 +29,25 @@ class WebSocketLogik with ChangeNotifier {
         _handleRollen(nachricht);
         break;
 
+      case 'termine':
+        _handleTermine(nachricht);
+        break;
+
       case 'pong':
         _handlePong(nachricht);
 
       case 'handshake':
+        print("Handshake erfolgreich: ${nachricht.inhalt}");
+        break;
       default:
         print("Unbekannte Nachrichtsart: ${nachricht.art}");
     }
   }
 
-  void _handleMiniplan(Nachricht nachricht) {
-    globals.set("miniplan", nachricht.inhalt);
+  void _handleTermine(Nachricht nachricht) {
+    globals.set("termine", jsonDecode(nachricht.inhalt));
+    saveJsonToFile("termine", jsonDecode(nachricht.inhalt));
+    print("Termine: ${globals.get("termine")}");
   }
 
   void _handleNamensliste(Nachricht nachricht) {
@@ -60,6 +65,7 @@ class WebSocketLogik with ChangeNotifier {
   void _handleAuthentifizierung(Nachricht nachricht) {
     if (nachricht.inhalt == "true") {
       globals.set("angemeldet", true);
+
       globals.set("benutzername", _controllerBenutzername.text);
       List teile = _controllerBenutzername.text.split(".");
 

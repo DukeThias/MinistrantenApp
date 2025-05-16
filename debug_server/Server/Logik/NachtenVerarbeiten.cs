@@ -38,6 +38,7 @@ static async Task EchoLoop(string id, WebSocket socket, WebSocketService service
                             
                             Console.WriteLine("Anmeldung empfangen: " + empfangen.inhalt);
                             List<Ministranten> ministranten = await dbs.GetAllMinistrantenAsync();
+                            await service.SendMessageAsync(id, "authentifizierung", "true");
                             break;
 
                         case "anfrage":
@@ -57,6 +58,21 @@ static async Task EchoLoop(string id, WebSocket socket, WebSocketService service
 
                         case "ping":
                             await service.SendMessageAsync(id, "pong", "Ja der Server lebt");
+                            break;
+
+                        case "chatmessage":
+                            if (empfangen.inhalt == null)
+                            {
+                                Console.WriteLine("Chat-Nachricht ohne Inhalt empfangen.");
+                                continue;
+                            }
+                            else{
+                            Console.WriteLine("Chat-Nachricht empfangen: " + empfangen.inhalt);
+                            var chatMessage = JsonSerializer.Deserialize<ChatMessage>(empfangen.inhalt);
+                       
+                               // await dbs.AddChatMessageAsync(chatMessage);
+                          
+                            }
                             break;
 
                         default:

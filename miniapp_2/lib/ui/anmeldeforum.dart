@@ -3,7 +3,7 @@ import 'package:miniapp_2/logik/globals.dart';
 import 'package:provider/provider.dart';
 import '../services/WebSocketVerbindung.dart';
 import 'dart:convert';
-import 'package:miniapp_2/services/datenspeichern.dart';
+import '../services/datenspeichern.dart';
 
 class AnmeldeFormular extends StatefulWidget {
   @override
@@ -13,8 +13,9 @@ class AnmeldeFormular extends StatefulWidget {
 class _AnmeldeFormularState extends State<AnmeldeFormular> {
   final TextEditingController _controllerBenutzername = TextEditingController();
   final TextEditingController _controllerPasswort = TextEditingController();
-  bool angemeldetbleiben = false;
+  bool angemeldetbleiben = true;
   bool _isObscured = true;
+
   @override
   void dispose() {
     _controllerBenutzername.dispose();
@@ -166,6 +167,7 @@ class _AnmeldeFormularState extends State<AnmeldeFormular> {
             final anmeldedaten = {
               "benutzername": _controllerBenutzername.text,
               "passwort": _controllerPasswort.text,
+              "angemeldetbleiben": angemeldetbleiben.toString(),
             };
             if (_controllerBenutzername.text.isEmpty ||
                 _controllerPasswort.text.isEmpty) {
@@ -175,8 +177,26 @@ class _AnmeldeFormularState extends State<AnmeldeFormular> {
                 ),
               );
             } else {
+              if (angemeldetbleiben) {
+                saveJsonToFile("anmeldedaten", anmeldedaten);
+                globals.set("benutzername", _controllerBenutzername.text);
+                globals.set("passwort", _controllerPasswort.text);
+                globals.set("angemeldetbleiben", true);
+              } else {
+                deleteFile("anmeldedaten");
+                globals.set("angemeldetbleiben", false);
+              }
               ws.senden("anmeldung", jsonEncode(anmeldedaten));
             }
+            showDialog(
+              context: context,
+              builder: (context) {
+                return AlertDialog(
+                  title: Text("Bitte warten..."),
+                  content: CircularProgressIndicator(),
+                );
+              },
+            );
           },
           child: Text("Anmelden"),
         ),
@@ -188,34 +208,42 @@ class _AnmeldeFormularState extends State<AnmeldeFormular> {
             showDialog(
               context: context,
               builder: (context) {
-                final gemeinden = globals.get("gemeinden");
-                return AlertDialog(
-                  title: Text("Gemeinden"),
-                  content: SingleChildScrollView(
-                    child: Column(
-                      children:
-                          gemeinden == null || gemeinden.isEmpty
-                              ? [Text("Bitte warten...")]
-                              : gemeinden.map<Widget>((gemeinde) {
-                                return ListTile(
-                                  title: Text(gemeinde),
-                                  onTap: () {
-                                    Navigator.of(context).pop();
+                return Consumer<Globals>(
+                  builder: (context, globals, child) {
+                    final gemeinden = globals.get("gemeinden");
 
-                                    _showNameInputDialog(context, gemeinde, ws);
-                                  },
-                                );
-                              }).toList(),
-                    ),
-                  ),
-                  actions: [
-                    TextButton(
-                      child: Text("Schließen"),
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                    ),
-                  ],
+                    return AlertDialog(
+                      title: Text("Gemeinden"),
+                      content: SingleChildScrollView(
+                        child: Column(
+                          children:
+                              gemeinden == null || gemeinden.isEmpty
+                                  ? [Text("Bitte warten...")]
+                                  : gemeinden.map<Widget>((gemeinde) {
+                                    return ListTile(
+                                      title: Text(gemeinde),
+                                      onTap: () {
+                                        Navigator.of(context).pop();
+                                        _showNameInputDialog(
+                                          context,
+                                          gemeinde,
+                                          ws,
+                                        );
+                                      },
+                                    );
+                                  }).toList(),
+                        ),
+                      ),
+                      actions: [
+                        TextButton(
+                          child: Text("Schließen"),
+                          onPressed: () {
+                            Navigator.of(context).pop();
+                          },
+                        ),
+                      ],
+                    );
+                  },
                 );
               },
             );

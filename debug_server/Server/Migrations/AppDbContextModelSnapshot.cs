@@ -17,6 +17,34 @@ namespace Server.Migrations
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.4");
 
+            modelBuilder.Entity("Server.Models.ChatMessage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("MessageText")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("ReceiverId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("SenderId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("SentAt")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("ReceiverId");
+
+                    b.HasIndex("SenderId");
+
+                    b.ToTable("ChatMessages");
+                });
+
             modelBuilder.Entity("Server.Models.Gemeinden", b =>
                 {
                     b.Property<int>("Id")
@@ -153,6 +181,25 @@ namespace Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Termine");
+                });
+
+            modelBuilder.Entity("Server.Models.ChatMessage", b =>
+                {
+                    b.HasOne("Server.Models.Ministranten", "Receiver")
+                        .WithMany()
+                        .HasForeignKey("ReceiverId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("Server.Models.Ministranten", "Sender")
+                        .WithMany()
+                        .HasForeignKey("SenderId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Receiver");
+
+                    b.Navigation("Sender");
                 });
 #pragma warning restore 612, 618
         }
