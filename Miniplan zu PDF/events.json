@@ -1,0 +1,42 @@
+[
+    {
+      "id": 1,
+      "name": "Festgottesdienst",
+      "beschreibung": "Einweihung der neuen Kirche",
+      "ort": "St. Martin",
+      "start": "2025-06-15T10:00:00",
+      "teilnehmer": ["Anna Muster", "Berta Beispiel", "Clara Sonnig"],
+      "gemeindeID": 1,
+      "isGottesdienst": true
+    },
+    {
+      "id": 2,
+      "name": "Familienmesse",
+      "beschreibung": "Familiengottesdienst mit Kinderchor",
+      "ort": "St. Michael",
+      "start": "2025-07-05T09:30:00",
+      "teilnehmer": ["David Stark", "Ella Freundlich"],
+      "gemeindeID": 2,
+      "isGottesdienst": true
+    },
+    {
+      "id": 3,
+      "name": "Gruppenstunde",
+      "beschreibung": "Erste gemeinsame Gruppenstunde",
+      "ort": "Pfarrheim LPH",
+      "start": "2025-06-01T16:00:00",
+      "teilnehmer": ["alle"],
+      "gemeindeID": 1,
+      "isGottesdienst": false
+    },
+    {
+      "id": 4,
+      "name": "Abendgottesdienst",
+      "beschreibung": "Jugendgottesdienst mit Band",
+      "ort": "Jugendkirche",
+      "start": "2025-08-10T18:30:00",
+      "teilnehmer": ["Jan Mutig", "Mia Kraft"],
+      "gemeindeID": 3,
+      "isGottesdienst": true
+    }
+  ]
