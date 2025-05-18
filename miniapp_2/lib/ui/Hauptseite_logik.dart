@@ -6,9 +6,8 @@ List<NavigationDestination> destinations(List? rollen) {
     NavigationDestination(icon: Icon(Icons.calendar_month), label: "Miniplan"),
     NavigationDestination(
       icon: Icon(Icons.swap_horizontal_circle_rounded),
-      label: "Börse",
+      label: "Tauschen",
     ),
-    NavigationDestination(icon: Icon(Icons.chat), label: "Chats"),
   ];
 
   if (rollen != null && rollen!.contains("omi")) {

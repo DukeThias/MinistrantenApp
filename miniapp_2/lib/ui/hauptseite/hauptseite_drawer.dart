@@ -3,6 +3,7 @@ import 'package:miniapp_2/services/datenspeichern.dart';
 import 'package:miniapp_2/ui/anmeldeseite.dart';
 import 'package:provider/provider.dart';
 import '../../logik/globals.dart';
+import 'einzelne seiten/einstellungen_hauptseite.dart';
 
 class drawer extends StatelessWidget {
   @override
@@ -30,7 +31,12 @@ class drawer extends StatelessWidget {
             leading: Icon(Icons.settings),
             title: Text("Einstellungen"),
             onTap: () {
-              // Logik für Einstellungen
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => EinstellungenHauptseite(),
+                ),
+              );
             },
           ),
           ListTile(

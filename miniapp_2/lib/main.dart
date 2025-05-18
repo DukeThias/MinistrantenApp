@@ -9,6 +9,7 @@ import 'package:provider/provider.dart';
 import 'services/datenspeichern.dart';
 import 'package:uuid/uuid.dart';
 import 'package:intl/date_symbol_data_local.dart';
+import '../logik/theme_logik.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 bool angemeldetbleiben = false;
@@ -56,6 +57,7 @@ void main() async {
         ChangeNotifierProvider(create: (_) => WebSocketLogik()),
         ChangeNotifierProvider(create: (_) => Websocketverbindung()),
         ChangeNotifierProvider(create: (_) => Globals()),
+        ChangeNotifierProvider(create: (_) => ThemeProvider()),
       ],
       child: MyApp(),
     ),
@@ -67,16 +69,19 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final themeProvider = Provider.of<ThemeProvider>(context);
+
     Future.microtask(() {
       final ws = Provider.of<Websocketverbindung>(context, listen: false);
       if (!ws.verbunden) {
         ws.verbinde("ws://192.168.2.226:5205/ws?id=$uniqheId");
       }
     });
+
     return MaterialApp(
       theme: lightTheme,
       darkTheme: darkTheme,
-      themeMode: ThemeMode.system,
+      themeMode: themeProvider.themeMode,
       debugShowCheckedModeBanner: false,
       navigatorKey: navigatorKey,
       home: angemeldetbleiben ? Hauptseite() : Anmeldeseite(),

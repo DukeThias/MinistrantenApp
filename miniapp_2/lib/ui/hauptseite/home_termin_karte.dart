@@ -96,7 +96,7 @@ class TerminKarte extends StatelessWidget {
                 alignment: Alignment.centerLeft,
                 child: Text(
                   termin["Beschreibung"],
-                  style: TextStyle(color: Colors.black87),
+                  // style: TextStyle(color: Colors.black87),
                 ),
               ),
             ),

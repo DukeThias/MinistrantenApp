@@ -5,7 +5,6 @@ import '../logik/globals.dart';
 import 'Hauptseite_logik.dart';
 import 'package:miniapp_2/ui/hauptseite/home.dart';
 import 'package:miniapp_2/ui/hauptseite/miniplan.dart';
-import 'package:miniapp_2/ui/hauptseite/chats.dart';
 import 'package:miniapp_2/ui/hauptseite/boerse.dart';
 import 'package:miniapp_2/ui/hauptseite/omis.dart';
 import 'hauptseite/hauptseite_drawer.dart';
@@ -50,14 +49,7 @@ class _HauptseiteState extends State<Hauptseite> {
       body: Stack(
         children: [
           Positioned.fill(
-            child:
-                <Widget>[
-                  Home(),
-                  Miniplan(),
-                  Chats(),
-                  Boerse(),
-                  OmiSeite(),
-                ][index],
+            child: <Widget>[Home(), Miniplan(), Boerse(), OmiSeite()][index],
           ),
           if (!ws.verbunden || status.zeigeWiederVerbunden)
             Positioned(
