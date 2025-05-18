@@ -17,5 +17,15 @@ namespace Server.Models
         public static string TermineToJsonString(List<Termin> termine){
             return JsonSerializer.Serialize(termine);
         }
+
+        public void UpdateFrom(Termin updated)
+        {
+            Name = updated.Name;
+            Beschreibung = updated.Beschreibung;
+            Ort = updated.Ort;
+            Start = updated.Start;
+            Teilnehmer = updated.Teilnehmer;
+            GemeindeID = updated.GemeindeID;
+        }
     }
 }

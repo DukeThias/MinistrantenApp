@@ -10,12 +10,14 @@ var builder = WebApplication.CreateBuilder(args);
 //für handy
 builder.WebHost.UseUrls("http://*:5205"); // Port 5000 für alle IP-Adressen
 
-Dictionary<string, WebSocket> _connections = new Dictionary<string, WebSocket>();
+//Dictionary<string, WebSocket> _connections = new Dictionary<string, WebSocket>();
 
 // Services registrieren
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddScoped<DatabaseService>();
 builder.Services.AddSingleton<WebSocketService>();
+builder.Services.AddScoped<TermineService>();
+builder.Services.AddScoped<MinistrantenService>();
+builder.Services.AddScoped<GemeindenService>();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=datenbank.db")
@@ -44,17 +46,20 @@ app.Use(async (context, next) =>
         {
             var webSocket = await context.WebSockets.AcceptWebSocketAsync();
             var id = Guid.NewGuid().ToString();
-            var dataBaseService = context.RequestServices.GetRequiredService<DatabaseService>(); // DataBaseService abrufen
 
+            var termineService = context.RequestServices.GetRequiredService<TermineService>();
+            var ministrantenService = context.RequestServices.GetRequiredService<MinistrantenService>();
+            var gemeindenService = context.RequestServices.GetRequiredService<GemeindenService>();
             var webSocketService = context.RequestServices.GetRequiredService<WebSocketService>();
-            webSocketService.AddConnection(id, webSocket);
 
+            webSocketService.AddConnection(id, webSocket);
             Console.WriteLine($"Neue WebSocket-Verbindung: {id}");
 
-            _nachLogin(webSocketService, dataBaseService, id);
+            _nachLogin(webSocketService, termineService, ministrantenService, gemeindenService, id);
+
             try
             {
-                await NachrichtenVerarbeiten.EchoLoop(id, webSocket, webSocketService, dataBaseService);
+                await NachrichtenVerarbeiten.EchoLoop(id, webSocket, webSocketService, null);
             }
             catch (Exception ex)
             {
@@ -80,8 +85,21 @@ app.Use(async (context, next) =>
 
 app.Run();
 
-void _nachLogin(WebSocketService webSocketService,DatabaseService databaseService, string id){
+void _nachLogin(
+    WebSocketService webSocketService,
+    TermineService termineService,
+    MinistrantenService ministrantenService,
+    GemeindenService gemeindenService,
+    string id)
+{
     webSocketService.SendMessageAsync(id, "handshake", "Wenn du das liest, funktioniert irgendwas nicht...").Wait();
-    var termine = databaseService.GetAllTermineAsync().Result; 
+
+    var termine = termineService.GetAllTermineAsync().Result;
     webSocketService.SendMessageAsync(id, "termine", Server.Models.Termin.TermineToJsonString(termine)).Wait();
+
+    var ministranten = ministrantenService.GetAllMinistrantenAsync().Result;
+    webSocketService.SendMessageAsync(id, "ministranten", System.Text.Json.JsonSerializer.Serialize(ministranten)).Wait();
+
+    var gemeinden = gemeindenService.GetAllGemeindenAsync().Result;
+    webSocketService.SendMessageAsync(id, "gemeinden", System.Text.Json.JsonSerializer.Serialize(gemeinden)).Wait();
 }
