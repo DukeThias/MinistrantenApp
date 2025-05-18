@@ -15,15 +15,21 @@ namespace Server.Extensions
                 return Results.Created($"/api/gemeinden/{gemeinde.Id}", gemeinde);
             });
 
-            app.MapGet("/api/gemeinden/{id}", async (AppDbContext db, int id) =>
+            app.MapGet("/api/gemeinden", async (
+                AppDbContext db,
+                int? id,
+                string? kuerzel
+            ) =>
             {
-                var gemeinde = await db.Gemeinden.FindAsync(id);
-                return gemeinde is not null ? Results.Ok(gemeinde) : Results.NotFound();
-            });
+                var query = db.Gemeinden.AsQueryable();
 
-            app.MapGet("/api/gemeinden", async (AppDbContext db) =>
-            {
-                var gemeinden = await db.Gemeinden.ToListAsync();
+                if (id.HasValue)
+                    query = query.Where(g => g.Id == id.Value);
+
+                if (!string.IsNullOrEmpty(kuerzel))
+                    query = query.Where(g => g.Kuerzel == kuerzel);
+
+                var gemeinden = await query.ToListAsync();
                 return Results.Ok(gemeinden);
             });
 

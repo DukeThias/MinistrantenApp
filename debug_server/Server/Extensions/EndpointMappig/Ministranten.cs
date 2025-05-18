@@ -7,15 +7,14 @@ namespace Server.Extensions
     {
         public static void MapMinistrantenEndpoints(this WebApplication app)
         {
-            app.MapPost("/api/ministranten", async (DatabaseService dbService, Ministranten ministrant) =>
+            app.MapPost("/api/ministranten", async (MinistrantenService ministrantenService, Ministranten ministrant) =>
             {
-                await dbService.AddMinistrantAsync(ministrant);
+                await ministrantenService.AddMinistrantAsync(ministrant);
                 return Results.Created($"/api/ministranten/{ministrant.Id}", ministrant);
             });
 
-
             app.MapGet("/api/ministranten", async (
-                DatabaseService dbService,
+                MinistrantenService ministrantenService,
                 string? username,
                 string? rolle,
                 bool? vegan,
@@ -24,33 +23,13 @@ namespace Server.Extensions
                 int? ministrantenId
             ) =>
             {
-                var ministranten = await dbService.GetAllMinistrantenAsync();
-
-                if (!string.IsNullOrEmpty(username))
-                    ministranten = ministranten.Where(m => m.Username == username).ToList();
-
-                if (!string.IsNullOrEmpty(rolle))
-                    ministranten = ministranten.Where(m => m.Rolle.Contains(rolle)).ToList();
-
-                if (vegan.HasValue)
-                    ministranten = ministranten.Where(m => m.Vegan == vegan.Value).ToList();
-
-                if (vegetarisch.HasValue)
-                    ministranten = ministranten.Where(m => m.Vegetarisch == vegetarisch.Value).ToList();
-
-                if (gemeindeId.HasValue)
-                    ministranten = ministranten.Where(m => m.GemeindeID == gemeindeId.Value).ToList();
-
-                if (ministrantenId.HasValue)
-                    ministranten = ministranten.Where(m => m.Id == ministrantenId.Value).ToList();
-
+                var ministranten = await ministrantenService.SearchMinistrantenAsync(username, rolle, vegan, vegetarisch, gemeindeId, ministrantenId);
                 return Results.Ok(ministranten);
             });
 
-
-            app.MapDelete("/api/ministranten/{id}", async (DatabaseService dbService, int id) =>
+            app.MapDelete("/api/ministranten/{id}", async (MinistrantenService ministrantenService, int id) =>
             {
-                await dbService.DeleteMinistrantAsync(id);
+                await ministrantenService.DeleteMinistrantAsync(id);
                 return Results.Ok();
             });
         }

@@ -63,7 +63,8 @@ namespace Server.Migrations
                         .Annotation("Sqlite:Autoincrement", true),
                     art = table.Column<string>(type: "TEXT", nullable: true),
                     inhalt = table.Column<string>(type: "TEXT", nullable: true),
-                    timestamp = table.Column<DateTime>(type: "TEXT", nullable: false)
+                    timestamp = table.Column<DateTime>(type: "TEXT", nullable: false),
+                    gemeindeId = table.Column<int>(type: "INTEGER", nullable: false) // <--- HINZUGEFÜGT
                 },
                 constraints: table =>
                 {
