@@ -2,7 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../services/WebSocketVerbindung.dart';
 import '../logik/globals.dart';
-import 'Hauptseite_logik.dart';
+import '../logik/Hauptseite_logik.dart';
 import 'package:miniapp_2/ui/hauptseite/home.dart';
 import 'package:miniapp_2/ui/hauptseite/miniplan.dart';
 import 'package:miniapp_2/ui/hauptseite/boerse.dart';

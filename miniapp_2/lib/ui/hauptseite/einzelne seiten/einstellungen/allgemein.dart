@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../../../logik/theme_logik.dart';
+import 'package:provider/provider.dart';
 
 class AllgemeineEinstellungenSeite extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final themeProvider = ThemeProvider();
+    final themeProvider = context.watch<ThemeProvider>();
     return Scaffold(
       appBar: AppBar(title: Text('Allgemeine Einstellungen')),
       body: ListView(

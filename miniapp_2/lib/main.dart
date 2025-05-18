@@ -16,10 +16,10 @@ bool angemeldetbleiben = false;
 
 final ThemeData lightTheme = ThemeData(
   brightness: Brightness.light,
-  primarySwatch: Colors.blue,
+  primarySwatch: Colors.red,
   scaffoldBackgroundColor: Colors.white,
   appBarTheme: AppBarTheme(
-    backgroundColor: Colors.blue,
+    backgroundColor: Colors.red,
     foregroundColor: Colors.white,
   ),
 );
@@ -69,7 +69,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = Provider.of<ThemeProvider>(context);
+    final themeProvider = context.watch<ThemeProvider>();
 
     Future.microtask(() {
       final ws = Provider.of<Websocketverbindung>(context, listen: false);

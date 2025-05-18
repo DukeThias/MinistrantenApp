@@ -82,6 +82,6 @@ app.Run();
 
 void _nachLogin(WebSocketService webSocketService,DatabaseService databaseService, string id){
     webSocketService.SendMessageAsync(id, "handshake", "Wenn du das liest, funktioniert irgendwas nicht...").Wait();
-    var termine = databaseService.GetAllTermineAsync().Result; 
+    var termine = databaseService.GetAllTermineAsync().Result;
     webSocketService.SendMessageAsync(id, "termine", Server.Models.Termin.TermineToJsonString(termine)).Wait();
 }
