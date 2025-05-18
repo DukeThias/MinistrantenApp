@@ -12,6 +12,27 @@ import 'package:intl/date_symbol_data_local.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 bool angemeldetbleiben = false;
+
+final ThemeData lightTheme = ThemeData(
+  brightness: Brightness.light,
+  primarySwatch: Colors.blue,
+  scaffoldBackgroundColor: Colors.white,
+  appBarTheme: AppBarTheme(
+    backgroundColor: Colors.blue,
+    foregroundColor: Colors.white,
+  ),
+);
+
+final ThemeData darkTheme = ThemeData(
+  brightness: Brightness.dark,
+  primarySwatch: Colors.blue,
+  scaffoldBackgroundColor: Colors.black,
+  appBarTheme: AppBarTheme(
+    backgroundColor: Colors.black,
+    foregroundColor: Colors.white,
+  ),
+);
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
@@ -53,6 +74,9 @@ class MyApp extends StatelessWidget {
       }
     });
     return MaterialApp(
+      theme: lightTheme,
+      darkTheme: darkTheme,
+      themeMode: ThemeMode.system,
       debugShowCheckedModeBanner: false,
       navigatorKey: navigatorKey,
       home: angemeldetbleiben ? Hauptseite() : Anmeldeseite(),

@@ -1,4 +1,0 @@
-#include "versioninfo.rc"
-#include "icons.rc"
-
-#include <wx/msw/wx.rc>
