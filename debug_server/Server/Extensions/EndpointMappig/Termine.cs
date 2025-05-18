@@ -15,15 +15,26 @@ namespace Server.Extensions
                 return Results.Created($"/api/termine/{termin.Id}", termin);
             });
 
-            app.MapGet("/api/termine/{id}", async (AppDbContext db, int id) =>
-            {
-                var termin = await db.Termine.FindAsync(id);
-                return termin is not null ? Results.Ok(termin) : Results.NotFound();
-            });
 
-            app.MapGet("/api/termine", async (AppDbContext db) =>
+            app.MapGet("/api/termine", async (
+                AppDbContext db,
+                string? teilnehmer,
+                int? gemeindeId,
+                int? terminId
+            ) =>
             {
-                var termine = await db.Termine.ToListAsync();
+                var query = db.Termine.AsQueryable();
+
+                if (!string.IsNullOrEmpty(teilnehmer))
+                    query = query.Where(t => t.Teilnehmer.Contains(teilnehmer));
+
+                if (gemeindeId.HasValue)
+                    query = query.Where(t => t.GemeindeID == gemeindeId.Value);
+
+                if (terminId.HasValue)
+                    query = query.Where(t => t.Id == terminId.Value);
+
+                var termine = await query.ToListAsync();
                 return Results.Ok(termine);
             });
 

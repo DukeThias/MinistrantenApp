@@ -3,16 +3,17 @@ using System.Text;
 using System.Text.Json;
 using Server.Services;
 using Server.Models;
-using Server.Data;
-
-
 
 namespace Server.Logik
 {
     public static class NachrichtenVerarbeiten
     {
-        public
-static async Task EchoLoop(string id, WebSocket socket, WebSocketService service, DatabaseService dbs)
+        public static async Task EchoLoop(
+            string id,
+            WebSocket socket,
+            WebSocketService service,
+            MinistrantenService ministrantenService,
+            GemeindenService gemeindenService)
         {
             var buffer = new byte[1024 * 4];
             while (socket.State == WebSocketState.Open)
@@ -31,13 +32,11 @@ static async Task EchoLoop(string id, WebSocket socket, WebSocketService service
                         continue;
                     }
 
-
                     switch (empfangen.art?.ToLower())
                     {
                         case "anmeldung":
-                            
                             Console.WriteLine("Anmeldung empfangen: " + empfangen.inhalt);
-                            List<Ministranten> ministranten = await dbs.GetAllMinistrantenAsync();
+                            List<Ministranten> ministranten = await ministrantenService.GetAllMinistrantenAsync();
                             await service.SendMessageAsync(id, "authentifizierung", "true");
                             break;
 
@@ -46,7 +45,7 @@ static async Task EchoLoop(string id, WebSocket socket, WebSocketService service
                             if (empfangen.inhalt == "gemeinden")
                             {
                                 Console.WriteLine("Sende Gemeinden");
-                                var gemeinden = (await dbs.GetAllGemeindenAsync()).Select(g => g.Name).ToList();
+                                var gemeinden = (await gemeindenService.GetAllGemeindenAsync()).Select(g => g.Name).ToList();
                                 var antwortjson = JsonSerializer.Serialize(gemeinden);
                                 await service.SendMessageAsync(id, "gemeinden", antwortjson);
                             }
@@ -66,12 +65,11 @@ static async Task EchoLoop(string id, WebSocket socket, WebSocketService service
                                 Console.WriteLine("Chat-Nachricht ohne Inhalt empfangen.");
                                 continue;
                             }
-                            else{
-                            Console.WriteLine("Chat-Nachricht empfangen: " + empfangen.inhalt);
-                            var chatMessage = JsonSerializer.Deserialize<ChatMessage>(empfangen.inhalt);
-                       
-                               // await dbs.AddChatMessageAsync(chatMessage);
-                          
+                            else
+                            {
+                                Console.WriteLine("Chat-Nachricht empfangen: " + empfangen.inhalt);
+                                var chatMessage = JsonSerializer.Deserialize<ChatMessage>(empfangen.inhalt);
+                                // Hier ggf. chatMessage speichern, z.B. mit eigenem ChatService
                             }
                             break;
 
@@ -86,23 +84,5 @@ static async Task EchoLoop(string id, WebSocket socket, WebSocketService service
                 }
             }
         }
-
-        private static void _CaseBroadcast(Nachrichten empfangen)
-        {
-            Console.WriteLine("Broadcast empfangen: " + empfangen.inhalt);
-            // Additional logic for "broadcast" case
-        }
-
-        private static void _CasePing(Nachrichten empfangen)
-        {
-            Console.WriteLine("Ping empfangen: " + empfangen.inhalt);
-            // Additional logic for "ping" case
-        }
-
-        private static void _CaseDefault(Nachrichten empfangen)
-        {
-            Console.WriteLine("Unbekannter Nachrichtentyp empfangen: " + empfangen.inhalt);
-            // Additional logic for default case
-        }
-        }
+    }
 }

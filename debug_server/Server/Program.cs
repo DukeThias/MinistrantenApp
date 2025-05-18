@@ -59,7 +59,7 @@ app.Use(async (context, next) =>
 
             try
             {
-                await NachrichtenVerarbeiten.EchoLoop(id, webSocket, webSocketService, null);
+                await NachrichtenVerarbeiten.EchoLoop(id, webSocket, webSocketService, ministrantenService, gemeindenService);
             }
             catch (Exception ex)
             {
