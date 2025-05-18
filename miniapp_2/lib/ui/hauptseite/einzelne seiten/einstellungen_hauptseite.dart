@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:miniapp_2/ui/hauptseite/einzelne%20seiten/einstellungen/profil.dart';
 import 'einstellungen/allgemein.dart';
 
 class EinstellungenHauptseite extends StatelessWidget {
@@ -20,13 +21,20 @@ class EinstellungenHauptseite extends StatelessWidget {
               );
             },
           ),
+
           ListTile(
             leading: Icon(Icons.person),
             title: Text('Profil'),
             onTap: () {
-              // Navigate to Profil settings
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => ProfilEinstellungenSeite(),
+                ),
+              );
             },
           ),
+
           ListTile(
             leading: Icon(Icons.notifications),
             title: Text('Benachrichtigungen'),
@@ -34,6 +42,7 @@ class EinstellungenHauptseite extends StatelessWidget {
               // Navigate to Benachrichtigungen settings
             },
           ),
+
           ListTile(
             leading: Icon(Icons.lock),
             title: Text('Datenschutz'),
@@ -41,6 +50,7 @@ class EinstellungenHauptseite extends StatelessWidget {
               // Navigate to Datenschutz settings
             },
           ),
+
           ListTile(
             leading: Icon(Icons.info),
             title: Text('Über die App'),

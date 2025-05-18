@@ -4,10 +4,12 @@ import 'package:miniapp_2/ui/anmeldeseite.dart';
 import 'package:provider/provider.dart';
 import '../../logik/globals.dart';
 import 'einzelne seiten/einstellungen_hauptseite.dart';
+import '../../logik/theme_logik.dart';
 
 class drawer extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
+    final themeProvider = context.watch<ThemeProvider>();
     final globals = context.watch<Globals>();
     return Drawer(
       child: ListView(
@@ -18,12 +20,22 @@ class drawer extends StatelessWidget {
               child: Text(globals.get("anmeldename")),
             ),
             decoration: BoxDecoration(
-              color: Colors.blue,
+              color:
+                  themeProvider.themeMode == ThemeMode.dark
+                      ? Colors.black
+                      : Colors.white,
               image: DecorationImage(
-                fit: BoxFit.fill,
-                image: NetworkImage(
-                  'https://www.laupheim.de/fileadmin/Dateien/Bilder/Freizeit_und_Kultur/Tourismus/StPeterPaul_IV.jpg',
-                ),
+                fit: BoxFit.fitHeight,
+                image:
+                    themeProvider.themeMode == ThemeMode.dark
+                        ? NetworkImage(
+                          scale: 0.1,
+                          "https://www.se-federsee.de/wp-content/uploads/2018/03/Logo_Mini_negativ_RGB.jpg",
+                        )
+                        : NetworkImage(
+                          scale: 0.1,
+                          "https://fachstelle-minis.de/fileadmin/user_upload/Logos/Mini.jpg",
+                        ),
               ),
             ),
           ),
