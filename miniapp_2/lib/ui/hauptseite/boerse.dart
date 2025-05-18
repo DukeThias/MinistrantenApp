@@ -12,8 +12,8 @@ class _BoerseState extends State<Boerse> {
     return Scaffold(
       drawer: drawer(),
 
-      appBar: AppBar(title: Text("Börse")),
-      body: Center(child: Text("Hier ist die Börse")),
+      appBar: AppBar(title: Text("Tauschen")),
+      body: Center(child: Text("Hier ist die Seite zum Tauschen")),
     );
   }
 }

@@ -27,7 +27,7 @@ class drawer extends StatelessWidget {
               image: DecorationImage(
                 fit: BoxFit.fitHeight,
                 image:
-                    themeProvider.themeMode == ThemeMode.dark
+                    themeProvider.isDarkMode()
                         ? NetworkImage(
                           scale: 0.1,
                           "https://www.se-federsee.de/wp-content/uploads/2018/03/Logo_Mini_negativ_RGB.jpg",

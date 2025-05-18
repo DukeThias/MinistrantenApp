@@ -69,7 +69,7 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = context.watch<ThemeProvider>();
+    final themeProvider = context.read<ThemeProvider>();
 
     Future.microtask(() {
       final ws = Provider.of<Websocketverbindung>(context, listen: false);

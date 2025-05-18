@@ -1,7 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Server.Data; // Für AppDbContext
 using Server.Services; // Für die Models
-using System.Net.WebSockets;
 using Server.Extensions;
 using Server.Logik;
 
