@@ -7,7 +7,7 @@ namespace Server.Models
         public int Id { get; set; }
         public string? Vorname { get; set; }
         public string? Name { get; set; }
-        public string? Username { get; set; }
+        public string? Username { get; set; }//filter
         public string? Passwort { get; set; }
         public string? Geschlecht { get; set; }
         public DateTime Geburtsdatum { get; set; }
@@ -15,12 +15,12 @@ namespace Server.Models
         public string? Telefonnummer { get; set; }
         public string? Email { get; set; }
         public int Gewandgroese { get; set; }
-        public int GemeindeID { get; set; }
+        public int GemeindeID { get; set; }//filter
         public int GruppenID { get; set; }
-        public List<string> Rolle { get; set; } = new();
+        public List<string> Rolle { get; set; } = new();//filtern
         public int Einweihungsjahr { get; set; }
-        public bool Vegan { get; set; }
-        public bool Vegetarisch { get; set; }
+        public bool Vegan { get; set; }//filter
+        public bool Vegetarisch { get; set; }//filter
         public string? Allergien { get; set; }
         public string? Bemerkungen { get; set; }
 

@@ -4,7 +4,7 @@ namespace Server.Models
     {
         required public string Name { get; set; }
         required public string Kuerzel { get; set; }
-        required public int Id { get; set; }
+        required public int Id { get; set; }//filter
 
 
         public void UpdateFrom(Gemeinden updated)

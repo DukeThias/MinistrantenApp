@@ -8,8 +8,8 @@ namespace Server.Models
         required public string Beschreibung { get; set; }
         required public string Ort { get; set; }
         required public DateTime Start { get; set; }
-        required public string Teilnehmer { get; set; }
-        required public int GemeindeID { get; set; }
+        required public string Teilnehmer { get; set; }//filter ein bolean alle oder nicht alle 
+        required public int GemeindeID { get; set; }//filter
 
         public static string TerminToJsonString(Termin termin){
             return JsonSerializer.Serialize(termin);

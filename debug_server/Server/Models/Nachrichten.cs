@@ -6,6 +6,6 @@ namespace Server.Models
 
         public string? art { get; set; }
         public string? inhalt { get; set; }
-        public DateTime timestamp { get; set; }
+        public DateTime timestamp { get; set; } //gemeinde
     }
 }
