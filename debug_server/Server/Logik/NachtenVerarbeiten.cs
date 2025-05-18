@@ -68,8 +68,7 @@ namespace Server.Logik
                             else
                             {
                                 Console.WriteLine("Chat-Nachricht empfangen: " + empfangen.inhalt);
-                                var chatMessage = JsonSerializer.Deserialize<ChatMessage>(empfangen.inhalt);
-                                // Hier ggf. chatMessage speichern, z.B. mit eigenem ChatService
+                                // Hier war vorher die Verarbeitung von ChatMessage, jetzt entfernt
                             }
                             break;
 

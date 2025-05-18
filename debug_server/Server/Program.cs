@@ -18,6 +18,7 @@ builder.Services.AddSingleton<WebSocketService>();
 builder.Services.AddScoped<TermineService>();
 builder.Services.AddScoped<MinistrantenService>();
 builder.Services.AddScoped<GemeindenService>();
+builder.Services.AddScoped<NachrichtenService>();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=datenbank.db")
@@ -50,12 +51,13 @@ app.Use(async (context, next) =>
             var termineService = context.RequestServices.GetRequiredService<TermineService>();
             var ministrantenService = context.RequestServices.GetRequiredService<MinistrantenService>();
             var gemeindenService = context.RequestServices.GetRequiredService<GemeindenService>();
+            var nachrichtenService = context.RequestServices.GetRequiredService<NachrichtenService>();
             var webSocketService = context.RequestServices.GetRequiredService<WebSocketService>();
 
             webSocketService.AddConnection(id, webSocket);
             Console.WriteLine($"Neue WebSocket-Verbindung: {id}");
 
-            _nachLogin(webSocketService, termineService, ministrantenService, gemeindenService, id);
+            _nachLogin(webSocketService, termineService, ministrantenService, gemeindenService, nachrichtenService, id);
 
             try
             {
@@ -90,6 +92,7 @@ void _nachLogin(
     TermineService termineService,
     MinistrantenService ministrantenService,
     GemeindenService gemeindenService,
+    NachrichtenService nachrichtenService,
     string id)
 {
     webSocketService.SendMessageAsync(id, "handshake", "Wenn du das liest, funktioniert irgendwas nicht...").Wait();
@@ -102,4 +105,7 @@ void _nachLogin(
 
     var gemeinden = gemeindenService.GetAllGemeindenAsync().Result;
     webSocketService.SendMessageAsync(id, "gemeinden", System.Text.Json.JsonSerializer.Serialize(gemeinden)).Wait();
+
+    var nachrichten = nachrichtenService.GetAllNachrichtenAsync().Result;
+    webSocketService.SendMessageAsync(id, "nachrichten", System.Text.Json.JsonSerializer.Serialize(nachrichten)).Wait();
 }
