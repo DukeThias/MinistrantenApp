@@ -12,6 +12,7 @@ class WebSocketLogik with ChangeNotifier {
   Globals get globals => navigatorKey.currentContext!.read<Globals>();
 
   void verarbeiteNachricht(Nachricht nachricht) {
+    print("Nachricht empfangen: ${nachricht.inhalt}");
     switch (nachricht.art) {
       case 'authentifizierung':
         _handleAuthentifizierung(nachricht);
@@ -19,10 +20,17 @@ class WebSocketLogik with ChangeNotifier {
 
       case 'gemeinden':
         globals.set("gemeinden", jsonDecode(nachricht.inhalt));
+        print("Gemeinden: ${globals.get("gemeinden")}");
         break;
 
-      case 'namensliste':
-        _handleNamensliste(nachricht);
+      case 'ministranten':
+        globals.set("ministranten", jsonDecode(nachricht.inhalt));
+        print("Ministranten: ${globals.get("ministranten")}");
+        break;
+
+      case 'nachrichten':
+        globals.set("nachrichten", jsonDecode(nachricht.inhalt));
+        print("Nachrichten: ${globals.get("nachrichten")}");
         break;
 
       case 'rollen':
@@ -63,9 +71,10 @@ class WebSocketLogik with ChangeNotifier {
   }
 
   void _handleAuthentifizierung(Nachricht nachricht) {
-    if (nachricht.inhalt == "true") {
-      globals.set("angemeldet", true);
-
+    //nachricht.inhalt enthält json
+    dynamic status = jsonDecode(nachricht.inhalt);
+    if (status["success"]) {
+      print("Authentifizierung erfolgreich: ${nachricht.inhalt}");
       globals.set("benutzername", _controllerBenutzername.text);
       List teile = _controllerBenutzername.text.split(".");
 
@@ -74,7 +83,17 @@ class WebSocketLogik with ChangeNotifier {
         MaterialPageRoute(builder: (context) => Hauptseite()),
       );
     } else {
-      print("Authentifizierung fehlgeschlagen: ${nachricht.inhalt}");
+      //remove loading dialog
+      Navigator.pop(navigatorKey.currentContext!);
+      print("Authentifizierung fehlgeschlagen: ${status["message"]}");
+      ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(
+        SnackBar(
+          backgroundColor: Colors.red,
+          content: Text(
+            "Authentifizierung fehlgeschlagen: ${status["message"]}",
+          ),
+        ),
+      );
     }
   }
 }

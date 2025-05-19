@@ -165,8 +165,8 @@ class _AnmeldeFormularState extends State<AnmeldeFormular> {
         ElevatedButton(
           onPressed: () {
             final anmeldedaten = {
-              "benutzername": _controllerBenutzername.text,
-              "passwort": _controllerPasswort.text,
+              "Username": _controllerBenutzername.text,
+              "Passwort": _controllerPasswort.text,
               "angemeldetbleiben": angemeldetbleiben.toString(),
             };
             if (_controllerBenutzername.text.isEmpty ||

@@ -23,11 +23,11 @@ class Globals with ChangeNotifier {
     setSilent("rollen", ["nutzer"]);
     setSilent("benutzername", "");
     setSilent("passwort", "");
-    setSilent("namensliste", []);
+    setSilent("ministranten", []);
     setSilent("termine", await readJsonFromFile("termine") ?? []);
     setSilent("pong", "nüscht");
+    setSilent("nachrichten", []);
     setSilent("anmeldename", "");
-    setSilent("angemeldet", false);
     setSilent("gemeinden", []);
     setSilent("hauptseite_index", 0);
     initiert = true;

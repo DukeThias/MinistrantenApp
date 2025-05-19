@@ -55,12 +55,12 @@ app.Use(async (context, next) =>
 
             webSocketService.AddConnection(id, webSocket);
             Console.WriteLine($"Neue WebSocket-Verbindung: {id}");
-
-            _nachLogin(webSocketService, termineService, ministrantenService, gemeindenService, nachrichtenService, id);
+                                webSocketService.SendMessageAsync(id, "handshake", "Wenn du das liest, funktioniert irgendwas nicht...").Wait();
 
             try
             {
-                await NachrichtenVerarbeiten.EchoLoop(id, webSocket, webSocketService, ministrantenService, gemeindenService);
+
+                await NachrichtenVerarbeiten.EchoLoop(id, webSocket, webSocketService, ministrantenService, gemeindenService, termineService, nachrichtenService);
             }
             catch (Exception ex)
             {
@@ -85,26 +85,3 @@ app.Use(async (context, next) =>
 // API-Basisendpunkt
 
 app.Run();
-
-void _nachLogin(
-    WebSocketService webSocketService,
-    TermineService termineService,
-    MinistrantenService ministrantenService,
-    GemeindenService gemeindenService,
-    NachrichtenService nachrichtenService,
-    string id)
-{
-    webSocketService.SendMessageAsync(id, "handshake", "Wenn du das liest, funktioniert irgendwas nicht...").Wait();
-
-    var termine = termineService.GetAllTermineAsync().Result;
-    webSocketService.SendMessageAsync(id, "termine", Server.Models.Termin.TermineToJsonString(termine)).Wait();
-
-    var ministranten = ministrantenService.GetAllMinistrantenAsync().Result;
-    webSocketService.SendMessageAsync(id, "ministranten", System.Text.Json.JsonSerializer.Serialize(ministranten)).Wait();
-
-    var gemeinden = gemeindenService.GetAllGemeindenAsync().Result;
-    webSocketService.SendMessageAsync(id, "gemeinden", System.Text.Json.JsonSerializer.Serialize(gemeinden)).Wait();
-
-    var nachrichten = nachrichtenService.GetAllNachrichtenAsync().Result;
-    webSocketService.SendMessageAsync(id, "nachrichten", System.Text.Json.JsonSerializer.Serialize(nachrichten)).Wait();
-}

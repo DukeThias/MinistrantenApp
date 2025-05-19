@@ -6,6 +6,7 @@ using Server.Models;
 
 namespace Server.Logik
 {
+
     public static class NachrichtenVerarbeiten
     {
         public static async Task EchoLoop(
@@ -13,7 +14,9 @@ namespace Server.Logik
             WebSocket socket,
             WebSocketService service,
             MinistrantenService ministrantenService,
-            GemeindenService gemeindenService)
+            GemeindenService gemeindenService,
+            TermineService termineService,
+            NachrichtenService nachrichtenService)
         {
             var buffer = new byte[1024 * 4];
             while (socket.State == WebSocketState.Open)
@@ -36,8 +39,44 @@ namespace Server.Logik
                     {
                         case "anmeldung":
                             Console.WriteLine("Anmeldung empfangen: " + empfangen.inhalt);
+
+                            var anmeldedaten = JsonSerializer.Deserialize<Ministranten>(empfangen.inhalt!);
+
                             List<Ministranten> ministranten = await ministrantenService.GetAllMinistrantenAsync();
-                            await service.SendMessageAsync(id, "authentifizierung", "true");
+
+                            var ministrant = ministranten.FirstOrDefault(m => m.Username == anmeldedaten!.Username);
+
+                            if (ministrant == null)
+                            {
+                                Console.WriteLine("Ministrant nicht gefunden.");
+                                await service.SendMessageAsync(id, "authentifizierung", JsonSerializer.Serialize(new { success = false, message = "Ministrant nicht gefunden." }));
+                                continue;
+                            }
+                            else if (ministrant.Passwort == anmeldedaten!.Passwort)
+                            {
+                                await service.SendMessageAsync(id, "authentifizierung", JsonSerializer.Serialize(new { success = true, message = "Anmeldung erfolgreich." }));
+                                //Nach Authentifizierung:
+
+                                var termine = termineService.GetAllTermineAsync().Result;
+                                service.SendMessageAsync(id, "termine", Server.Models.Termin.TermineToJsonString(termine)).Wait();
+
+                                ministranten = ministrantenService.GetAllMinistrantenAsync().Result;
+                                service.SendMessageAsync(id, "ministranten", System.Text.Json.JsonSerializer.Serialize(ministranten)).Wait();
+
+                                var gemeinden = gemeindenService.GetAllGemeindenAsync().Result;
+                                service.SendMessageAsync(id, "gemeinden", System.Text.Json.JsonSerializer.Serialize(gemeinden)).Wait();
+
+                                var nachrichten = nachrichtenService.GetAllNachrichtenAsync().Result;
+                                service.SendMessageAsync(id, "nachrichten", System.Text.Json.JsonSerializer.Serialize(nachrichten)).Wait();
+                            
+                            }
+
+                            else
+                            {
+                                Console.WriteLine("Passwort falsch.");
+                                await service.SendMessageAsync(id, "authentifizierung", JsonSerializer.Serialize(new { success = false, message = "Passwort falsch." }));
+                                continue;
+                            }
                             break;
 
                         case "anfrage":
@@ -85,3 +124,4 @@ namespace Server.Logik
         }
     }
 }
+

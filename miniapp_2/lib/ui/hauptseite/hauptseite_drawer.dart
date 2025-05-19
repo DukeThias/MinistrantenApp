@@ -40,6 +40,12 @@ class drawer extends StatelessWidget {
             ),
           ),
           ListTile(
+            title: Text("Angemeldet als: ${globals.get("anmeldename")}"),
+            onTap: () {
+              Navigator.pushReplacementNamed(context, "/");
+            },
+          ),
+          ListTile(
             leading: Icon(Icons.settings),
             title: Text("Einstellungen"),
             onTap: () {
