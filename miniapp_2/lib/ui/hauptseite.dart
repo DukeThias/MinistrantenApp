@@ -40,8 +40,15 @@ class _HauptseiteState extends State<Hauptseite> {
       drawer: drawer(),
       bottomNavigationBar: NavigationBar(
         indicatorColor: Colors.red,
-        destinations: destinations(globals.get("rollen")),
+        destinations: destinations(globals.get("rollen"), ws),
         onDestinationSelected: (int index) {
+          if (index == 2 && !ws.verbunden) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              SnackBar(content: Text("Tauschen ist nur online verfügbar.")),
+            );
+            return;
+          }
+
           globals.set("hauptseite_index", index);
         },
         selectedIndex: index,

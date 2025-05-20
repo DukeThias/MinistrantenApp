@@ -11,14 +11,17 @@ class drawer extends StatelessWidget {
   Widget build(BuildContext context) {
     final themeProvider = context.watch<ThemeProvider>();
     final globals = context.watch<Globals>();
+    final user = globals.get("self");
+    final name =
+        (user["Vorname"] ?? "Du bist") +
+        " " +
+        (user["Name"] ??
+            "offline, aber angemeldet als: ${globals.get("benutzername")}");
     return Drawer(
       child: ListView(
         children: [
           DrawerHeader(
-            child: Align(
-              alignment: Alignment.topLeft,
-              child: Text(globals.get("anmeldename")),
-            ),
+            child: SizedBox(),
             decoration: BoxDecoration(
               color:
                   themeProvider.themeMode == ThemeMode.dark
@@ -40,10 +43,15 @@ class drawer extends StatelessWidget {
             ),
           ),
           ListTile(
-            title: Text("Angemeldet als: ${globals.get("anmeldename")}"),
-            onTap: () {
-              Navigator.pushReplacementNamed(context, "/");
-            },
+            title: Text(name),
+            subtitle: Text(
+              "Gemeinde: " +
+                  (((globals.get("gemeinden") ?? []).firstWhere(
+                        (g) => g["Id"] == user["GemeindeID"],
+                        orElse: () => {"Name": "Konnte nicht abgerufen werden"},
+                      ))["Name"] ??
+                      "Konnte nicht abgerufen werden"),
+            ),
           ),
           ListTile(
             leading: Icon(Icons.settings),

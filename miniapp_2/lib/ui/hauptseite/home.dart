@@ -30,6 +30,7 @@ class _HomeState extends State<Home> {
         itemCount: termine.length,
         itemBuilder: (context, index) {
           final termin = termine[index];
+          print("Termin: $termin");
           return TerminKarte(termin: termin);
         },
       ),

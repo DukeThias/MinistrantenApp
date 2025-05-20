@@ -20,16 +20,15 @@ class Globals with ChangeNotifier {
   }
 
   void variablenInitiieren() async {
-    setSilent("rollen", ["nutzer"]);
-    setSilent("benutzername", "");
-    setSilent("passwort", "");
     setSilent("ministranten", []);
     setSilent("termine", await readJsonFromFile("termine") ?? []);
     setSilent("pong", "nüscht");
     setSilent("nachrichten", []);
-    setSilent("anmeldename", "");
     setSilent("gemeinden", []);
     setSilent("hauptseite_index", 0);
+    setSilent("self", {});
+    setSilent("benutzername", "");
+    setSilent("passwort", "");
     initiert = true;
     notifyListeners();
   }

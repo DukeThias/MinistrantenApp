@@ -54,7 +54,7 @@ namespace Server.Logik
                             }
                             else if (ministrant.Passwort == anmeldedaten!.Passwort)
                             {
-                                await service.SendMessageAsync(id, "authentifizierung", JsonSerializer.Serialize(new { success = true, message = "Anmeldung erfolgreich." }));
+                                await service.SendMessageAsync(id, "authentifizierung", JsonSerializer.Serialize(new { success = true, message = "Anmeldung erfolgreich.", person = ministrant }));
                                 //Nach Authentifizierung:
                                 if (ministrant.Rolle.Contains("Ministrant"))
                                 {

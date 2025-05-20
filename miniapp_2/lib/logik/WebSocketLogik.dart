@@ -9,7 +9,6 @@ import '../services/datenspeichern.dart';
 import '../ui/anmeldeseite.dart';
 
 class WebSocketLogik with ChangeNotifier {
-  final TextEditingController _controllerBenutzername = TextEditingController();
   Globals get globals => navigatorKey.currentContext!.read<Globals>();
 
   void verarbeiteNachricht(Nachricht nachricht) {
@@ -72,10 +71,12 @@ class WebSocketLogik with ChangeNotifier {
     dynamic status = jsonDecode(nachricht.inhalt);
     if (status["success"]) {
       print("Authentifizierung erfolgreich: ${nachricht.inhalt}");
-      globals.set("benutzername", _controllerBenutzername.text);
-      List teile = _controllerBenutzername.text.split(".");
+      var person = status["person"];
+      globals.set("angemeldet", true);
+      final self = globals.get("self") ?? {};
+      self.addAll(person);
+      globals.set("self", self);
 
-      globals.set("anmeldename", teile.sublist(1).join(" "));
       navigatorKey.currentState?.pushReplacement(
         MaterialPageRoute(builder: (context) => Hauptseite()),
       );

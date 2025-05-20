@@ -66,7 +66,7 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    final themeProvider = context.read<ThemeProvider>();
+    final themeProvider = context.watch<ThemeProvider>();
 
     Future.microtask(() {
       final ws = Provider.of<Websocketverbindung>(context, listen: false);
