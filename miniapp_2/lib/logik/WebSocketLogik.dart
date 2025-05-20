@@ -6,13 +6,14 @@ import 'package:flutter/material.dart';
 import 'package:miniapp_2/main.dart';
 import '../ui/hauptseite.dart';
 import '../services/datenspeichern.dart';
+import '../ui/anmeldeseite.dart';
 
 class WebSocketLogik with ChangeNotifier {
   final TextEditingController _controllerBenutzername = TextEditingController();
   Globals get globals => navigatorKey.currentContext!.read<Globals>();
 
   void verarbeiteNachricht(Nachricht nachricht) {
-    print("Nachricht empfangen: ${nachricht.inhalt}");
+    print("Nachricht empfangen: ${nachricht.toJson()}");
     switch (nachricht.art) {
       case 'authentifizierung':
         _handleAuthentifizierung(nachricht);
@@ -58,10 +59,6 @@ class WebSocketLogik with ChangeNotifier {
     print("Termine: ${globals.get("termine")}");
   }
 
-  void _handleNamensliste(Nachricht nachricht) {
-    globals.set("namensliste", nachricht.inhalt);
-  }
-
   void _handleRollen(Nachricht nachricht) {
     globals.set("rollen", nachricht.inhalt);
   }
@@ -83,8 +80,20 @@ class WebSocketLogik with ChangeNotifier {
         MaterialPageRoute(builder: (context) => Hauptseite()),
       );
     } else {
-      //remove loading dialog
-      Navigator.pop(navigatorKey.currentContext!);
+      Future.delayed(Duration.zero, () {
+        final context = navigatorKey.currentContext!;
+        final currentRoute = ModalRoute.of(context)?.settings.name;
+
+        print("Aktuelle Route (verzögert): $currentRoute");
+
+        if (currentRoute != "/anmeldeseite") {
+          navigatorKey.currentState?.pushAndRemoveUntil(
+            MaterialPageRoute(builder: (_) => Anmeldeseite()),
+            (Route<dynamic> route) => false,
+          );
+        }
+      });
+      deleteFile("anmeldedaten");
       print("Authentifizierung fehlgeschlagen: ${status["message"]}");
       ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(
         SnackBar(

@@ -48,27 +48,44 @@ namespace Server.Logik
 
                             if (ministrant == null)
                             {
-                                Console.WriteLine("Ministrant nicht gefunden.");
-                                await service.SendMessageAsync(id, "authentifizierung", JsonSerializer.Serialize(new { success = false, message = "Ministrant nicht gefunden." }));
+                                Console.WriteLine("Account existiert nicht.");
+                                await service.SendMessageAsync(id, "authentifizierung", JsonSerializer.Serialize(new { success = false, message = "Account existiert nicht." }));
                                 continue;
                             }
                             else if (ministrant.Passwort == anmeldedaten!.Passwort)
                             {
                                 await service.SendMessageAsync(id, "authentifizierung", JsonSerializer.Serialize(new { success = true, message = "Anmeldung erfolgreich." }));
                                 //Nach Authentifizierung:
+                                if (ministrant.Rolle.Contains("Ministrant"))
+                                {
+                                    var termine = termineService.GetAllTermineAsync().Result;
+                                    service.SendMessageAsync(id, "termine", Termin.TermineToJsonString(termine.Where(m => m.GemeindeID == ministrant.GemeindeID).ToList())).Wait();
 
-                                var termine = termineService.GetAllTermineAsync().Result;
-                                service.SendMessageAsync(id, "termine", Server.Models.Termin.TermineToJsonString(termine)).Wait();
+                                    ministranten = await ministrantenService.GetAllMinistrantenAsync();
 
-                                ministranten = ministrantenService.GetAllMinistrantenAsync().Result;
-                                service.SendMessageAsync(id, "ministranten", System.Text.Json.JsonSerializer.Serialize(ministranten)).Wait();
+                                    var ministrantenGefiltert = ministranten
+                                        .Where(m => m.GemeindeID == ministrant.GemeindeID)
+                                        .Select(m => new
+                                        {
+                                            m.Id,
+                                            m.Vorname,
+                                            m.Name,
+                                            m.Username,
+                                            m.GemeindeID,
+                                            m.GruppenID,
+                                            m.Rolle
+                                        })
 
-                                var gemeinden = gemeindenService.GetAllGemeindenAsync().Result;
-                                service.SendMessageAsync(id, "gemeinden", System.Text.Json.JsonSerializer.Serialize(gemeinden)).Wait();
+                                        .ToList();
 
-                                var nachrichten = nachrichtenService.GetAllNachrichtenAsync().Result;
-                                service.SendMessageAsync(id, "nachrichten", System.Text.Json.JsonSerializer.Serialize(nachrichten)).Wait();
-                            
+                                    await service.SendMessageAsync(id, "ministranten", System.Text.Json.JsonSerializer.Serialize(ministrantenGefiltert));
+
+                                    var gemeinden = gemeindenService.GetAllGemeindenAsync().Result;
+                                    service.SendMessageAsync(id, "gemeinden", JsonSerializer.Serialize(gemeinden)).Wait();
+
+                                    var nachrichten = nachrichtenService.GetAllNachrichtenAsync().Result;
+                                    service.SendMessageAsync(id, "nachrichten", JsonSerializer.Serialize(nachrichten.Where(m => m.gemeindeId == ministrant.GemeindeID).ToList())).Wait();
+                                }
                             }
 
                             else

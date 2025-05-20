@@ -19,7 +19,6 @@ Future<void> deleteFile(String filename) async {
 
 Future<String> _getLocalPath() async {
   final directory = await getApplicationDocumentsDirectory();
-  print("Local path: ${directory.path}");
   return directory.path;
 }
 

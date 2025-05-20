@@ -55,7 +55,7 @@ app.Use(async (context, next) =>
 
             webSocketService.AddConnection(id, webSocket);
             Console.WriteLine($"Neue WebSocket-Verbindung: {id}");
-                                webSocketService.SendMessageAsync(id, "handshake", "Wenn du das liest, funktioniert irgendwas nicht...").Wait();
+                webSocketService.SendMessageAsync(id, "handshake", "Wenn du das liest, funktioniert irgendwas nicht...").Wait();
 
             try
             {

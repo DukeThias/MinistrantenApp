@@ -61,7 +61,6 @@ class _PasswortAendernSeiteState extends State<PasswortAendernSeite> {
                         if (globals.get("passwort") != value) {
                           return 'Aktuelles Passwort ist falsch';
                         }
-
                         return null;
                       },
                     ),

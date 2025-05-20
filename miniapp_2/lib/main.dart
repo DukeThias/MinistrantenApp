@@ -13,6 +13,7 @@ import '../logik/theme_logik.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 bool angemeldetbleiben = false;
+Map<String, dynamic>? gespeicherteAnmeldedaten;
 
 final ThemeData lightTheme = ThemeData(
   brightness: Brightness.light,
@@ -38,17 +39,8 @@ void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
   await initializeDateFormatting("de_DE", null);
-  Map<String, dynamic>? anmeldedaten = await readJsonFromFile("anmeldedaten");
-
-  angemeldetbleiben =
-      anmeldedaten?["angemeldetbleiben"].toLowerCase() == "true";
-  if (angemeldetbleiben) {
-    if (angemeldetbleiben) {
-      String? passwort = anmeldedaten?["passwort"];
-      String? benutzername = anmeldedaten?["benutzername"];
-      if (benutzername != null && passwort != null) {}
-    }
-  }
+  gespeicherteAnmeldedaten = await readJsonFromFile("anmeldedaten");
+  angemeldetbleiben = gespeicherteAnmeldedaten?["angemeldetbleiben"] == "true";
 
   runApp(
     MultiProvider(
@@ -64,7 +56,12 @@ void main() async {
   );
 }
 
-class MyApp extends StatelessWidget {
+class MyApp extends StatefulWidget {
+  @override
+  State<MyApp> createState() => _MyAppState();
+}
+
+class _MyAppState extends State<MyApp> {
   final String uniqheId = Uuid().v4();
 
   @override
@@ -73,6 +70,17 @@ class MyApp extends StatelessWidget {
 
     Future.microtask(() {
       final ws = Provider.of<Websocketverbindung>(context, listen: false);
+
+      print("gespeicherteAnmeldedaten: $gespeicherteAnmeldedaten");
+      if (angemeldetbleiben && gespeicherteAnmeldedaten != null) {
+        final globals = Provider.of<Globals>(context, listen: false);
+        globals.set("angemeldetbleiben", angemeldetbleiben);
+        globals.set(
+          "benutzername",
+          gespeicherteAnmeldedaten?["Username"] ?? "",
+        );
+        globals.set("passwort", gespeicherteAnmeldedaten?["Passwort"] ?? "");
+      }
       if (!ws.verbunden) {
         ws.verbinde("ws://192.168.2.226:5205/ws?id=$uniqheId");
       }

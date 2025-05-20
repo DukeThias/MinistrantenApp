@@ -169,6 +169,7 @@ class _AnmeldeFormularState extends State<AnmeldeFormular> {
               "Passwort": _controllerPasswort.text,
               "angemeldetbleiben": angemeldetbleiben.toString(),
             };
+
             if (_controllerBenutzername.text.isEmpty ||
                 _controllerPasswort.text.isEmpty) {
               ScaffoldMessenger.of(context).showSnackBar(
