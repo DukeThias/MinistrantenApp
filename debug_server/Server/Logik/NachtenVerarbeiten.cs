@@ -21,23 +21,27 @@ namespace Server.Logik
             var buffer = new byte[1024 * 4];
             while (socket.State == WebSocketState.Open)
             {
+
                 var result = await socket.ReceiveAsync(new ArraySegment<byte>(buffer), CancellationToken.None);
                 var jsonString = Encoding.UTF8.GetString(buffer, 0, result.Count);
-
                 Console.WriteLine($"[{id}] empfangen: {jsonString}");
 
                 try
                 {
                     var empfangen = JsonSerializer.Deserialize<Nachrichten>(jsonString);
+                                    Console.WriteLine("Kein Problem 1");
+
                     if (empfangen == null)
                     {
                         Console.WriteLine("Ungültiges JSON erhalten.");
                         continue;
                     }
-
+                    Console.WriteLine("Kein Problem 2");
                     switch (empfangen.art?.ToLower())
                     {
                         case "anmeldung":
+                                        Console.WriteLine("Kein Problem 3");
+
                             Console.WriteLine("Anmeldung empfangen: " + empfangen.inhalt);
 
                             var anmeldedaten = JsonSerializer.Deserialize<Ministranten>(empfangen.inhalt!);

@@ -26,7 +26,10 @@ class _PasswortAendernSeiteState extends State<PasswortAendernSeite> {
 
   void _changePassword() {
     if (_formKey.currentState!.validate()) {
-      // Handle password change logic here
+      final globals = context.read<Globals>();
+      final oldPassword = _currentPasswordController.text;
+      final newPassword = _newPasswordController.text;
+      final username = globals.get("benutzername");
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Passwort erfolgreich geändert!')));

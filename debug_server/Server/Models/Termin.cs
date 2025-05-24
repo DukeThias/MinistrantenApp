@@ -8,7 +8,8 @@ namespace Server.Models
         required public string Beschreibung { get; set; }
         required public string Ort { get; set; }
         required public DateTime Start { get; set; }
-        required public string Teilnehmer { get; set; }//filter ein bolean alle oder nicht alle 
+        required public bool alle { get; set; }
+        required public List<dynamic> Teilnehmer { get; set; }//filter ein bolean alle oder nicht alle 
         required public int GemeindeID { get; set; }//filter
 
         public static string TerminToJsonString(Termin termin){
@@ -25,6 +26,7 @@ namespace Server.Models
             Ort = updated.Ort;
             Start = updated.Start;
             Teilnehmer = updated.Teilnehmer;
+            alle = updated.alle;
             GemeindeID = updated.GemeindeID;
         }
     }
