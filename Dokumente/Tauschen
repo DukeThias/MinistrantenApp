@@ -1,0 +1,11 @@
+- Gleiche rollen tauschen 
+
+
+zukunft
+tausch pool
+
+
+Prozess:
+
+tauschen drücken -> Personen mit gleicher Rolle auflisten welche an dem Termin nicht vertreten sind -> 
+gewünschte Person auswählen -> bestätigen -> pushnachricht an person gesende -> Person bestätigen/ ablehenen -> bei bestätigung auswählen welche Termine man tauschen möchte -> senden -> person pushnachricht bestätigen/ablehnen -> bei ablehnung andere Person kann einen anderen Termin auswählen und sende -> wiederhohlt sich so lange bis jeder termin durch ist -> danach frage ob der termin einfach so übernommen wird (mabe auch taste, dass man das auch bei beginn machen kann ohne alle termine durchzugehen) -> sobald getauscht wurde wird der temin im Kalender geändert. -> int wird erhöht (damit man sieht wer am meisten getauscht hat) (in zukunft mabe leaderboard)
