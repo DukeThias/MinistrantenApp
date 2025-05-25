@@ -10,6 +10,7 @@
 #include <wx/sstream.h>
 #include <config.h>
 #include "../R.h"
+#include "config.h"
 
 void UpdateChecker::checkUpdate(wxWindow* parent) {
 	wxURL url(wxT("https://raw.githubusercontent.com/yannikschaelte/MiniPlaner/master/version.dat"));

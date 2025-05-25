@@ -15,11 +15,7 @@ public class AppDbContext : DbContext
     protected override void OnModelCreating(ModelBuilder modelBuilder)
 {
     modelBuilder.Entity<Ministranten>()
-        .Property(m => m.Rolle)
-        .HasConversion(
-            v => string.Join(',', v), // Speichern als CSV
-            v => v.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList() // Laden als Liste
-        );
+        .Property(m => m.Rolle);
 }
 
 }

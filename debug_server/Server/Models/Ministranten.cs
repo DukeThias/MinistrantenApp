@@ -1,4 +1,4 @@
-
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace Server.Models
 {
@@ -15,9 +15,11 @@ namespace Server.Models
         public string? Telefonnummer { get; set; }
         public string? Email { get; set; }
         public int Gewandgroese { get; set; }
-        public int GemeindeID { get; set; }//filter
+        public int GemeindeID { get; set; }
         public int GruppenID { get; set; }
-        public List<string> Rolle { get; set; } = new();//filtern
+        public string Rolle { get; set; } = string.Empty; // <--- als String speichern!
+        [NotMapped]
+        public List<string> RollenListe => Rolle.Split(',', StringSplitOptions.RemoveEmptyEntries).ToList();
         public int Einweihungsjahr { get; set; }
         public bool Vegan { get; set; }//filter
         public bool Vegetarisch { get; set; }//filter
@@ -39,7 +41,7 @@ namespace Server.Models
             Gewandgroese = other.Gewandgroese;
             GemeindeID = other.GemeindeID;
             GruppenID = other.GruppenID;
-            Rolle = new List<string>(other.Rolle);
+            Rolle = other.Rolle; // <--- als String übernehmen!
             Einweihungsjahr = other.Einweihungsjahr;
             Vegan = other.Vegan;
             Vegetarisch = other.Vegetarisch;

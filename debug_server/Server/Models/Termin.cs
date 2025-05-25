@@ -1,4 +1,6 @@
 using System.Text.Json;
+using System.ComponentModel.DataAnnotations.Schema; // <--- hinzugefügt
+
 namespace Server.Models
 {
     public class Termin
@@ -9,6 +11,7 @@ namespace Server.Models
         required public string Ort { get; set; }
         required public DateTime Start { get; set; }
         required public bool alle { get; set; }
+        [NotMapped]
         required public List<dynamic> Teilnehmer { get; set; }//filter ein bolean alle oder nicht alle 
         required public int GemeindeID { get; set; }//filter
 

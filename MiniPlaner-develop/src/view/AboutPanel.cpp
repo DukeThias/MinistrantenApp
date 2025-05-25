@@ -15,6 +15,7 @@
 #include "../img/minis.xpm"
 #include "../R.h"
 #include "../Util.h"
+#include "config.h"
 
 AboutPanel::AboutPanel(wxWindow* parent)
 : wxPanel(parent, R::ID_ANY) {
