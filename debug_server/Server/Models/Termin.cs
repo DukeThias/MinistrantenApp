@@ -12,7 +12,8 @@ namespace Server.Models
         required public DateTime Start { get; set; }
         required public bool alle { get; set; }
         [NotMapped]
-        required public List<dynamic> Teilnehmer { get; set; }//filter ein bolean alle oder nicht alle 
+        public List<TeilnehmerInfo> Teilnehmer { get; set; } = new(); // TeilnehmerInfo muss als Klasse existieren!
+
         required public int GemeindeID { get; set; }//filter
 
         public static string TerminToJsonString(Termin termin){

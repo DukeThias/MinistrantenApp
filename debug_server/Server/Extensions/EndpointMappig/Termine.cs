@@ -25,9 +25,6 @@ namespace Server.Extensions
             {
                 var query = db.Termine.AsQueryable();
 
-                if (!string.IsNullOrEmpty(teilnehmer))
-                    query = query.Where(t => t.Teilnehmer.Contains(teilnehmer));
-
                 if (gemeindeId.HasValue)
                     query = query.Where(t => t.GemeindeID == gemeindeId.Value);
 
@@ -35,6 +32,11 @@ namespace Server.Extensions
                     query = query.Where(t => t.Id == terminId.Value);
 
                 var termine = await query.ToListAsync();
+
+                // Teilnehmer-Filter erst nach dem Laden anwenden!
+                if (!string.IsNullOrEmpty(teilnehmer) && int.TryParse(teilnehmer, out int teilnehmerId))
+                    termine = termine.Where(t => t.Teilnehmer.Any(te => te != null && te.ministrantId == teilnehmerId)).ToList();
+
                 return Results.Ok(termine);
             });
 
