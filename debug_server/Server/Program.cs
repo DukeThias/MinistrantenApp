@@ -18,6 +18,8 @@ builder.Services.AddScoped<TermineService>();
 builder.Services.AddScoped<MinistrantenService>();
 builder.Services.AddScoped<GemeindenService>();
 builder.Services.AddScoped<NachrichtenService>();
+builder.Services.AddScoped<TauschService>();
+builder.Services.AddScoped<TauschLogikService>();
 builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=datenbank.db")

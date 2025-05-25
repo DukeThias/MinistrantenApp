@@ -1,11 +1,112 @@
-- Gleiche rollen tauschen 
+===============================
+TAUSCHFUNKTION - MINISTRANTEN-APP
+===============================
+
+Stand: 2025-05-25
+Technologie: C# Server mit Swagger, App-Frontend (z. B. Flutter, React Native)
+
+-------------------------------
+1. ZIEL DER FUNKTION
+-------------------------------
+Ministranten können ihre Dienste mit anderen gleichrangigen Ministranten tauschen, wenn sie an einem bestimmten Termin verhindert sind.
+
+-------------------------------
+2. ABLAUF TAUSCHVORGANG
+-------------------------------
+
+1. Benutzer wählt einen Termin, an dem er eingeteilt ist, und klickt auf "Tauschen".
+
+2. Backend sucht alle Personen:
+   - mit der gleichen Rolle,
+   - die an diesem Termin NICHT eingeteilt sind.
+
+3. Der Benutzer bekommt diese Liste angezeigt und wählt eine Person aus.
+
+4. Die ausgewählte Person erhält eine Pushnachricht:
+   "XY möchte den Dienst am [Datum/Uhrzeit] mit dir tauschen."
+
+5. Die angefragte Person kann:
+   - ✅ "Zustimmen"
+   - ❌ "Ablehnen"
+
+6. Bei Zustimmung:
+   - Diese Person wählt einen eigenen Termin,
+     - an dem sie eingeteilt ist,
+     - der andere nicht eingeteilt ist,
+     - beide gleiche Rolle haben.
+
+7. Der ursprüngliche Anfragende erhält eine Nachricht mit dem Gegenvorschlag:
+   "XY bietet dir Termin [Datum/Uhrzeit] im Gegenzug an."
+
+8. Der Anfragende kann:
+   - ✅ "Tausch annehmen" → TAUSCH ERFOLGREICH
+   - ❌ "Ablehnen"
+
+9. Falls abgelehnt:
+   - Die angefragte Person bekommt die Info: "Gegenvorschlag abgelehnt, bitte anderen Termin wählen."
+   - Ablauf wiederholt sich, bis:
+     - alle Gegenvorschläge abgelehnt wurden, ODER
+     - Tausch bestätigt wurde.
+
+10. Wenn kein Gegentausch zustande kommt:
+    - Dem Anfragenden wird angeboten, den Dienst "einfach zu übernehmen".
+    - Bei Zustimmung → Dienst wird übernommen, ohne Gegentausch.
+
+11. Termin im Kalender wird entsprechend angepasst.
+
+12. Die Person, die den Dienst übernommen hat, bekommt +1 auf `tauschCount`.
 
 
-zukunft
-tausch pool
+-------------------------------
+3. DATENSTRUKTUREN (VEREINFACHT)
+-------------------------------
+
+PERSON (bereits vorhanden):
+{
+  "id": int,
+  "vorname": string,
+  "rolle": string,
+  "tauschCount": int,
+  ...
+}
+
+TAUSCHANFRAGE:
+{
+  "id": int,
+  "vonUserId": int,
+  "anUserId": int,
+  "vonTerminId": int,
+  "gegentauschTerminId": int | null,
+  "status": string, // Offen | Gegenvorschlag | Bestätigt | Abgelehnt | Übernommen
+  "zeitstempel": datetime
+}
 
 
-Prozess:
+-------------------------------
+4. FRONTEND-ABLAUF
+-------------------------------
 
-tauschen drücken -> Personen mit gleicher Rolle auflisten welche an dem Termin nicht vertreten sind -> 
-gewünschte Person auswählen -> bestätigen -> pushnachricht an person gesende -> Person bestätigen/ ablehenen -> bei bestätigung auswählen welche Termine man tauschen möchte -> senden -> person pushnachricht bestätigen/ablehnen -> bei ablehnung andere Person kann einen anderen Termin auswählen und sende -> wiederhohlt sich so lange bis jeder termin durch ist -> danach frage ob der termin einfach so übernommen wird (mabe auch taste, dass man das auch bei beginn machen kann ohne alle termine durchzugehen) -> sobald getauscht wurde wird der temin im Kalender geändert. -> int wird erhöht (damit man sieht wer am meisten getauscht hat) (in zukunft mabe leaderboard)
+[1] Startbildschirm > Kalenderansicht
+[2] Termin auswählen > "Tauschen" drücken
+[3] Personenliste anzeigen (gleiche Rolle, nicht eingeteilt)
+[4] Person auswählen > Anfrage wird gesendet
+[5] Empfänger bekommt Pushnachricht > Antwort
+[6] Bei Zustimmung: Gegentermin wählen > Push zurück
+[7] Ursprünglicher Anfragender bestätigt oder lehnt ab
+[8] Loop, bis Tausch erfolgreich oder aufgegeben
+[9] Fallback: "Termin einfach übernehmen?" (optional)
+[10] Nach Tausch: Kalender aktualisieren, `tauschCount` erhöhen
+
+-------------------------------
+5. HINWEISE
+-------------------------------
+
+- Rolle muss bei jedem Schritt abgeglichen werden.
+- `tauschCount` wird NUR für den erhöht, der den Dienst übernimmt.
+- Pushnachrichten sollten zuverlässig über z. B. Firebase oder WebSocket laufen.
+- Alle Aktionen sollten sauber im Backend-Log protokolliert werden.
+
+===============================
+ENDE DES KONZEPTS
+===============================
+
