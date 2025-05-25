@@ -1,6 +1,7 @@
 using System.Text.Json;
 using System.ComponentModel.DataAnnotations.Schema; // <--- hinzugefügt
 
+
 namespace Server.Models
 {
     public class Termin
