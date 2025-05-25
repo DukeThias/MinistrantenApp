@@ -18,6 +18,12 @@ class drawer extends StatelessWidget {
         (user["Name"] ??
             "offline, aber angemeldet als: ${globals.get("benutzername")}");
     return Drawer(
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.only(
+          topRight: Radius.circular(0),
+          bottomRight: Radius.circular(0),
+        ),
+      ),
       child: ListView(
         children: [
           DrawerHeader(

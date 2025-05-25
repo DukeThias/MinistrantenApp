@@ -40,7 +40,7 @@ class _HauptseiteState extends State<Hauptseite> {
       drawer: drawer(),
       bottomNavigationBar: NavigationBar(
         indicatorColor: Colors.red,
-        destinations: destinations(globals.get("rollen"), ws),
+        destinations: destinations(globals.get("self")["RollenListe"], ws),
         onDestinationSelected: (int index) {
           if (index == 2 && !ws.verbunden) {
             ScaffoldMessenger.of(context).showSnackBar(

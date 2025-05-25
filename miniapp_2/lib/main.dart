@@ -27,11 +27,37 @@ final ThemeData lightTheme = ThemeData(
 
 final ThemeData darkTheme = ThemeData(
   brightness: Brightness.dark,
-  primarySwatch: Colors.blue,
-  scaffoldBackgroundColor: Colors.black,
-  appBarTheme: AppBarTheme(
-    backgroundColor: Colors.black,
+  primaryColor: const Color(0xFF5865F2), // Discord-Blau
+  scaffoldBackgroundColor: const Color(0xFF36393F), // Haupt-Hintergrund
+  cardColor: const Color(0xFF2F3136), // Für Cards/Container
+  canvasColor: const Color(0xFF36393F),
+  appBarTheme: const AppBarTheme(
+    backgroundColor: Color(0xFF23272A), // Dunklere AppBar
     foregroundColor: Colors.white,
+    elevation: 0,
+  ),
+  colorScheme: ColorScheme.dark(
+    primary: Color(0xFF5865F2),
+    secondary: Color(0xFF5865F2),
+    background: Color(0xFF36393F),
+    surface: Color(0xFF2F3136),
+    onPrimary: Colors.white,
+    onSecondary: Colors.white,
+    onBackground: Colors.white,
+    onSurface: Colors.white,
+  ),
+  textTheme: const TextTheme(
+    bodyLarge: TextStyle(color: Colors.white),
+    bodyMedium: TextStyle(color: Color(0xFFB9BBBE)), // Sekundärtext
+    bodySmall: TextStyle(color: Color(0xFFB9BBBE)),
+    titleLarge: TextStyle(color: Colors.white),
+  ),
+  iconTheme: const IconThemeData(color: Color(0xFFB9BBBE)),
+  dividerColor: Color(0xFF202225),
+  drawerTheme: DrawerThemeData(backgroundColor: Color(0xFF2F3136)),
+  buttonTheme: ButtonThemeData(
+    buttonColor: Color(0xFF5865F2),
+    textTheme: ButtonTextTheme.primary,
   ),
 );
 

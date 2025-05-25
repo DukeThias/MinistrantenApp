@@ -2,7 +2,6 @@ import 'package:flutter/material.dart';
 import 'package:miniapp_2/logik/WebSocketLogik.dart';
 import '../services/WebSocketVerbindung.dart';
 import 'package:provider/provider.dart';
-import 'package:uuid/uuid.dart';
 import '../logik/globals.dart';
 import 'anmeldeforum.dart';
 

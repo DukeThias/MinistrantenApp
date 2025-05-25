@@ -14,7 +14,7 @@ List<NavigationDestination> destinations(List? rollen, Websocketverbindung ws) {
     ),
   ];
 
-  if (rollen != null && rollen!.contains("omi")) {
+  if (rollen != null && rollen.contains("omi")) {
     destinations.add(
       NavigationDestination(icon: Icon(Icons.settings), label: "Omi"),
     );
