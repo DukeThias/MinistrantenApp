@@ -65,26 +65,21 @@ class _MyAppState extends State<MyApp> {
   final String uniqheId = Uuid().v4();
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((_) {
+      final ws = Provider.of<Websocketverbindung>(context, listen: false);
+      ws.setAnmeldedaten(
+        gespeicherteAnmeldedaten?["Username"],
+        gespeicherteAnmeldedaten?["Passwort"],
+      );
+      ws.verbinde("ws://192.168.2.226:5205/ws?id=$uniqheId");
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final themeProvider = context.watch<ThemeProvider>();
-
-    Future.microtask(() {
-      final ws = Provider.of<Websocketverbindung>(context, listen: false);
-
-      print("gespeicherteAnmeldedaten: $gespeicherteAnmeldedaten");
-      if (angemeldetbleiben && gespeicherteAnmeldedaten != null) {
-        final globals = Provider.of<Globals>(context, listen: false);
-        globals.set("angemeldetbleiben", angemeldetbleiben);
-        globals.set(
-          "benutzername",
-          gespeicherteAnmeldedaten?["Username"] ?? "",
-        );
-        globals.set("passwort", gespeicherteAnmeldedaten?["Passwort"] ?? "");
-      }
-      if (!ws.verbunden) {
-        ws.verbinde("ws://192.168.2.226:5205/ws?id=$uniqheId");
-      }
-    });
 
     return MaterialApp(
       theme: lightTheme,
