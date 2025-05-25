@@ -4,15 +4,19 @@ import 'package:miniapp_2/logik/WebSocketLogik.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:web_socket_channel/web_socket_channel.dart';
-import 'package:miniapp_2/logik/globals.dart';
-import 'package:provider/provider.dart';
-import 'package:miniapp_2/main.dart';
 
 class Websocketverbindung with ChangeNotifier {
   late WebSocketChannel _channel;
   bool _verbunden = false;
   List<Nachricht> _nachrichten = [];
   Timer? _reconnectTimer;
+  String? _username;
+  String? _passwort;
+
+  void setAnmeldedaten(String? username, String? passwort) {
+    _username = username;
+    _passwort = passwort;
+  }
 
   final WebSocketLogik _logik = WebSocketLogik();
 
@@ -29,18 +33,14 @@ class Websocketverbindung with ChangeNotifier {
           if (!_verbunden) {
             _verbunden = true;
             notifyListeners();
-            final globals = navigatorKey.currentContext!.read<Globals>();
-            final anmeldedaten = {
-              "Username": globals.get("benutzername"),
-              "Passwort": globals.get("passwort"),
-            };
-            if (anmeldedaten["Username"] != null &&
-                anmeldedaten["Username"] != "" &&
-                anmeldedaten["Passwort"] != null &&
-                anmeldedaten["Passwort"] != "") {
-              final ws =
-                  navigatorKey.currentContext!.read<Websocketverbindung>();
-              ws.senden("anmeldung", jsonEncode(anmeldedaten));
+            if (_username != null &&
+                _passwort != null &&
+                _username!.isNotEmpty &&
+                _passwort!.isNotEmpty) {
+              senden(
+                "anmeldung",
+                jsonEncode({"Username": _username, "Passwort": _passwort}),
+              );
             }
           }
 
