@@ -21,6 +21,7 @@ builder.Services.AddScoped<NachrichtenService>();
 builder.Services.AddScoped<TauschService>();
 builder.Services.AddScoped<TauschLogikService>();
 builder.Services.AddSwaggerGen();
+
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=datenbank.db")
            .EnableSensitiveDataLogging()
@@ -31,7 +32,8 @@ var app = builder.Build(); // Muss nach der Service-Registrierung erfolgen
 
 app.MapApiEndpoints(); // Registriert alle API-Endpunkte (z. B. /api/personen usw.)
 
-    
+// Entferne oder kommentiere die Zeile aus, wenn du Antiforgery nicht brauchst:
+// app.UseAntiforgery(); // wichtig für .DisableAntiforgery() zu funktionieren
 
 // Swagger aktivieren im Development-Modus
 if (app.Environment.IsDevelopment())

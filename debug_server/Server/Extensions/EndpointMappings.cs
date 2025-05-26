@@ -18,6 +18,9 @@ namespace Server.Extensions
 
             // Endpunkte für Nachrichten
             app.MapNachrichtenEndpoints();
+
+            //Endpunkte für Upload
+            app.MapUploadEndpoints();
         }
     }
 }
