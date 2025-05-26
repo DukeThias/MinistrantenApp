@@ -8,6 +8,7 @@ namespace Server.Extensions
     {
         public static void MapNachrichtenEndpoints(this WebApplication app)
         {
+            // POST: Neue Nachricht anlegen
             app.MapPost("/api/nachrichten", async (AppDbContext db, Nachrichten nachricht) =>
             {
                 db.Nachrichten.Add(nachricht);
@@ -15,6 +16,7 @@ namespace Server.Extensions
                 return Results.Created($"/api/nachrichten/{nachricht.Id}", nachricht);
             });
 
+            // GET: Nachrichten abfragen
             app.MapGet("/api/nachrichten", async (
                 AppDbContext db,
                 int? id,
@@ -33,6 +35,8 @@ namespace Server.Extensions
                 return Results.Ok(nachrichten);
             });
 
+
+            // DELETE: Nachricht löschen
             app.MapDelete("/api/nachrichten/{id}", async (AppDbContext db, int id) =>
             {
                 var nachricht = await db.Nachrichten.FindAsync(id);

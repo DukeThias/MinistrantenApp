@@ -7,12 +7,14 @@ namespace Server.Extensions
     {
         public static void MapMinistrantenEndpoints(this WebApplication app)
         {
+            // POST: Neuen Ministranten anlegen
             app.MapPost("/api/ministranten", async (MinistrantenService ministrantenService, Ministranten ministrant) =>
             {
                 await ministrantenService.AddMinistrantAsync(ministrant);
                 return Results.Created($"/api/ministranten/{ministrant.Id}", ministrant);
             });
 
+            // GET: Ministranten abfragen
             app.MapGet("/api/ministranten", async (
                 MinistrantenService ministrantenService,
                 string? username,
@@ -27,6 +29,16 @@ namespace Server.Extensions
                 return Results.Ok(ministranten);
             });
 
+            // PUT: Ministrant aktualisieren
+            app.MapPut("/api/ministranten/{id}", async (MinistrantenService ministrantenService, int id, Ministranten updatedMinistrant) =>
+            {
+                var result = await ministrantenService.UpdateMinistrantAsync(id, updatedMinistrant);
+                if (!result)
+                    return Results.NotFound();
+                return Results.Ok(updatedMinistrant);
+            });
+
+            // DELETE: Ministrant löschen
             app.MapDelete("/api/ministranten/{id}", async (MinistrantenService ministrantenService, int id) =>
             {
                 await ministrantenService.DeleteMinistrantAsync(id);

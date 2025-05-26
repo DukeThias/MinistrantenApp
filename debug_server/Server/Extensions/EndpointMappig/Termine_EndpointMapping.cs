@@ -8,6 +8,7 @@ namespace Server.Extensions
     {
         public static void MapTermineEndpoints(this WebApplication app)
         {
+            // POST: Termin anlegen
             app.MapPost("/api/termine", async (AppDbContext db, Termin termin) =>
             {
                 db.Termine.Add(termin);
@@ -16,6 +17,7 @@ namespace Server.Extensions
             });
 
 
+            // GET: Termine abfragen
             app.MapGet("/api/termine", async (
                 AppDbContext db,
                 string? teilnehmer,
@@ -40,6 +42,23 @@ namespace Server.Extensions
                 return Results.Ok(termine);
             });
 
+            // PUT: Termin aktualisieren
+            app.MapPut("/api/termine/{id}", async (AppDbContext db, int id, Termin updatedTermin) =>
+            {
+                var termin = await db.Termine.FindAsync(id);
+                if (termin is null)
+                {
+                    return Results.NotFound();
+                }
+
+                // Felder aktualisieren (nutzt die UpdateFrom-Methode aus deinem Modell)
+                termin.UpdateFrom(updatedTermin);
+
+                await db.SaveChangesAsync();
+                return Results.Ok(termin);
+            });
+
+            // DELETE: Termin löschen
             app.MapDelete("/api/termine/{id}", async (AppDbContext db, int id) =>
             {
                 var termin = await db.Termine.FindAsync(id);

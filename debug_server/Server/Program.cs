@@ -31,6 +31,8 @@ var app = builder.Build(); // Muss nach der Service-Registrierung erfolgen
 
 app.MapApiEndpoints(); // Registriert alle API-Endpunkte (z. B. /api/personen usw.)
 
+    
+
 // Swagger aktivieren im Development-Modus
 if (app.Environment.IsDevelopment())
 {
