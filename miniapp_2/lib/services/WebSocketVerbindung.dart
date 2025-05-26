@@ -81,6 +81,19 @@ class Websocketverbindung with ChangeNotifier {
     }
   }
 
+  void sendHtmlPlanFile(String fileName, String content) {
+    final payload = {
+      'type': 'uploadHtmlPlan',
+      'filename': fileName,
+      'content': content,
+    };
+    print(
+      "Sende HTML-Plan-Datei: $fileName mit Inhalt: ${content.length} Zeichen",
+    );
+
+    _channel.sink.add(jsonEncode(payload));
+  }
+
   void senden(String art, inhalt) {
     if (_verbunden) {
       final nachricht = Nachricht(

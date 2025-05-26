@@ -51,7 +51,11 @@ class InfoSeiteTermin extends StatelessWidget {
                 ListTile(
                   leading: Icon(Icons.group),
                   title: Text('Teilnehmer'),
-                  subtitle: Text(teilnehmer),
+                  subtitle: Text(
+                    teilnehmer.isNotEmpty
+                        ? teilnehmer.join(", ")
+                        : "Keine Teilnehmer angegeben",
+                  ),
                 ),
 
                 ListTile(

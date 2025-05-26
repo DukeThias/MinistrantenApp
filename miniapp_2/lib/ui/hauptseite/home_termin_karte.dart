@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'einzelne seiten/infoseite_termin.dart';
+import 'package:provider/provider.dart';
+import '../../logik/globals.dart';
+import '../../logik/theme_logik.dart';
 
 class TerminKarte extends StatelessWidget {
   final Map<String, dynamic> termin;
@@ -9,6 +12,8 @@ class TerminKarte extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final globals = context.watch<Globals>();
+    final theme = context.watch<ThemeProvider>();
     final DateTime startZeit = DateTime.parse(termin["Start"]);
     final String wochentag = DateFormat.EEEE(
       'de_DE',
@@ -19,12 +24,19 @@ class TerminKarte extends StatelessWidget {
     final String uhrzeit = DateFormat('HH:mm').format(startZeit); // 09:00
 
     return Card(
+      elevation: globals.get("specialgraphics") ? 10 : 2,
+      shadowColor:
+          globals.get("specialgraphics")
+              ? Colors.red
+              : (theme.themeMode == ThemeMode.dark
+                  ? const Color.fromARGB(133, 129, 129, 129)
+                  : const Color.fromARGB(133, 95, 95, 95)),
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(10),
-        side: BorderSide(
-          color: Colors.black, // Farbe der Umrandung
-          width: 1, // Dicke der Linie
-        ),
+        borderRadius: BorderRadius.circular(16),
+        // side: BorderSide(
+        //   color: Colors.black, // Farbe der Umrandung
+        //   width: 1, // Dicke der Linie
+        // ),
       ),
 
       margin: EdgeInsets.all(8),
@@ -79,7 +91,7 @@ class TerminKarte extends StatelessWidget {
                     Text("Teilnehmer", style: TextStyle(color: Colors.grey)),
                     SizedBox(height: 4),
                     Text(
-                      termin["Teilnehmer"] ?? "-",
+                      termin["Teilnehmer"].join(", ") ?? "-",
                       style: TextStyle(fontWeight: FontWeight.bold),
                     ),
                   ],
