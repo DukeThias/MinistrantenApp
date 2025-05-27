@@ -33,7 +33,7 @@ class _OmiSeiteState extends State<OmiSeite> {
             onTap: () {
               Navigator.push(
                 context,
-                MaterialPageRoute(builder: (context) => HtmlUploadWidget()),
+                MaterialPageRoute(builder: (context) => UploadHtmlPage()),
               );
             },
           ),

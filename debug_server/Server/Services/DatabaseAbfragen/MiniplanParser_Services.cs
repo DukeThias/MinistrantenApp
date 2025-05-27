@@ -43,22 +43,21 @@ namespace Server.Services.DatabaseAktionen
             foreach (var row in rows)
             {
                 var cells = row.Children;
+                // Leere, "leere" oder reine Trenn-/Info-Zeilen überspringen
                 if (cells.Length == 0 || row.TextContent.Trim() == "") continue;
+                // Reihen mit nur einer Zelle und colspan sind in der Regel nur Trenner oder Infos, keine echten Daten
+                if (cells.Length == 1 && cells[0].HasAttribute("colspan")) continue;
 
-                // Neuer Termin beginnt
+                // Kopfzeile: neuer Termin beginnt
                 if (cells[0].ClassName == "phead")
                 {
                     var headerText = cells[0].TextContent;
                     var parts = headerText.Split(',');
-
-                    var datetimePart = parts[0].Trim();  // z. B. "So. 01.06.2025 09:00"
+                    var datetimePart = parts[0].Trim(); // z. B. "So. 01.06.2025 09:00"
                     var ort = parts.Length > 1 ? parts[1].Trim() : "";
-
                     // Datum + Uhrzeit extrahieren
                     var dateMatch = Regex.Match(datetimePart, @"(\d{2})\.(\d{2})\.(\d{4}) (\d{2}):(\d{2})");
-
                     if (!dateMatch.Success) continue; // Ungültiges Format überspringen
-
                     var start = new DateTime(
                         int.Parse(dateMatch.Groups[3].Value),
                         int.Parse(dateMatch.Groups[2].Value),
@@ -67,13 +66,13 @@ namespace Server.Services.DatabaseAktionen
                         int.Parse(dateMatch.Groups[5].Value),
                         0
                     );
-
                     // z. B. "(Sonntag 9:00)" → "Sonntag 9:00"
-                    var name = headerText.Split('(', ')')[1].Trim();
-
+                    var name = headerText.Contains("(") && headerText.Contains(")")
+                        ? headerText.Split('(', ')')[1].Trim()
+                        : "";
                     aktuellerTermin = new Termin
                     {
-                        Id = 0, // oder eine andere passende Id
+                        Id = 0,
                         Name = name,
                         Beschreibung = "Ministrantenplan",
                         Ort = ort,
@@ -82,30 +81,30 @@ namespace Server.Services.DatabaseAktionen
                         Teilnehmer = new List<TeilnehmerInfo>(),
                         GemeindeID = _gemeindeId
                     };
-
                     termine.Add(aktuellerTermin);
+                    letzteRolle = null;
                 }
                 // Weitere Teilnehmer zum aktuellen Termin hinzufügen
                 else if (aktuellerTermin != null)
                 {
                     // Rolle wie "Normal", "Gabenbereitung", etc.
-                    var rolle = cells[1].ClassName == "pdienst" ? cells[1].TextContent.Trim() : (letzteRolle ?? "");
-                    letzteRolle = rolle;
-
+                    string rolle = letzteRolle ?? "";
+                    if (cells.Length > 1 && cells[1].ClassName == "pdienst")
+                    {
+                        rolle = cells[1].TextContent.Trim();
+                        letzteRolle = rolle;
+                    }
+                    // Teilnehmer ab Spalte 2
                     for (int i = 2; i < cells.Length; i++)
                     {
                         var name = cells[i].TextContent.Trim();
                         if (string.IsNullOrEmpty(name)) continue;
-
-                        var nameParts = name.Split(' ');
+                        var nameParts = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
                         if (nameParts.Length < 2) continue;
-
                         var vorname = nameParts[0];
                         var nachname = string.Join(" ", nameParts.Skip(1));
-
                         var ministrant = ministranten
                             .FirstOrDefault(m => m.Vorname == vorname && m.Name == nachname);
-
                         if (ministrant != null)
                         {
                             aktuellerTermin.Teilnehmer.Add(new TeilnehmerInfo
