@@ -104,7 +104,8 @@ class _MyAppState extends State<MyApp> {
         gespeicherteAnmeldedaten?["Username"],
         gespeicherteAnmeldedaten?["Passwort"],
       );
-      ws.verbinde("ws://192.168.2.226:5205/ws?id=$uniqheId");
+      ws.verbinde("ws://192.168.2.226:5205/ws?id=$uniqheId"); //für matthias
+      //ws.verbinde("ws://localhost:5205/ws?id=$uniqheId"); //für lukas
       await globals.variablenInitiieren();
       globals.set("specialgraphics", true);
     });
