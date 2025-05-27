@@ -33,7 +33,7 @@ class _AllgemeineEinstellungenSeiteState
                 ScaffoldMessenger.of(context).showSnackBar(
                   SnackBar(content: Text('🌟 Spezialgrafiken aktiviert!')),
                 );
-                saveJsonToFile("settings", {"specialgraphics": true});
+                saveJson("settings", {"specialgraphics": true});
                 _spracheTapCounter = 0; // optional zurücksetzen
               } else {
                 ScaffoldMessenger.of(context).showSnackBar(
@@ -61,7 +61,7 @@ class _AllgemeineEinstellungenSeiteState
               ),
               onTap: () {
                 globals.set("specialgraphics", !globals.get("specialgraphics"));
-                saveJsonToFile("settings", {
+                saveJson("settings", {
                   "specialgraphics": globals.get("specialgraphics"),
                 });
                 ScaffoldMessenger.of(context).showSnackBar(

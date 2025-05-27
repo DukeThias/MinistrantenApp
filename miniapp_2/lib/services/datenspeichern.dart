@@ -1,54 +1,71 @@
 import 'dart:convert';
-import 'dart:io';
+import 'dart:io' as io;
+import 'package:flutter/foundation.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:idb_shim/idb.dart';
+import 'package:idb_shim/idb_browser.dart';
 
-/// Löscht eine Dateiwerden die
-Future<void> deleteFile(String filename) async {
-  try {
-    final file = await _getJsonFile(filename);
-    if (await file.exists()) {
-      await file.delete();
-      print('Datei $filename wurde gelöscht.');
-    } else {
-      print('Datei $filename existiert nicht.');
-    }
-  } catch (e) {
-    print('Fehler beim Löschen der Datei: $e');
+Future<Database> _openWebDb() async {
+  final idbFactory = getIdbFactory()!;
+  return await idbFactory.open(
+    'AppDb',
+    version: 1,
+    onUpgradeNeeded: (e) {
+      final db = e.database;
+      if (!db.objectStoreNames.contains('jsonfiles')) {
+        db.createObjectStore('jsonfiles');
+      }
+    },
+  );
+}
+
+Future<void> saveJson(String filename, dynamic data) async {
+  if (kIsWeb) {
+    final db = await _openWebDb();
+    final txn = db.transaction('jsonfiles', idbModeReadWrite);
+    final store = txn.objectStore('jsonfiles');
+    await store.put(jsonEncode(data), filename);
+    await txn.completed;
+  } else {
+    final file = await _getLocalFile(filename);
+    await file.writeAsString(jsonEncode(data));
   }
 }
 
-Future<String> _getLocalPath() async {
-  final directory = await getApplicationDocumentsDirectory();
-  return directory.path;
-}
-
-Future<File> _getJsonFile(String filename) async {
-  final path = await _getLocalPath();
-  return File('$path/$filename.json');
-}
-
-/// Speichert JSON-Daten in eine Datei
-Future<void> saveJsonToFile(String filename, dynamic data) async {
-  final file = await _getJsonFile(filename);
-  final jsonString = jsonEncode(data);
-  print("Gespeicherte JSON String: $jsonString");
-  await file.writeAsString(jsonString);
-}
-
-/// Lädt JSON-Daten aus einer Datei
-Future<dynamic> readJsonFromFile(String filename) async {
-  try {
-    final file = await _getJsonFile(filename);
+Future<dynamic> readJson(String filename) async {
+  if (kIsWeb) {
+    final db = await _openWebDb();
+    final txn = db.transaction('jsonfiles', idbModeReadOnly);
+    final store = txn.objectStore('jsonfiles');
+    final result = await store.getObject(filename);
+    await txn.completed;
+    return result != null ? jsonDecode(result as String) : null;
+  } else {
+    final file = await _getLocalFile(filename);
     if (await file.exists()) {
-      final jsonString = await file.readAsString();
-      print("JSON String: $jsonString");
-      return jsonDecode(jsonString);
-    } else {
-      print('Datei $filename existiert nicht.');
-      return null;
+      final content = await file.readAsString();
+      return jsonDecode(content);
     }
-  } catch (e) {
-    print('Fehler beim Lesen der Datei: $e');
     return null;
   }
+}
+
+Future<void> deleteJson(String filename) async {
+  if (kIsWeb) {
+    final db = await _openWebDb();
+    final txn = db.transaction('jsonfiles', idbModeReadWrite);
+    final store = txn.objectStore('jsonfiles');
+    await store.delete(filename);
+    await txn.completed;
+  } else {
+    final file = await _getLocalFile(filename);
+    if (await file.exists()) {
+      await file.delete();
+    }
+  }
+}
+
+Future<io.File> _getLocalFile(String filename) async {
+  final dir = await getApplicationDocumentsDirectory();
+  return io.File('${dir.path}/$filename.json');
 }

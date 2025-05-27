@@ -52,7 +52,7 @@ class ProfilEinstellungenSeite extends StatelessWidget {
                           globals.set("anmeldename", "");
                           globals.set("passwort", "");
                           globals.set("angemeldetbleiben", "false");
-                          deleteFile("anmeldedaten");
+                          deleteJson("anmeldedaten");
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(

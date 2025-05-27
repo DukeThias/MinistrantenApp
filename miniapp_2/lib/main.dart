@@ -65,11 +65,11 @@ final ThemeData darkTheme = ThemeData(
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
-  final settings = await readJsonFromFile("settings");
+  final settings = await readJson("settings");
   specialgraphics = settings?["specialgraphics"] ?? false;
 
   await initializeDateFormatting("de_DE", null);
-  gespeicherteAnmeldedaten = await readJsonFromFile("anmeldedaten");
+  gespeicherteAnmeldedaten = await readJson("anmeldedaten");
   angemeldetbleiben = gespeicherteAnmeldedaten?["angemeldetbleiben"] == "true";
 
   runApp(

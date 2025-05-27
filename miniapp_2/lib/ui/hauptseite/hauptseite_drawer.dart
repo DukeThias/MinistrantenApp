@@ -37,14 +37,8 @@ class drawer extends StatelessWidget {
                 fit: BoxFit.fitHeight,
                 image:
                     themeProvider.isDarkMode()
-                        ? NetworkImage(
-                          scale: 0.1,
-                          "https://www.se-federsee.de/wp-content/uploads/2018/03/Logo_Mini_negativ_RGB.jpg",
-                        )
-                        : NetworkImage(
-                          scale: 0.1,
-                          "https://fachstelle-minis.de/fileadmin/user_upload/Logos/Mini.jpg",
-                        ),
+                        ? AssetImage("assets/images/Mini_schwarz.jpg")
+                        : AssetImage("assets/images/Mini_weiss.jpg"),
               ),
             ),
           ),
@@ -104,7 +98,7 @@ class drawer extends StatelessWidget {
                           globals.set("anmeldename", "");
                           globals.set("passwort", "");
                           globals.set("angemeldetbleiben", "false");
-                          deleteFile("anmeldedaten");
+                          deleteJson("anmeldedaten");
                           Navigator.pushReplacement(
                             context,
                             MaterialPageRoute(
