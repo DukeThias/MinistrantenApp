@@ -11,8 +11,8 @@ using Server.Data;
 namespace Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    [Migration("20250513183736_AddEinweihungsjahr")]
-    partial class AddEinweihungsjahr
+    [Migration("20250527145905_Init")]
+    partial class Init
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -45,11 +45,17 @@ namespace Server.Migrations
                         .ValueGeneratedOnAdd()
                         .HasColumnType("INTEGER");
 
+                    b.Property<int>("AbwesendCount")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Adresse")
                         .HasColumnType("TEXT");
 
                     b.Property<string>("Allergien")
                         .HasColumnType("TEXT");
+
+                    b.Property<int>("AnwesendCount")
+                        .HasColumnType("INTEGER");
 
                     b.Property<string>("Bemerkungen")
                         .HasColumnType("TEXT");
@@ -85,6 +91,9 @@ namespace Server.Migrations
                         .IsRequired()
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("TauschCount")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("Telefonnummer")
                         .HasColumnType("TEXT");
 
@@ -114,6 +123,9 @@ namespace Server.Migrations
                     b.Property<string>("art")
                         .HasColumnType("TEXT");
 
+                    b.Property<int>("gemeindeId")
+                        .HasColumnType("INTEGER");
+
                     b.Property<string>("inhalt")
                         .HasColumnType("TEXT");
 
@@ -123,6 +135,59 @@ namespace Server.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Nachrichten");
+                });
+
+            modelBuilder.Entity("Server.Models.TauschAnfrage", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("AnUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int?>("GegentauschTerminId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("VonTerminId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("VonUserId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<DateTime>("Zeitstempel")
+                        .HasColumnType("TEXT");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("TauschAnfragen");
+                });
+
+            modelBuilder.Entity("Server.Models.TeilnehmerInfo", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("INTEGER");
+
+                    b.Property<int>("MinistrantId")
+                        .HasColumnType("INTEGER");
+
+                    b.Property<string>("Rolle")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
+                    b.Property<int>("TerminId")
+                        .HasColumnType("INTEGER");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TerminId");
+
+                    b.ToTable("TeilnehmerInfos");
                 });
 
             modelBuilder.Entity("Server.Models.Termin", b =>
@@ -149,13 +214,28 @@ namespace Server.Migrations
                     b.Property<DateTime>("Start")
                         .HasColumnType("TEXT");
 
-                    b.Property<string>("Teilnehmer")
-                        .IsRequired()
-                        .HasColumnType("TEXT");
+                    b.Property<bool>("alle")
+                        .HasColumnType("INTEGER");
 
                     b.HasKey("Id");
 
                     b.ToTable("Termine");
+                });
+
+            modelBuilder.Entity("Server.Models.TeilnehmerInfo", b =>
+                {
+                    b.HasOne("Server.Models.Termin", "Termin")
+                        .WithMany("Teilnehmer")
+                        .HasForeignKey("TerminId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Termin");
+                });
+
+            modelBuilder.Entity("Server.Models.Termin", b =>
+                {
+                    b.Navigation("Teilnehmer");
                 });
 #pragma warning restore 612, 618
         }

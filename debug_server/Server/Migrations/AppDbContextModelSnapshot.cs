@@ -184,7 +184,7 @@ namespace Server.Migrations
 
                     b.HasIndex("TerminId");
 
-                    b.ToTable("Teilnehmer");
+                    b.ToTable("TeilnehmerInfos");
                 });
 
             modelBuilder.Entity("Server.Models.Termin", b =>

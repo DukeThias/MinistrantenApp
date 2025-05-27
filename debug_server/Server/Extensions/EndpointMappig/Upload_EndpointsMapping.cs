@@ -1,8 +1,6 @@
-using Microsoft.AspNetCore.Http;
 using Microsoft.EntityFrameworkCore;
 using Server.Services;
 using Server.Services.DatabaseAktionen;
-using Server.Models;
 using Server.Data;
 
 namespace Server.Extensions

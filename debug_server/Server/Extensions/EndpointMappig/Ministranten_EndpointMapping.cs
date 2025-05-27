@@ -14,6 +14,19 @@ namespace Server.Extensions
                 return Results.Created($"/api/ministranten/{ministrant.Id}", ministrant);
             });
 
+            // POST: Mehrere Ministranten gleichzeitig anlegen
+            app.MapPost("/api/ministranten/bulk", async (
+                MinistrantenService ministrantenService,
+                List<Ministranten> ministranten
+            ) =>
+            {
+                foreach (var ministrant in ministranten)
+                {
+                    await ministrantenService.AddMinistrantAsync(ministrant);
+                }
+                return Results.Created("/api/ministranten/bulk", ministranten);
+            });
+
             // GET: Ministranten abfragen
             app.MapGet("/api/ministranten", async (
                 MinistrantenService ministrantenService,

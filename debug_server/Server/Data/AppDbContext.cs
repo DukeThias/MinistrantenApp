@@ -7,7 +7,7 @@ namespace Server.Data
     {
         public DbSet<Ministranten> Ministranten { get; set; }
         public DbSet<Termin> Termine { get; set; }
-        public DbSet<TeilnehmerInfo> Teilnehmer { get; set; }
+        public DbSet<TeilnehmerInfo> TeilnehmerInfos { get; set; } // ← Korrektur hier!
         public DbSet<Gemeinden> Gemeinden { get; set; }
         public DbSet<Nachrichten> Nachrichten { get; set; }
         public DbSet<TauschAnfrage> TauschAnfragen { get; set; }
