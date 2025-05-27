@@ -88,6 +88,6 @@ app.Use(async (context, next) =>
     }
 });
 
-// API-Basisendpunkt
+
 
 app.Run();

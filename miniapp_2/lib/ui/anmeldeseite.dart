@@ -23,11 +23,7 @@ class _AnmeldeseiteState extends State<Anmeldeseite> {
   @override
   Widget build(BuildContext context) {
     final ws = context.watch<Websocketverbindung>();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      final globals = Provider.of<Globals>(context, listen: false);
 
-      globals.variablenInitiieren();
-    });
     return Scaffold(
       appBar: AppBar(
         title: Row(

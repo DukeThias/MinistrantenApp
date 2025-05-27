@@ -14,6 +14,7 @@ import '../logik/theme_logik.dart';
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 bool angemeldetbleiben = false;
 Map<String, dynamic>? gespeicherteAnmeldedaten;
+bool specialgraphics = false;
 
 final ThemeData lightTheme = ThemeData(
   brightness: Brightness.light,
@@ -64,6 +65,9 @@ final ThemeData darkTheme = ThemeData(
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  final settings = await readJsonFromFile("settings");
+  specialgraphics = settings?["specialgraphics"] ?? false;
+
   await initializeDateFormatting("de_DE", null);
   gespeicherteAnmeldedaten = await readJsonFromFile("anmeldedaten");
   angemeldetbleiben = gespeicherteAnmeldedaten?["angemeldetbleiben"] == "true";
@@ -93,13 +97,16 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    WidgetsBinding.instance.addPostFrameCallback((_) {
+    WidgetsBinding.instance.addPostFrameCallback((_) async {
       final ws = Provider.of<Websocketverbindung>(context, listen: false);
+      final globals = Provider.of<Globals>(context, listen: false);
       ws.setAnmeldedaten(
         gespeicherteAnmeldedaten?["Username"],
         gespeicherteAnmeldedaten?["Passwort"],
       );
       ws.verbinde("ws://192.168.2.226:5205/ws?id=$uniqheId");
+      await globals.variablenInitiieren();
+      globals.set("specialgraphics", true);
     });
   }
 

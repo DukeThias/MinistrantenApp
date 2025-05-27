@@ -19,7 +19,7 @@ class Globals with ChangeNotifier {
     _variabeln[key] = value;
   }
 
-  void variablenInitiieren() async {
+  Future<void> variablenInitiieren() async {
     setSilent("ministranten", []);
     setSilent("termine", await readJsonFromFile("termine") ?? []);
     setSilent("pong", "nüscht");
@@ -29,6 +29,7 @@ class Globals with ChangeNotifier {
     setSilent("self", {});
     setSilent("benutzername", "");
     setSilent("passwort", "");
+    setSilent("specialgraphics", false);
     initiert = true;
     notifyListeners();
   }
