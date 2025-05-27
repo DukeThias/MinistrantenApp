@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Http;
+using Microsoft.EntityFrameworkCore;
 using Server.Services;
 using Server.Services.DatabaseAktionen;
 using Server.Models;
@@ -16,28 +17,37 @@ namespace Server.Extensions
                 AppDbContext db
             ) =>
             {
-                // Datei validieren
                 if (file == null || file.Length == 0)
                     return Results.BadRequest("Keine Datei erhalten.");
 
-                // ⚠ Feste Gemeinde-ID verwenden (z. B. ID = 1 für Tests)
                 var gemeindeId = 1;
 
-                // HTML-Inhalt lesen
                 using var reader = new StreamReader(file.OpenReadStream());
                 var htmlContent = await reader.ReadToEndAsync();
 
-                // Parser starten
                 var parser = new MiniplanParserServices(ministrantenService, gemeindeId);
-                var termine = await parser.ParseHtmlToTermineAsync(htmlContent);
+                var neueTermine = await parser.ParseHtmlToTermineAsync(htmlContent);
 
-                // Termine speichern
-                db.Termine.AddRange(termine);
+                foreach (var neuerTermin in neueTermine)
+                {
+                    // Verhindere Duplikate
+                    bool existiert = await db.Termine.AnyAsync(t =>
+                        t.Name == neuerTermin.Name &&
+                        t.Start == neuerTermin.Start &&
+                        t.GemeindeID == neuerTermin.GemeindeID
+                    );
+
+                    if (!existiert)
+                    {
+                        db.Termine.Add(neuerTermin);
+                    }
+                }
+
                 await db.SaveChangesAsync();
 
-                return Results.Ok(new { importiert = termine.Count });
+                return Results.Ok(new { importiert = neueTermine.Count });
             })
-            .DisableAntiforgery() // ← für Swagger nötig
+            .DisableAntiforgery()
             .Accepts<IFormFile>("multipart/form-data")
             .WithName("UploadMiniplan")
             .WithTags("Upload");

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Server.Data;
 
@@ -10,9 +11,11 @@ using Server.Data;
 namespace Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-    partial class AppDbContextModelSnapshot : ModelSnapshot
+    [Migration("20250526212245_AddTeilnehmerTable")]
+    partial class AddTeilnehmerTable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder.HasAnnotation("ProductVersion", "8.0.4");
@@ -180,9 +183,14 @@ namespace Server.Migrations
                     b.Property<int>("TerminId")
                         .HasColumnType("INTEGER");
 
+                    b.Property<int?>("TerminId1")
+                        .HasColumnType("INTEGER");
+
                     b.HasKey("Id");
 
                     b.HasIndex("TerminId");
+
+                    b.HasIndex("TerminId1");
 
                     b.ToTable("Teilnehmer");
                 });
@@ -222,10 +230,14 @@ namespace Server.Migrations
             modelBuilder.Entity("Server.Models.TeilnehmerInfo", b =>
                 {
                     b.HasOne("Server.Models.Termin", "Termin")
-                        .WithMany("Teilnehmer")
+                        .WithMany()
                         .HasForeignKey("TerminId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
+
+                    b.HasOne("Server.Models.Termin", null)
+                        .WithMany("Teilnehmer")
+                        .HasForeignKey("TerminId1");
 
                     b.Navigation("Termin");
                 });

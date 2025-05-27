@@ -2,62 +2,51 @@ using System.Text.RegularExpressions;
 using AngleSharp;
 using Server.Models;
 
-
 namespace Server.Services.DatabaseAktionen
 {
-    /// <summary>
-    /// Service zum Parsen von Ministranten-HTML-Plänen in Termin-Objekte.
-    /// </summary>
     public class MiniplanParserServices
     {
         private readonly MinistrantenService _ministrantenService;
         private readonly int _gemeindeId;
 
-        /// <summary>
-        /// Konstruktor mit Dienst und Gemeinde-ID.
-        /// </summary>
         public MiniplanParserServices(MinistrantenService ministrantenService, int gemeindeId)
         {
             _ministrantenService = ministrantenService;
             _gemeindeId = gemeindeId;
         }
 
-        /// <summary>
-        /// Parst eine HTML-Datei mit Ministrantenplan und gibt eine Liste von Terminen zurück.
-        /// </summary>
         public async Task<List<Termin>> ParseHtmlToTermineAsync(string html)
         {
-            // HTML-Dokument parsen
             var config = Configuration.Default;
             var context = BrowsingContext.New(config);
             var document = await context.OpenAsync(req => req.Content(html));
             var rows = document.QuerySelectorAll("table tr");
 
-            // Alle Ministranten der Gemeinde abrufen
             var ministranten = await _ministrantenService.SearchMinistrantenAsync(gemeindeId: _gemeindeId);
 
             var termine = new List<Termin>();
             Termin? aktuellerTermin = null;
-            string? letzteRolle = null;
+            string? aktuelleRolle = null;
 
             foreach (var row in rows)
             {
                 var cells = row.Children;
-                if (cells.Length == 0 || row.TextContent.Trim() == "") continue;
+                if (cells.Length == 0 || string.IsNullOrWhiteSpace(row.TextContent))
+                    continue;
 
-                // Neuer Termin beginnt
-                if (cells[0].ClassName == "phead")
+                bool istNeuerTermin = cells[0].ClassName == "phead";
+
+                if (istNeuerTermin)
                 {
                     var headerText = cells[0].TextContent;
                     var parts = headerText.Split(',');
 
-                    var datetimePart = parts[0].Trim();  // z. B. "So. 01.06.2025 09:00"
+                    var datetimePart = parts[0].Trim();
                     var ort = parts.Length > 1 ? parts[1].Trim() : "";
 
-                    // Datum + Uhrzeit extrahieren
                     var dateMatch = Regex.Match(datetimePart, @"(\d{2})\.(\d{2})\.(\d{4}) (\d{2}):(\d{2})");
 
-                    if (!dateMatch.Success) continue; // Ungültiges Format überspringen
+                    if (!dateMatch.Success) continue;
 
                     var start = new DateTime(
                         int.Parse(dateMatch.Groups[3].Value),
@@ -68,12 +57,11 @@ namespace Server.Services.DatabaseAktionen
                         0
                     );
 
-                    // z. B. "(Sonntag 9:00)" → "Sonntag 9:00"
-                    var name = headerText.Split('(', ')')[1].Trim();
+                    var name = headerText.Contains("(") ? headerText.Split('(', ')')[1].Trim() : "Unbenannt";
 
                     aktuellerTermin = new Termin
                     {
-                        Id = 0, // oder eine andere passende Id
+                        Id = 0,
                         Name = name,
                         Beschreibung = "Ministrantenplan",
                         Ort = ort,
@@ -85,39 +73,49 @@ namespace Server.Services.DatabaseAktionen
 
                     termine.Add(aktuellerTermin);
                 }
-                // Weitere Teilnehmer zum aktuellen Termin hinzufügen
-                else if (aktuellerTermin != null)
+
+                // Rolle aktualisieren, wenn vorhanden
+                for (int i = 0; i < cells.Length; i++)
                 {
-                    // Rolle wie "Normal", "Gabenbereitung", etc.
-                    var rolle = cells[1].ClassName == "pdienst" ? cells[1].TextContent.Trim() : (letzteRolle ?? "");
-                    letzteRolle = rolle;
-
-                    for (int i = 2; i < cells.Length; i++)
+                    if (cells[i].ClassName == "pdienst")
                     {
-                        var name = cells[i].TextContent.Trim();
-                        if (string.IsNullOrEmpty(name)) continue;
+                        aktuelleRolle = cells[i].TextContent.Trim();
+                        break;
+                    }
+                }
 
-                        var nameParts = name.Split(' ');
-                        if (nameParts.Length < 2) continue;
+                // Teilnehmer zuordnen
+                for (int i = 0; i < cells.Length; i++)
+                {
+                    if (cells[i].ClassName == "pdienst" || string.IsNullOrWhiteSpace(cells[i].TextContent))
+                        continue;
 
-                        var vorname = nameParts[0];
-                        var nachname = string.Join(" ", nameParts.Skip(1));
+                    var name = cells[i].TextContent.Trim();
+                    var nameParts = name.Split(' ', StringSplitOptions.RemoveEmptyEntries);
+                    if (nameParts.Length < 2)
+                        continue;
 
-                        var ministrant = ministranten
-                            .FirstOrDefault(m => m.Vorname == vorname && m.Name == nachname);
+                    var vorname = nameParts[0].Trim().ToLower();
+                    var nachname = string.Join(" ", nameParts.Skip(1)).Trim().ToLower();
 
-                        if (ministrant != null)
+                    var ministrant = ministranten.FirstOrDefault(m =>
+                        !string.IsNullOrEmpty(m.Vorname) &&
+                        !string.IsNullOrEmpty(m.Name) &&
+                        m.Vorname.Trim().ToLower() == vorname &&
+                        m.Name.Trim().ToLower() == nachname);
+
+                    if (ministrant != null && aktuellerTermin != null)
+                    {
+                        aktuellerTermin.Teilnehmer.Add(new TeilnehmerInfo
                         {
-                            aktuellerTermin.Teilnehmer.Add(new TeilnehmerInfo
-                            {
-                                ministrantId = ministrant.Id,
-                                rolle = rolle
-                            });
-                        }
-                        else
-                        {
-                            Console.WriteLine($"WARNUNG: {vorname} {nachname} nicht gefunden.");
-                        }
+                            MinistrantId = ministrant.Id,
+                            Rolle = aktuelleRolle ?? "Unbekannt"
+                        });
+                        Console.WriteLine($"✅ Zugeordnet: {vorname} {nachname} -> ID {ministrant.Id}, Rolle: {aktuelleRolle}");
+                    }
+                    else
+                    {
+                        Console.WriteLine($"⚠ NICHT GEFUNDEN: HTML = '{vorname} {nachname}' → Gemeinde: {_gemeindeId}");
                     }
                 }
             }
