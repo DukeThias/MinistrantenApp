@@ -13,6 +13,7 @@ class Miniplan extends StatefulWidget {
 class _MiniplanState extends State<Miniplan> {
   DateTime _focusedDay = DateTime.now();
   DateTime? _selectedDay;
+  CalendarFormat _calendarFormat = CalendarFormat.month;
 
   Map<DateTime, List<Map<String, dynamic>>> convertToEventMap(
     List<dynamic> termine,
@@ -66,6 +67,12 @@ class _MiniplanState extends State<Miniplan> {
               child: ClipRRect(
                 borderRadius: BorderRadius.circular(16),
                 child: TableCalendar(
+                  calendarFormat: _calendarFormat,
+                  onFormatChanged: (format) {
+                    setState(() {
+                      _calendarFormat = format;
+                    });
+                  },
                   locale: "de_DE",
                   rowHeight: 80,
                   daysOfWeekHeight: 32,
@@ -341,6 +348,34 @@ class _MiniplanState extends State<Miniplan> {
               ),
             ),
           ),
+          GestureDetector(
+            behavior: HitTestBehavior.translucent,
+            onTap: () {
+              if (_calendarFormat == CalendarFormat.month) {
+                setState(() {
+                  _calendarFormat = CalendarFormat.week;
+                });
+              } else {
+                setState(() {
+                  _calendarFormat = CalendarFormat.month;
+                });
+              }
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 4.0),
+              child: Center(
+                child: Container(
+                  width: 42,
+                  height: 6,
+                  decoration: BoxDecoration(
+                    color: Colors.grey[400],
+                    borderRadius: BorderRadius.circular(3),
+                  ),
+                ),
+              ),
+            ),
+          ),
+
           SizedBox(height: 16),
           if (_selectedDay != null)
             Padding(

@@ -54,7 +54,7 @@ class WebSocketLogik with ChangeNotifier {
 
   void _handleTermine(Nachricht nachricht) {
     globals.set("termine", jsonDecode(nachricht.inhalt));
-    saveJsonToFile("termine", jsonDecode(nachricht.inhalt));
+    saveJson("termine", jsonDecode(nachricht.inhalt));
     print("Termine: ${globals.get("termine")}");
   }
 
@@ -94,7 +94,7 @@ class WebSocketLogik with ChangeNotifier {
           );
         }
       });
-      deleteFile("anmeldedaten");
+      deleteJson("anmeldedaten");
       print("Authentifizierung fehlgeschlagen: ${status["message"]}");
       ScaffoldMessenger.of(navigatorKey.currentContext!).showSnackBar(
         SnackBar(

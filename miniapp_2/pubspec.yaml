@@ -44,6 +44,7 @@ dependencies:
   table_calendar: ^3.2.0
   http: ^1.4.0
   file_picker: ^10.1.9
+  idb_shim: ^2.6.6+2
 
 dev_dependencies:
   flutter_test:
@@ -68,7 +69,7 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-  # assets:
+  
   #   - images/a_dot_burr.jpeg
   #   - images/a_dot_ham.jpeg
 
@@ -97,3 +98,7 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
+  assets:
+      - assets/Mini_weiß.jpg
+      - assets/Mini_schwarz.jpg
+

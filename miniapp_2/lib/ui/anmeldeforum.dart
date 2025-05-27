@@ -179,12 +179,12 @@ class _AnmeldeFormularState extends State<AnmeldeFormular> {
               );
             } else {
               if (angemeldetbleiben) {
-                saveJsonToFile("anmeldedaten", anmeldedaten);
+                saveJson("anmeldedaten", anmeldedaten);
                 globals.set("benutzername", _controllerBenutzername.text);
                 globals.set("passwort", _controllerPasswort.text);
                 globals.set("angemeldetbleiben", true);
               } else {
-                deleteFile("anmeldedaten");
+                deleteJson("anmeldedaten");
                 globals.set("angemeldetbleiben", false);
               }
               ws.senden("anmeldung", jsonEncode(anmeldedaten));

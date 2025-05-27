@@ -1,8 +1,11 @@
-import 'dart:io';
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:miniapp_2/ui/hauptseite/einzelne%20seiten/infoseite_termin.dart';
+import 'package:flutter/foundation.dart'; // kIsWeb
+import 'uploadhtmlding.dart';
+import 'package:miniapp_2/services/WebSocketVerbindung.dart';
+import 'package:provider/provider.dart';
 
 class UploadHtmlPage extends StatefulWidget {
   @override
@@ -13,6 +16,9 @@ class _UploadHtmlPageState extends State<UploadHtmlPage> {
   List<Termin> termine = [];
   String status = '';
   bool isLoading = false;
+  String htmlString = "";
+
+  // Annahme: getFileContent kommt aus file_reader.dart
 
   Future<void> pickAndParseFile() async {
     setState(() {
@@ -25,15 +31,39 @@ class _UploadHtmlPageState extends State<UploadHtmlPage> {
       allowedExtensions: ['html'],
     );
 
-    if (result != null && result.files.single.path != null) {
-      final file = File(result.files.single.path!);
-      final content = await file.readAsString();
+    if (result != null) {
+      final file = result.files.single;
+      String? content;
+      if (kIsWeb) {
+        // Web: Datei-Inhalt als Bytes verfügbar
+        final bytes = file.bytes;
+        if (bytes == null) {
+          setState(() {
+            isLoading = false;
+            status = "Datei konnte nicht gelesen werden.";
+          });
+          return;
+        }
+        content = String.fromCharCodes(bytes);
+      } else {
+        // Native: Datei-Inhalt über Pfad laden (brauchst NICHT importieren!)
+        final path = file.path;
+        if (path == null) {
+          setState(() {
+            isLoading = false;
+            status = "Datei konnte nicht gelesen werden.";
+          });
+          return;
+        }
+        // Dynamisches Laden von 'dart:io'
+        content = await readFileNative(path);
+      }
 
       final parsedTermine = extractTermine(content);
-
+      htmlString = content;
       setState(() {
         termine = parsedTermine;
-        status = 'Datei geladen: ${result.files.single.name}';
+        status = 'Datei geladen: ${file.name}';
         isLoading = false;
       });
     } else {
@@ -42,13 +72,6 @@ class _UploadHtmlPageState extends State<UploadHtmlPage> {
         isLoading = false;
       });
     }
-  }
-
-  void sendTermine() {
-    ScaffoldMessenger.of(
-      context,
-    ).showSnackBar(SnackBar(content: Text('Termine wurden gesendet!')));
-    Navigator.of(context).pop();
   }
 
   List<Termin> extractTermine(String html) {
@@ -180,7 +203,21 @@ class _UploadHtmlPageState extends State<UploadHtmlPage> {
             ),
             SizedBox(height: 12),
             ElevatedButton.icon(
-              onPressed: termine.isNotEmpty ? sendTermine : null,
+              onPressed:
+                  termine.isNotEmpty
+                      ? () {
+                        final ws = Provider.of<Websocketverbindung>(
+                          context,
+                          listen: false,
+                        );
+                        ws.sendHtmlPlanFile('termine.html', htmlString);
+
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(content: Text('Termine wurden gesendet!')),
+                        );
+                        Navigator.of(context).pop();
+                      }
+                      : null,
               icon: Icon(Icons.send),
               label: Text('Senden'),
               style: ElevatedButton.styleFrom(
