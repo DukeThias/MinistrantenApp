@@ -1,12 +1,12 @@
 Änderungen geplant:
 
 1. UI:
-   1.1. Kalender schöner
-   1.2. UI einheitlich
+   ✅1.1. Kalender schöner
+   ✅1.2. UI einheitlich
 
 2. Features
    2.1. Automatisch Kalender synchronisieren
-   2.2. Bemerkungen für einzelne Termine (Proben usw)
+   ✅2.2. Bemerkungen für einzelne Termine (Proben usw)
    2.3. Hochämter erkenntlicher
    2.4. Vorab getauschtes
    2.5. VEREINFACHEN!!! (tauschen)
@@ -14,8 +14,8 @@
    2.7. Push-Benachrichtigungen besser
    2.8. Administration + Root + OMIs besser
    2.9. Termine usw in App bearbeiten
-   2.10. Verschiedene Server für Gemeinden (Database und Websocket immer getrennt)
-   2.11. Neue Benutzernamen (mit Gemeindekürzel?) (v.nachname, vorname.n)
+   ✅2.10. Verschiedene Server für Gemeinden (Database und Websocket immer getrennt)
+   ✅2.11. Neue Benutzernamen (mit Gemeindekürzel?) (v.nachname, vorname.n)
    2.12. benutzername und Passwort per Papier an Eltern (mit Infos + Bedienungsanleitung), verbindbar mit Einverständniserklärung etc.
    2.13. notizen zu Gottesdiensten 
    2.14. automatisch eine Mail versenden (mabe eigener Mail Client)
@@ -24,18 +24,32 @@
    
 
 3. Interne Änderungen:
-   3.1. von .txt aus .json umsteigen
-   3.2. Rollen genauer in App (für z.B. Weihrauch)
+   ✅3.1. von .txt aus .json umsteigen
+   ✅3.2. Rollen genauer in App (für z.B. Weihrauch)
    3.3. Bei Tauschen Dienste beachten
-   3.4. Speicher mit SQL?
-   3.5. Supabase lokal
-   3.6. Groß-kleinschreibung bei Benutzernamen ignorieren
+   ✅3.4. Speicher mit SQL?
+   ✅3.5. Supabase lokal
+   ✅3.6. Groß-kleinschreibung bei Benutzernamen ignorieren
    3.7. Administration für Laien möglich
    3.8. Server-Restarts regelmäßig
-   3.9. Automatisches Logging (mindestens am Anfang)
+   ✅3.9. Automatisches Logging (mindestens am Anfang)
    3.10. (Database Backups)
-   3.11. Verbindung mit C# überarbeiten
+   ✅3.11. Verbindung mit C# überarbeiten
    
 
 4. Einstellungen:
-   4.1. Bestimmte benachrichtigungen ein/ ausschalten 
+   4.1. Bestimmte benachrichtigungen ein/ ausschalten
+   4.2. Benutzereinstellungen
+   4.2.1 Gewandgröße
+   4.2.2 Mail Adresse ändern
+   4.2.3 Tel nummer änder
+   4.2.4 Vegan vegetarisch
+   4.2.5 Password
+   4.2.6 Adresse
+   4.2.7 Allergien
+
+
+5. Statistik
+   5.1. Anwesendcount
+   5.2. Tauschcount
+   
