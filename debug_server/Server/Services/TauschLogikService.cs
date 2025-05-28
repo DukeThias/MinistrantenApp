@@ -15,7 +15,9 @@ namespace Server.Services
 
         public async Task<List<Ministranten>> GetMoeglicheTauschpartnerAsync(int terminId, int userId)
         {
-            var termin = await _db.Termine.FindAsync(terminId);
+            var termin = await _db.Termine
+                .Include(t => t.Teilnehmer)
+                .FirstOrDefaultAsync(t => t.Id == terminId);
             if (termin == null || termin.Teilnehmer == null)
                 return new List<Ministranten>();
 
@@ -24,27 +26,22 @@ namespace Server.Services
                 return new List<Ministranten>();
 
             var teilnehmerInfo = termin.Teilnehmer
-                .FirstOrDefault(t => t is not null &&
-                                     t.GetType().GetProperty("id")?.GetValue(t) is int id &&
-                                     id == userId);
-
+                .FirstOrDefault(t => t.MinistrantId == userId);
             if (teilnehmerInfo == null)
                 return new List<Ministranten>();
 
-            string? rolleAmTermin = teilnehmerInfo.GetType().GetProperty("rolle")?.GetValue(teilnehmerInfo) as string;
+            string rolleAmTermin = teilnehmerInfo.Rolle;
             if (string.IsNullOrEmpty(rolleAmTermin))
                 return new List<Ministranten>();
 
             var eingeteilteIds = termin.Teilnehmer
-                .Select(t => (int?)t?.GetType().GetProperty("id")?.GetValue(t) ?? null)
-                .Where(id => id.HasValue)
-                .Select(id => id!.Value)
+                .Select(t => t.MinistrantId)
                 .ToHashSet();
 
             var kandidaten = await _db.Ministranten
                 .Where(m =>
                     m.Id != userId &&
-                    m.RollenListe.Contains(rolleAmTermin) &&
+                    m.RollenListe.Contains(rolleAmTermin, StringComparer.OrdinalIgnoreCase) &&
                     !eingeteilteIds.Contains(m.Id))
                 .ToListAsync();
 
@@ -53,7 +50,9 @@ namespace Server.Services
 
         public async Task<List<Termin>> GetMoeglicheGegentauschtermineAsync(int tauschPartnerId, int anfragenderId)
         {
-            var alleTermine = await _db.Termine.ToListAsync();
+            var alleTermine = await _db.Termine
+                .Include(t => t.Teilnehmer)
+                .ToListAsync();
 
             var result = new List<Termin>();
 
@@ -62,25 +61,48 @@ namespace Server.Services
                 if (termin.Teilnehmer == null) continue;
 
                 var istEingeteilt = termin.Teilnehmer
-                    .FirstOrDefault(t => t is not null &&
-                                         t.GetType().GetProperty("id")?.GetValue(t) is int id &&
-                                         id == tauschPartnerId);
+                    .FirstOrDefault(t => t.MinistrantId == tauschPartnerId);
 
                 var istNichtEingeteilt = termin.Teilnehmer
-                    .All(t => (int?)t?.GetType().GetProperty("id")?.GetValue(t) != anfragenderId);
+                    .All(t => t.MinistrantId != anfragenderId);
 
                 if (istEingeteilt == null || !istNichtEingeteilt) continue;
 
-                // Gleiche Rolle prüfen
-                string? rolle = istEingeteilt.GetType().GetProperty("rolle")?.GetValue(istEingeteilt) as string;
-
+                string rolle = istEingeteilt.Rolle;
                 if (string.IsNullOrEmpty(rolle)) continue;
 
-                // Optional: Du kannst auch prüfen, ob der Anfragende diese Rolle generell in RollenListe hat
                 result.Add(termin);
             }
 
             return result;
+        }
+
+        public async Task<int> AblehnenAbgelaufenerAnfragenAsync()
+        {
+            var jetzt = DateTime.UtcNow;
+
+            var offeneAnfragen = await _db.TauschAnfragen
+                .Where(a => a.Status == "Offen")
+                .ToListAsync();
+
+            int abgelehnt = 0;
+
+            foreach (var anfrage in offeneAnfragen)
+            {
+                var termin = await _db.Termine
+                    .FirstOrDefaultAsync(t => t.Id == anfrage.VonTerminId);
+
+                if (termin != null && (termin.Start - jetzt).TotalHours < 24)
+                {
+                    anfrage.Status = "Abgelehnt";
+                    abgelehnt++;
+                }
+            }
+
+            if (abgelehnt > 0)
+                await _db.SaveChangesAsync();
+
+            return abgelehnt;
         }
     }
 }

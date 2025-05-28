@@ -28,6 +28,8 @@ namespace Server.Models
         public int AnwesendCount { get; set; } // <--- Anwesend als int, um die Anzahl wie oft der Ministrant anwesend ist 
         public int AbwesendCount { get; set; } // <--- Abwesend als int, um die Anzahl wie oft der Ministrant abwesend ist
         public int TauschCount { get; set; } // <--- Tausch als int, um die Anzahl wie oft der Ministrant getauscht hat 
+        public List<string> FmcToken { get; set; } = new();
+
 
         // Methode zum Aktualisieren mit einem anderen Objekt
         public void UpdateFrom(Ministranten other)
