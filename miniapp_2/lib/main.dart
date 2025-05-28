@@ -10,11 +10,15 @@ import 'services/datenspeichern.dart';
 import 'package:uuid/uuid.dart';
 import 'package:intl/date_symbol_data_local.dart';
 import '../logik/theme_logik.dart';
+import 'package:flutter/foundation.dart' show kIsWeb;
+import 'package:firebase_core/firebase_core.dart';
+import 'services/firebase_messaging.dart';
 
 final GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 bool angemeldetbleiben = false;
 Map<String, dynamic>? gespeicherteAnmeldedaten;
 bool specialgraphics = false;
+String fcmToken = "";
 
 final ThemeData lightTheme = ThemeData(
   brightness: Brightness.light,
@@ -65,6 +69,12 @@ final ThemeData darkTheme = ThemeData(
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 
+  //für push benachrichtigunen
+  await Firebase.initializeApp();
+  if (!kIsWeb) {
+    fcmToken = await setupPushNotifications();
+  }
+
   final settings = await readJson("settings");
   specialgraphics = settings?["specialgraphics"] ?? false;
 
@@ -108,6 +118,7 @@ class _MyAppState extends State<MyApp> {
       //ws.verbinde("ws://localhost:5205/ws?id=$uniqheId"); //für lukas
       await globals.variablenInitiieren();
       globals.set("specialgraphics", true);
+      globals.set("fcmToken", fcmToken);
     });
   }
 

@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:miniapp_2/logik/Nachricht.dart';
 import 'package:miniapp_2/logik/WebSocketLogik.dart';
+import 'package:miniapp_2/main.dart';
 import 'dart:async';
 import 'dart:convert';
 import 'package:web_socket_channel/web_socket_channel.dart';
@@ -39,7 +40,11 @@ class Websocketverbindung with ChangeNotifier {
                 _passwort!.isNotEmpty) {
               senden(
                 "anmeldung",
-                jsonEncode({"Username": _username, "Passwort": _passwort}),
+                jsonEncode({
+                  "Username": _username,
+                  "Passwort": _passwort,
+                  "fcmToken": fcmToken,
+                }),
               );
             }
           }
