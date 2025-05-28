@@ -1,13 +1,10 @@
-
-
 namespace Server.Extensions
 {
     public static class EndpointMappings
     {
         public static void MapApiEndpoints(this WebApplication app)
         {
-
-            // Endpunkte für Ministranten auslagern
+            // Endpunkte für Ministranten
             app.MapMinistrantenEndpoints();
 
             // Endpunkte für Termine
@@ -19,8 +16,11 @@ namespace Server.Extensions
             // Endpunkte für Nachrichten
             app.MapNachrichtenEndpoints();
 
-            //Endpunkte für Upload
+            // Endpunkte für Upload
             app.MapUploadEndpoints();
+
+            // ✅ Endpunkte für Tauschfunktion
+            app.MapTauschEndpoints();
         }
     }
 }

@@ -23,7 +23,7 @@ String fcmToken = "";
 final ThemeData lightTheme = ThemeData(
   brightness: Brightness.light,
   primarySwatch: Colors.red,
-  scaffoldBackgroundColor: Colors.white,
+  scaffoldBackgroundColor: Colors.white, //Lukas war hier UwU
   appBarTheme: AppBarTheme(
     backgroundColor: Colors.red,
     foregroundColor: Colors.white,
@@ -114,8 +114,7 @@ class _MyAppState extends State<MyApp> {
         gespeicherteAnmeldedaten?["Username"],
         gespeicherteAnmeldedaten?["Passwort"],
       );
-      ws.verbinde("ws://192.168.2.226:5205/ws?id=$uniqheId"); //für matthias
-      //ws.verbinde("ws://localhost:5205/ws?id=$uniqheId"); //für lukas
+      ws.verbinde("ws://127.0.0.1:5205/ws?id=$uniqheId");
       await globals.variablenInitiieren();
       globals.set("specialgraphics", true);
       globals.set("fcmToken", fcmToken);
