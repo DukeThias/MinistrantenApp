@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:miniapp_2/logik/globals.dart';
+import 'package:miniapp_2/services/WebSocketVerbindung.dart';
 import 'package:provider/provider.dart';
 
 class PasswortAendernSeite extends StatefulWidget {
@@ -24,12 +25,17 @@ class _PasswortAendernSeiteState extends State<PasswortAendernSeite> {
     super.dispose();
   }
 
-  void _changePassword() {
+  void _changePassword(Websocketverbindung ws) {
     if (_formKey.currentState!.validate()) {
       final globals = context.read<Globals>();
       final oldPassword = _currentPasswordController.text;
       final newPassword = _newPasswordController.text;
       final username = globals.get("benutzername");
+      ws.senden("passwortAendern", {
+        "benutzername": username,
+        "altesPasswort": oldPassword,
+        "neuesPasswort": newPassword,
+      });
       ScaffoldMessenger.of(
         context,
       ).showSnackBar(SnackBar(content: Text('Passwort erfolgreich geändert!')));
@@ -38,6 +44,7 @@ class _PasswortAendernSeiteState extends State<PasswortAendernSeite> {
 
   @override
   Widget build(BuildContext context) {
+    final ws = context.watch<Websocketverbindung>();
     final globals = context.watch<Globals>();
     return Scaffold(
       appBar: AppBar(title: Text('Passwort ändern')),
@@ -146,7 +153,9 @@ class _PasswortAendernSeiteState extends State<PasswortAendernSeite> {
               ),
               SizedBox(height: 32),
               ElevatedButton(
-                onPressed: _changePassword,
+                onPressed: () {
+                  _changePassword(ws);
+                },
                 child: Text('Passwort ändern'),
               ),
             ],

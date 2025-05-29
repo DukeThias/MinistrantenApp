@@ -17,6 +17,8 @@ class _HomeState extends State<Home> {
         List<Map<String, dynamic>>.from(
             globals.get("termine"),
           ).where((t) => t["Start"] != null).toList()
+          // .where((t) => t["Teilnehmer"].contains(globals.get("self")["Id"]))
+          // .toList()
           ..sort(
             (a, b) => DateTime.parse(
               a["Start"],

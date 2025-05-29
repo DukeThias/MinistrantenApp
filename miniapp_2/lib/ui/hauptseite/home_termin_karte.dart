@@ -70,33 +70,46 @@ class TerminKarte extends StatelessWidget {
           Divider(),
 
           // Zusatzinfos
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceAround,
-              children: [
-                Column(
-                  children: [
-                    Text("Beginn", style: TextStyle(color: Colors.grey)),
-                    SizedBox(height: 4),
-                    Text(
-                      uhrzeit,
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ],
+          InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => InfoSeiteTermin(termin: termin),
                 ),
-                VerticalDivider(width: 1),
-                Column(
-                  children: [
-                    Text("Teilnehmer", style: TextStyle(color: Colors.grey)),
-                    SizedBox(height: 4),
-                    Text(
-                      termin["Teilnehmer"].join(", ") ?? "-",
-                      style: TextStyle(fontWeight: FontWeight.bold),
-                    ),
-                  ],
-                ),
-              ],
+              );
+            },
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.spaceAround,
+                children: [
+                  Column(
+                    children: [
+                      Text("Beginn", style: TextStyle(color: Colors.grey)),
+                      SizedBox(height: 4),
+                      Text(
+                        uhrzeit,
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                  VerticalDivider(width: 1),
+                  Column(
+                    children: [
+                      Text("Teilnehmer", style: TextStyle(color: Colors.grey)),
+                      SizedBox(height: 4),
+                      Text(
+                        getMinistrantenNamen(
+                          globals.get("ministranten"),
+                          termin["Teilnehmer"],
+                        )!.join(", "),
+                        style: TextStyle(fontWeight: FontWeight.bold),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
             ),
           ),
 
@@ -116,4 +129,19 @@ class TerminKarte extends StatelessWidget {
       ),
     );
   }
+}
+
+List? getMinistrantenNamen(
+  List<dynamic> ministranten,
+  List<dynamic> teilnehmer,
+) {
+  final teilnehmerIds = teilnehmer.map((t) => t['MinistrantId']).toSet();
+
+  final namen =
+      ministranten
+          .where((m) => teilnehmerIds.contains(m['Id']))
+          .map((m) => "${m['Vorname']} ${m['Name']}")
+          .toList();
+
+  return namen;
 }

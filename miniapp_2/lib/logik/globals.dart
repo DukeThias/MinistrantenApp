@@ -20,8 +20,8 @@ class Globals with ChangeNotifier {
   }
 
   Future<void> variablenInitiieren() async {
-    setSilent("ministranten", []);
-    setSilent("termine", await readJson("termine") ?? []);
+    setSilent("ministranten", [{}]);
+    setSilent("termine", await readJson("termine") ?? [{}]);
     setSilent("pong", "nüscht");
     setSilent("nachrichten", []);
     setSilent("gemeinden", []);

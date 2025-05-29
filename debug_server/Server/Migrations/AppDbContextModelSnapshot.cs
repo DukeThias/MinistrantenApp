@@ -63,6 +63,10 @@ namespace Server.Migrations
                     b.Property<string>("Email")
                         .HasColumnType("TEXT");
 
+                    b.Property<string>("FmcToken")
+                        .IsRequired()
+                        .HasColumnType("TEXT");
+
                     b.Property<DateTime>("Geburtsdatum")
                         .HasColumnType("TEXT");
 

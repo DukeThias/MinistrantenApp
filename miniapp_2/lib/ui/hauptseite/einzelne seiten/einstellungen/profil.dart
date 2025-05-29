@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:miniapp_2/logik/globals.dart';
+import 'package:miniapp_2/ui/hauptseite/einzelne%20seiten/einstellungen/email_%C3%A4ndern.dart';
 import 'package:miniapp_2/ui/hauptseite/einzelne%20seiten/einstellungen/passwort_%C3%A4ndern.dart';
 import 'package:provider/provider.dart';
 import '../../../../services/datenspeichern.dart';
@@ -18,7 +19,10 @@ class ProfilEinstellungenSeite extends StatelessWidget {
             leading: Icon(Icons.email),
             title: Text('E-Mail ändern'),
             onTap: () {
-              // Handle email change
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => EmailAendernSeite()),
+              );
             },
           ),
 

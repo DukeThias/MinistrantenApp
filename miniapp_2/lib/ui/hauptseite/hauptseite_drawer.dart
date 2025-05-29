@@ -17,6 +17,7 @@ class drawer extends StatelessWidget {
         " " +
         (user["Name"] ??
             "offline, aber angemeldet als: ${globals.get("benutzername")}");
+    print(themeProvider.themeMode);
     return Drawer(
       shape: RoundedRectangleBorder(
         borderRadius: BorderRadius.only(
@@ -36,7 +37,7 @@ class drawer extends StatelessWidget {
               image: DecorationImage(
                 fit: BoxFit.fitHeight,
                 image:
-                    themeProvider.isDarkMode()
+                    themeProvider.themeMode == ThemeMode.dark
                         ? AssetImage("assets/images/Mini_schwarz.jpg")
                         : AssetImage("assets/images/Mini_weiss.jpg"),
               ),

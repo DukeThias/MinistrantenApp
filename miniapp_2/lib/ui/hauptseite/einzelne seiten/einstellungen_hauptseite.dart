@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:miniapp_2/ui/hauptseite/einzelne%20seiten/einstellungen/benachrichtigungen.dart';
 import 'package:miniapp_2/ui/hauptseite/einzelne%20seiten/einstellungen/profil.dart';
 import 'einstellungen/allgemein.dart';
 
@@ -39,7 +40,12 @@ class EinstellungenHauptseite extends StatelessWidget {
             leading: Icon(Icons.notifications),
             title: Text('Benachrichtigungen'),
             onTap: () {
-              // Navigate to Benachrichtigungen settings
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => BenachrichtigungEinstellungenSeite(),
+                ),
+              );
             },
           ),
 

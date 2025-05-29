@@ -51,7 +51,8 @@ namespace Server.Migrations
                     Bemerkungen = table.Column<string>(type: "TEXT", nullable: true),
                     AnwesendCount = table.Column<int>(type: "INTEGER", nullable: false),
                     AbwesendCount = table.Column<int>(type: "INTEGER", nullable: false),
-                    TauschCount = table.Column<int>(type: "INTEGER", nullable: false)
+                    TauschCount = table.Column<int>(type: "INTEGER", nullable: false),
+                    FmcToken = table.Column<string>(type: "TEXT", nullable: false)
                 },
                 constraints: table =>
                 {

@@ -63,6 +63,7 @@ namespace Server.Logik
                                 if (ministrant.Rolle.Contains("Ministrant"))
                                 {
                                     var termine = termineService.GetAllTermineAsync().Result;
+                                    
                                     service.SendMessageAsync(id, "termine", Termin.TermineToJsonString(termine.Where(m => m.GemeindeID == ministrant.GemeindeID).ToList())).Wait();
 
                                     ministranten = await ministrantenService.GetAllMinistrantenAsync();
@@ -110,14 +111,18 @@ namespace Server.Logik
                                 await service.SendMessageAsync(id, "gemeinden", antwortjson);
                             }
                             break;
-
+                        
                         case "broadcast":
                             await service.BroadcastMessageAsync("Info", empfangen.inhalt!);
                             break;
 
+                        
+
                         case "ping":
                             await service.SendMessageAsync(id, "pong", "Ja der Server lebt");
                             break;
+                        
+
 
                         case "chatmessage":
                             if (empfangen.inhalt == null)

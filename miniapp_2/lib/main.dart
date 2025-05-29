@@ -19,6 +19,7 @@ bool angemeldetbleiben = false;
 Map<String, dynamic>? gespeicherteAnmeldedaten;
 bool specialgraphics = false;
 String fcmToken = "";
+String url = "192.168.178.109";
 
 final ThemeData lightTheme = ThemeData(
   brightness: Brightness.light,
@@ -114,7 +115,7 @@ class _MyAppState extends State<MyApp> {
         gespeicherteAnmeldedaten?["Username"],
         gespeicherteAnmeldedaten?["Passwort"],
       );
-      ws.verbinde("ws://127.0.0.1:5205/ws?id=$uniqheId");
+      ws.verbinde("ws://${url}:5205/ws?id=$uniqheId");
       await globals.variablenInitiieren();
       globals.set("specialgraphics", true);
       globals.set("fcmToken", fcmToken);

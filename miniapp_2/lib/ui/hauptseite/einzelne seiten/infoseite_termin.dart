@@ -1,5 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:miniapp_2/logik/globals.dart';
+import 'package:miniapp_2/logik/theme_logik.dart';
+import 'package:miniapp_2/ui/hauptseite/einzelne%20seiten/tausch_initialisieren.dart';
+import 'package:miniapp_2/ui/hauptseite/einzelne%20seiten/uploadhtml.dart';
+import 'package:provider/provider.dart';
 
 class InfoSeiteTermin extends StatelessWidget {
   final Map<String, dynamic> termin;
@@ -12,20 +17,19 @@ class InfoSeiteTermin extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final theme = Theme.of(context);
-    final primaryColor = theme.colorScheme.primary;
+    final theme = context.watch<ThemeProvider>();
     final title = termin["Name"] ?? "Kein Titel";
     final beschreibung = termin["Beschreibung"] ?? "Keine Beschreibung";
     final ort = termin["Ort"] ?? "Unbekannter Ort";
     final start = termin["Start"] ?? DateTime.now().toIso8601String();
     final teilnehmer = termin["Teilnehmer"] ?? [];
+    final bool alle = termin["alle"] ?? false;
+    final globals = context.watch<Globals>();
 
     return Scaffold(
-      backgroundColor: theme.colorScheme.background,
       appBar: AppBar(
         title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
         elevation: 0,
-        backgroundColor: primaryColor.withOpacity(0.87),
       ),
       body: SingleChildScrollView(
         child: Center(
@@ -47,28 +51,17 @@ class InfoSeiteTermin extends StatelessWidget {
                     // Oben: Haupttitel & Datum
                     Row(
                       children: [
-                        Icon(
-                          Icons.calendar_today_rounded,
-                          color: primaryColor,
-                          size: 30,
-                        ),
-                        const SizedBox(width: 14),
                         Expanded(
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
-                                formatDate(start),
-                                style: theme.textTheme.bodyLarge?.copyWith(
-                                  fontWeight: FontWeight.bold,
-                                  color: primaryColor,
-                                ),
-                              ),
                               const SizedBox(height: 2),
                               Text(
                                 title,
-                                style: theme.textTheme.headlineMedium?.copyWith(
-                                  fontWeight: FontWeight.w700,
+                                style: TextStyle(
+                                  fontWeight: FontWeight.w400,
+                                  color: Theme.of(context).colorScheme.primary,
+                                  fontSize: 30,
                                 ),
                               ),
                             ],
@@ -77,6 +70,12 @@ class InfoSeiteTermin extends StatelessWidget {
                       ],
                     ),
                     const SizedBox(height: 16),
+                    Divider(),
+                    _InfoRow(
+                      icon: Icons.date_range,
+                      label: "Datum",
+                      value: formatDate(start),
+                    ),
 
                     Divider(),
 
@@ -91,14 +90,20 @@ class InfoSeiteTermin extends StatelessWidget {
                       _InfoRow(
                         icon: Icons.group,
                         label: "Teilnehmer",
-                        value: teilnehmer.join(", "),
+                        value:
+                            "\n" +
+                            getMinistrantenNamen(
+                              globals.get("ministranten"),
+                              teilnehmer,
+                            )!.join("\n"),
                       )
                     else
                       _InfoRow(
                         icon: Icons.group_outlined,
                         label: "Teilnehmer",
-                        value: "Keine Teilnehmer angegeben",
+                        value: alle ? "Alle" : "Keine Teilnehmer",
                       ),
+
                     const SizedBox(height: 10),
 
                     Divider(),
@@ -108,12 +113,43 @@ class InfoSeiteTermin extends StatelessWidget {
                       padding: const EdgeInsets.only(top: 18.0, bottom: 6),
                       child: Text(
                         "Beschreibung",
-                        style: theme.textTheme.titleMedium?.copyWith(
-                          fontWeight: FontWeight.w600,
-                        ),
+                        style: TextStyle(fontWeight: FontWeight.w600),
                       ),
                     ),
-                    Text(beschreibung, style: theme.textTheme.bodyMedium),
+                    Text(beschreibung),
+                    Divider(),
+                    const SizedBox(height: 24),
+
+                    // Button: Termin tauschen
+                    //nur anzeigen, wenn nutzer in termin
+                    if (termin["Teilnehmer"].any(
+                      (t) => t["MinistrantId"] == globals.get("self")["Id"],
+                    ))
+                      Center(
+                        child: ElevatedButton.icon(
+                          onPressed: () => terminTauschen(context, termin),
+                          icon: const Icon(
+                            Icons.swap_horiz,
+                            size: 30,
+                            color: Colors.white,
+                          ),
+                          label: const Text(
+                            "Termin tauschen ",
+                            style: TextStyle(color: Colors.white, fontSize: 16),
+                          ),
+                          style: ElevatedButton.styleFrom(
+                            padding: const EdgeInsets.symmetric(
+                              horizontal: 10,
+                              vertical: 6,
+                            ),
+                            backgroundColor:
+                                Theme.of(context).colorScheme.primary,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(120),
+                            ),
+                          ),
+                        ),
+                      ),
                   ],
                 ),
               ),
@@ -164,4 +200,32 @@ class _InfoRow extends StatelessWidget {
       ],
     );
   }
+}
+
+List? getMinistrantenNamen(
+  List<dynamic> ministranten,
+  List<dynamic> teilnehmer,
+) {
+  final teilnehmerIds = teilnehmer.map((t) => t['MinistrantId']).toSet();
+
+  final namen =
+      ministranten
+          .where((m) => teilnehmerIds.contains(m['Id']))
+          .map((m) => "${m['Vorname']} ${m['Name']}")
+          .toList();
+
+  return namen;
+}
+
+void terminTauschen(BuildContext context, termin) {
+  Navigator.of(context).push(
+    MaterialPageRoute(
+      builder: (context) => TauschInitialisieren(termin: termin),
+    ),
+  );
+  ScaffoldMessenger.of(context).showSnackBar(
+    SnackBar(
+      content: Text("Termin tauschen Funktion ist noch nicht implementiert."),
+    ),
+  );
 }

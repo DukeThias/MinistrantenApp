@@ -47,6 +47,8 @@ dependencies:
   idb_shim: ^2.6.6+2
   firebase_core: ^3.13.1
   firebase_messaging: ^15.2.6
+  add_2_calendar: ^3.0.1
+  shared_preferences: ^2.5.3
 
 dev_dependencies:
   flutter_test:
@@ -101,6 +103,6 @@ flutter:
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/to/font-from-package
   assets:
-      - assets/Mini_weiß.jpg
-      - assets/Mini_schwarz.jpg
+      - assets/images/Mini_weiss.jpg
+      - assets/images/Mini_schwarz.jpg
 
