@@ -7,10 +7,10 @@ class TermineBearbeiten extends StatefulWidget {
   ministranten; // Aus globals holen und beim Aufruf übergeben
 
   const TermineBearbeiten({
-    Key? key,
+    super.key,
     required this.termin,
     required this.ministranten,
-  }) : super(key: key);
+  });
 
   @override
   State<TermineBearbeiten> createState() => _TermineBearbeitenState();

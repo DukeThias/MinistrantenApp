@@ -81,7 +81,6 @@ namespace Server.Services
                     throw new Exception("Die Rolle muss beim Gegentausch übereinstimmen.");
             }
 
-            // Status + ggf. Gegentausch speichern
             anfrage.Status = status;
             anfrage.GegentauschTerminId = gegentauschTerminId;
 
@@ -103,11 +102,9 @@ namespace Server.Services
 
                     if (vonTeiln != null && anTeiln != null)
                     {
-                        // ID des ursprünglichen Eintrags merken
                         var rolleA = vonTeiln.Rolle;
                         var rolleB = anTeiln.Rolle;
 
-                        // Austausch im jeweiligen Termin
                         ursprTermin.Teilnehmer.Remove(vonTeiln);
                         gegentermin.Teilnehmer.Remove(anTeiln);
 
@@ -125,7 +122,6 @@ namespace Server.Services
                     }
                 }
 
-                // TauschCount für Übernehmer (AnUserId) erhöhen
                 var uebernehmer = await _db.Ministranten.FindAsync(anfrage.AnUserId);
                 if (uebernehmer != null)
                 {
@@ -141,7 +137,6 @@ namespace Server.Services
                     uebernehmer.TauschCount += 1;
                 }
 
-                // Termin übernehmen
                 var ursprTermin = await _db.Termine
                     .Include(t => t.Teilnehmer)
                     .FirstOrDefaultAsync(t => t.Id == anfrage.VonTerminId);
@@ -169,6 +164,40 @@ namespace Server.Services
                 .Where(a => a.VonUserId == userId || a.AnUserId == userId)
                 .OrderByDescending(a => a.Zeitstempel)
                 .ToListAsync();
+        }
+
+        public async Task<bool> UebernehmeDienstAsync(int anfrageId, int neuerMinistrantId)
+        {
+            var anfrage = await _db.TauschAnfragen.FindAsync(anfrageId);
+            if (anfrage == null) return false;
+
+            if (anfrage.Status != "Offen") return false;
+
+            anfrage.Status = "Übernommen";
+            anfrage.AnUserId = neuerMinistrantId;
+
+            var termin = await _db.Termine
+                .Include(t => t.Teilnehmer)
+                .FirstOrDefaultAsync(t => t.Id == anfrage.VonTerminId);
+
+            var originalTeilnehmer = termin?.Teilnehmer.FirstOrDefault(t => t.MinistrantId == anfrage.VonUserId);
+            if (termin == null || originalTeilnehmer == null) return false;
+
+            termin.Teilnehmer.Remove(originalTeilnehmer);
+            termin.Teilnehmer.Add(new TeilnehmerInfo
+            {
+                MinistrantId = neuerMinistrantId,
+                Rolle = originalTeilnehmer.Rolle
+            });
+
+            var ministrant = await _db.Ministranten.FindAsync(neuerMinistrantId);
+            if (ministrant != null)
+            {
+                ministrant.TauschCount += 1;
+            }
+
+            await _db.SaveChangesAsync();
+            return true;
         }
     }
 }

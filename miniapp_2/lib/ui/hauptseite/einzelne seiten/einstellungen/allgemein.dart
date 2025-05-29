@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import '../../../../logik/globals.dart';
 
 class AllgemeineEinstellungenSeite extends StatefulWidget {
+  const AllgemeineEinstellungenSeite({super.key});
+
   @override
   _AllgemeineEinstellungenSeiteState createState() =>
       _AllgemeineEinstellungenSeiteState();

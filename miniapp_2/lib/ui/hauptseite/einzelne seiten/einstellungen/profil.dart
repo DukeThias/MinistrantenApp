@@ -7,6 +7,8 @@ import '../../../../services/datenspeichern.dart';
 import '../../../anmeldeseite.dart';
 
 class ProfilEinstellungenSeite extends StatelessWidget {
+  const ProfilEinstellungenSeite({super.key});
+
   @override
   Widget build(BuildContext context) {
     final globals = context.watch<Globals>();

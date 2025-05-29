@@ -9,7 +9,7 @@ import 'package:web_socket_channel/web_socket_channel.dart';
 class Websocketverbindung with ChangeNotifier {
   late WebSocketChannel _channel;
   bool _verbunden = false;
-  List<Nachricht> _nachrichten = [];
+  final List<Nachricht> _nachrichten = [];
   Timer? _reconnectTimer;
   String? _username;
   String? _passwort;

@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:miniapp_2/ui/hauptseite/hauptseite_drawer.dart';
 
 class Boerse extends StatefulWidget {
+  const Boerse({super.key});
+
   @override
   _BoerseState createState() => _BoerseState();
 }

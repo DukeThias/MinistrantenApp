@@ -16,7 +16,9 @@ namespace Server.Logik
             MinistrantenService ministrantenService,
             GemeindenService gemeindenService,
             TermineService termineService,
-            NachrichtenService nachrichtenService)
+            NachrichtenService nachrichtenService,
+            TauschService tauschService // <--- HINZUFÜGEN
+        )
         {
             var buffer = new byte[1024 * 4];
             while (socket.State == WebSocketState.Open)
@@ -29,7 +31,7 @@ namespace Server.Logik
                 try
                 {
                     var empfangen = JsonSerializer.Deserialize<Nachrichten>(jsonString);
-                                    Console.WriteLine("Kein Problem 1");
+                    Console.WriteLine("Kein Problem 1");
 
                     if (empfangen == null)
                     {
@@ -37,10 +39,12 @@ namespace Server.Logik
                         continue;
                     }
                     Console.WriteLine("Kein Problem 2");
+                    Console.WriteLine("empfangen.art: " + empfangen.art);
+                    Console.WriteLine("empfangen.art (ToLower): " + empfangen.art?.ToLower());
                     switch (empfangen.art?.ToLower())
                     {
                         case "anmeldung":
-                                        Console.WriteLine("Kein Problem 3");
+                            Console.WriteLine("Kein Problem 3");
 
                             Console.WriteLine("Anmeldung empfangen: " + empfangen.inhalt);
 
@@ -60,7 +64,7 @@ namespace Server.Logik
                             {
                                 await service.SendMessageAsync(id, "authentifizierung", JsonSerializer.Serialize(new { success = true, message = "Anmeldung erfolgreich.", person = ministrant }));
                                 //Nach Authentifizierung:
-                                if (ministrant.Rolle.Contains("Ministrant"))
+                                if (ministrant.Rolle.Contains("ministrant"))
                                 {
                                     var termine = termineService.GetAllTermineAsync().Result;
                                     
@@ -124,6 +128,47 @@ namespace Server.Logik
                         
 
 
+
+                        case "tauscheninitialisieren": // alles klein!
+                            Console.WriteLine("Tausch initialisieren empfangen: " + empfangen.inhalt);
+                            if (empfangen.inhalt == null)
+                            {
+                                Console.WriteLine("Tausch initialisieren ohne Inhalt empfangen.");
+                                continue;
+                            }
+                            else
+                            {
+                                try
+                                {
+                                    var tauschAnfrage = JsonSerializer.Deserialize<TauschAnfrage>(
+                                        empfangen.inhalt,
+                                        new JsonSerializerOptions { PropertyNameCaseInsensitive = true }
+                                    );
+                                    Console.WriteLine("tauschAnfrage: " + (tauschAnfrage == null ? "null" : "ok"));
+
+                                    if (tauschAnfrage == null)
+                                    {
+                                        await service.SendMessageAsync(id, "tausch-fehler", "Ungültige Tauschdaten.");
+                                        break;
+                                    }
+
+                                    // Anfrage speichern/verarbeiten (z.B. Service aufrufen)
+                                    var neueAnfrage = await tauschService.StarteTauschAsync(tauschAnfrage);
+                                    Console.WriteLine("StarteTauschAsync abgeschlossen");
+
+                                    // Antwort an den Client schicken
+                                    await service.SendMessageAsync(id, "tausch-erstellt", JsonSerializer.Serialize(neueAnfrage));
+                                    Console.WriteLine("Antwort gesendet.");
+                                }
+                                catch (Exception ex)
+                                {
+                                    Console.WriteLine("Fehler beim Verarbeiten der Tausch-Anfrage: " + ex.Message);
+                                    await service.SendMessageAsync(id, "tausch-fehler", "Fehler beim Verarbeiten der Tausch-Anfrage.");
+                                }
+                            }
+                            break;
+
+
                         case "chatmessage":
                             if (empfangen.inhalt == null)
                             {
@@ -137,8 +182,11 @@ namespace Server.Logik
                             }
                             break;
 
+
+
+
                         default:
-                            Console.WriteLine("Unbekannter Nachrichtentyp");
+                            Console.WriteLine("Unbekannter Nachrichtentyp: " + empfangen.art);
                             break;
                     }
                 }
@@ -150,4 +198,3 @@ namespace Server.Logik
         }
     }
 }
-

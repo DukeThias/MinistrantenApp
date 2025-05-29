@@ -6,6 +6,8 @@ import '../../logik/globals.dart';
 import 'einzelne seiten/infoseite_termin.dart';
 
 class Miniplan extends StatefulWidget {
+  const Miniplan({super.key});
+
   @override
   _MiniplanState createState() => _MiniplanState();
 }
@@ -37,11 +39,11 @@ class _MiniplanState extends State<Miniplan> {
     final globals = context.watch<Globals>();
 
     final termine = globals.get("termine") as List<dynamic>;
-    final Map<DateTime, List<Map<String, dynamic>>> _events = convertToEventMap(
+    final Map<DateTime, List<Map<String, dynamic>>> events = convertToEventMap(
       termine,
     );
-    List<Map<String, dynamic>> _getEventsForDay(DateTime day) {
-      return _events[DateTime.utc(day.year, day.month, day.day)] ?? [];
+    List<Map<String, dynamic>> getEventsForDay(DateTime day) {
+      return events[DateTime.utc(day.year, day.month, day.day)] ?? [];
     }
 
     return Scaffold(
@@ -87,7 +89,7 @@ class _MiniplanState extends State<Miniplan> {
                       _focusedDay = focusedDay;
                     });
                   },
-                  eventLoader: _getEventsForDay,
+                  eventLoader: getEventsForDay,
                   calendarStyle: CalendarStyle(
                     defaultDecoration: BoxDecoration(
                       color: Colors.transparent,
@@ -383,7 +385,7 @@ class _MiniplanState extends State<Miniplan> {
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children:
-                    _getEventsForDay(_selectedDay!).map((termin) {
+                    getEventsForDay(_selectedDay!).map((termin) {
                       return Card(
                         color: isDark ? Color(0xFF292d32) : Colors.grey[100],
                         shape: RoundedRectangleBorder(

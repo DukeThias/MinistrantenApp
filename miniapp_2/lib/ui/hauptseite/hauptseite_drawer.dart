@@ -7,6 +7,8 @@ import 'einzelne seiten/einstellungen_hauptseite.dart';
 import '../../logik/theme_logik.dart';
 
 class drawer extends StatelessWidget {
+  const drawer({super.key});
+
   @override
   Widget build(BuildContext context) {
     final themeProvider = context.watch<ThemeProvider>();
@@ -28,7 +30,6 @@ class drawer extends StatelessWidget {
       child: ListView(
         children: [
           DrawerHeader(
-            child: SizedBox(),
             decoration: BoxDecoration(
               color:
                   themeProvider.themeMode == ThemeMode.dark
@@ -42,6 +43,7 @@ class drawer extends StatelessWidget {
                         : AssetImage("assets/images/Mini_weiss.jpg"),
               ),
             ),
+            child: SizedBox(),
           ),
           ListTile(
             title: Text(name),

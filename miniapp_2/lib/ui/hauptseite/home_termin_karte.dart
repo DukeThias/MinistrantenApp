@@ -8,7 +8,7 @@ import '../../logik/theme_logik.dart';
 class TerminKarte extends StatelessWidget {
   final Map<String, dynamic> termin;
 
-  TerminKarte({required this.termin});
+  const TerminKarte({super.key, required this.termin});
 
   @override
   Widget build(BuildContext context) {

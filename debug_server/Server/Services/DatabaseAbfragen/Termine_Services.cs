@@ -14,7 +14,11 @@ namespace Server.Services
         }
 
         public async Task<List<Termin>> GetAllTermineAsync()
-            => await _db.Termine.ToListAsync();
+        {
+            return await _db.Termine
+                .Include(t => t.Teilnehmer)
+                .ToListAsync();
+        }
 
         public async Task<Termin?> GetTerminByIdAsync(int id)
             => await _db.Termine.FindAsync(id);

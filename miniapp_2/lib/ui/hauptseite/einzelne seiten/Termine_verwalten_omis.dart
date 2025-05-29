@@ -6,6 +6,8 @@ import 'package:intl/intl.dart';
 import 'package:miniapp_2/logik/theme_logik.dart';
 
 class TermineVerwaltenOmis extends StatelessWidget {
+  const TermineVerwaltenOmis({super.key});
+
   @override
   Widget build(BuildContext context) {
     final globals = context.read<Globals>();
@@ -101,7 +103,7 @@ class TermineVerwaltenOmis extends StatelessWidget {
               );
             },
           );
-        }).toList(),
+        }),
       ],
     );
   }

@@ -8,7 +8,7 @@ import 'package:provider/provider.dart';
 
 class InfoSeiteTermin extends StatelessWidget {
   final Map<String, dynamic> termin;
-  const InfoSeiteTermin({Key? key, required this.termin}) : super(key: key);
+  const InfoSeiteTermin({super.key, required this.termin});
 
   String formatDate(String isoDate) {
     final date = DateTime.parse(isoDate);

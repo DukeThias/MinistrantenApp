@@ -58,6 +58,7 @@ app.Use(async (context, next) =>
             var gemeindenService = context.RequestServices.GetRequiredService<GemeindenService>();
             var nachrichtenService = context.RequestServices.GetRequiredService<NachrichtenService>();
             var webSocketService = context.RequestServices.GetRequiredService<WebSocketService>();
+            var tauschService = context.RequestServices.GetRequiredService<TauschService>();
 
             webSocketService.AddConnection(id, webSocket);
             Console.WriteLine($"Neue WebSocket-Verbindung: {id}");
@@ -66,7 +67,7 @@ app.Use(async (context, next) =>
             try
             {
 
-                await NachrichtenVerarbeiten.EchoLoop(id, webSocket, webSocketService, ministrantenService, gemeindenService, termineService, nachrichtenService);
+                await NachrichtenVerarbeiten.EchoLoop(id, webSocket, webSocketService, ministrantenService, gemeindenService, termineService, nachrichtenService, tauschService);
             }
             catch (Exception ex)
             {

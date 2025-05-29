@@ -4,6 +4,8 @@ import 'package:miniapp_2/ui/hauptseite/einzelne%20seiten/einstellungen/profil.d
 import 'einstellungen/allgemein.dart';
 
 class EinstellungenHauptseite extends StatelessWidget {
+  const EinstellungenHauptseite({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(

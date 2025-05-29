@@ -6,6 +6,8 @@ import '../logik/globals.dart';
 import 'anmeldeforum.dart';
 
 class Anmeldeseite extends StatefulWidget {
+  const Anmeldeseite({super.key});
+
   @override
   _AnmeldeseiteState createState() => _AnmeldeseiteState();
 }

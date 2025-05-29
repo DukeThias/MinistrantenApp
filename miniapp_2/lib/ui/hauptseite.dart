@@ -11,6 +11,8 @@ import 'hauptseite/hauptseite_drawer.dart';
 import '../logik/verbindungsstatus.dart';
 
 class Hauptseite extends StatefulWidget {
+  const Hauptseite({super.key});
+
   @override
   State<Hauptseite> createState() => _HauptseiteState();
 }
