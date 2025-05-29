@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Server.Services;
 using Server.Services.DatabaseAktionen;
@@ -10,17 +11,17 @@ namespace Server.Extensions
         public static void MapUploadEndpoints(this WebApplication app)
         {
             app.MapPost("/api/uploadplan/html", async (
-                IFormFile file,
+                [FromForm] MiniplanUploadFormDto dto,
                 MinistrantenService ministrantenService,
                 AppDbContext db
             ) =>
             {
-                if (file == null || file.Length == 0)
+                if (dto.File == null || dto.File.Length == 0)
                     return Results.BadRequest("Keine Datei erhalten.");
 
-                var gemeindeId = 1;
+                var gemeindeId = dto.GemeindeId;
 
-                using var reader = new StreamReader(file.OpenReadStream());
+                using var reader = new StreamReader(dto.File.OpenReadStream());
                 var htmlContent = await reader.ReadToEndAsync();
 
                 var parser = new MiniplanParserServices(ministrantenService, gemeindeId);
@@ -46,7 +47,6 @@ namespace Server.Extensions
                 return Results.Ok(new { importiert = neueTermine.Count });
             })
             .DisableAntiforgery()
-            .Accepts<IFormFile>("multipart/form-data")
             .WithName("UploadMiniplan")
             .WithTags("Upload");
         }

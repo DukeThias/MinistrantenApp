@@ -3,6 +3,8 @@ import 'package:miniapp_2/logik/globals.dart';
 import 'package:provider/provider.dart';
 
 class PasswortAendernSeite extends StatefulWidget {
+  const PasswortAendernSeite({super.key});
+
   @override
   _PasswortAendernSeiteState createState() => _PasswortAendernSeiteState();
 }

@@ -6,6 +6,8 @@ import 'dart:convert';
 import '../services/datenspeichern.dart';
 
 class AnmeldeFormular extends StatefulWidget {
+  const AnmeldeFormular({super.key});
+
   @override
   _AnmeldeFormularState createState() => _AnmeldeFormularState();
 }

@@ -5,6 +5,8 @@ import 'package:provider/provider.dart';
 import 'home_termin_karte.dart';
 
 class Home extends StatefulWidget {
+  const Home({super.key});
+
   @override
   _HomeState createState() => _HomeState();
 }

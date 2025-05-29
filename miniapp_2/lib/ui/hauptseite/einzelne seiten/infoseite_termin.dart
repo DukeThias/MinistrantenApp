@@ -3,7 +3,7 @@ import 'package:intl/intl.dart';
 
 class InfoSeiteTermin extends StatelessWidget {
   final Map<String, dynamic> termin;
-  const InfoSeiteTermin({Key? key, required this.termin}) : super(key: key);
+  const InfoSeiteTermin({super.key, required this.termin});
 
   String formatDate(String isoDate) {
     final date = DateTime.parse(isoDate);
@@ -21,7 +21,7 @@ class InfoSeiteTermin extends StatelessWidget {
     final teilnehmer = termin["Teilnehmer"] ?? [];
 
     return Scaffold(
-      backgroundColor: theme.colorScheme.background,
+      backgroundColor: theme.colorScheme.surface,
       appBar: AppBar(
         title: Text(title, style: const TextStyle(fontWeight: FontWeight.bold)),
         elevation: 0,

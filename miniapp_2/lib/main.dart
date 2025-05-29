@@ -40,11 +40,9 @@ final ThemeData darkTheme = ThemeData(
   colorScheme: ColorScheme.dark(
     primary: Color(0xFF5865F2),
     secondary: Color(0xFF5865F2),
-    background: Color(0xFF36393F),
     surface: Color(0xFF2F3136),
     onPrimary: Colors.white,
     onSecondary: Colors.white,
-    onBackground: Colors.white,
     onSurface: Colors.white,
   ),
   textTheme: const TextTheme(
@@ -87,6 +85,8 @@ void main() async {
 }
 
 class MyApp extends StatefulWidget {
+  const MyApp({super.key});
+
   @override
   State<MyApp> createState() => _MyAppState();
 }

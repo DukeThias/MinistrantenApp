@@ -8,6 +8,8 @@ import 'package:miniapp_2/services/WebSocketVerbindung.dart';
 import 'package:provider/provider.dart';
 
 class UploadHtmlPage extends StatefulWidget {
+  const UploadHtmlPage({super.key});
+
   @override
   _UploadHtmlPageState createState() => _UploadHtmlPageState();
 }
