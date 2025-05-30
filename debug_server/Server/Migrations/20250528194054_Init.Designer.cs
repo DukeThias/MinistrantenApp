@@ -11,11 +11,7 @@ using Server.Data;
 namespace Server.Migrations
 {
     [DbContext(typeof(AppDbContext))]
-<<<<<<<< HEAD:debug_server/Server/Migrations/20250528194054_Init.Designer.cs
     [Migration("20250528194054_Init")]
-========
-    [Migration("20250529130152_Init")]
->>>>>>>> 763da572226290a475f71dbeb36fedc4d1c690d9:debug_server/Server/Migrations/20250529130152_Init.Designer.cs
     partial class Init
     {
         /// <inheritdoc />

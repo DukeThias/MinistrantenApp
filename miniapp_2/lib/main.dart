@@ -19,7 +19,7 @@ bool angemeldetbleiben = false;
 Map<String, dynamic>? gespeicherteAnmeldedaten;
 bool specialgraphics = false;
 String fcmToken = "";
-String url = "192.168.178.109";
+String url = "192.168.1.7";
 
 final ThemeData lightTheme = ThemeData(
   brightness: Brightness.light,
