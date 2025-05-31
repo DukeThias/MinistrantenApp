@@ -1,6 +1,7 @@
 import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:miniapp_2/logik/globals.dart';
 import 'package:miniapp_2/ui/hauptseite/einzelne%20seiten/infoseite_termin.dart';
 import 'package:flutter/foundation.dart'; // kIsWeb
 import 'uploadhtmlding.dart';
@@ -160,6 +161,7 @@ class _UploadHtmlPageState extends State<UploadHtmlPage> {
 
   @override
   Widget build(BuildContext context) {
+    final globals = Provider.of<Globals>(context, listen: false);
     return Scaffold(
       appBar: AppBar(
         title: Text('HTML-Termine hochladen'),
@@ -212,7 +214,11 @@ class _UploadHtmlPageState extends State<UploadHtmlPage> {
                           context,
                           listen: false,
                         );
-                        ws.sendHtmlPlanFile('termine.html', htmlString);
+                        ws.sendHtmlPlanFile(
+                          'termine.html',
+                          htmlString,
+                          globals.get("self")["GemeindeID"].toString(),
+                        );
 
                         ScaffoldMessenger.of(context).showSnackBar(
                           SnackBar(content: Text('Termine wurden gesendet!')),

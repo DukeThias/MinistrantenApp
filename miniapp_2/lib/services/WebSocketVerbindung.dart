@@ -86,17 +86,15 @@ class Websocketverbindung with ChangeNotifier {
     }
   }
 
-  void sendHtmlPlanFile(String fileName, String content) {
-    final payload = {
-      'type': 'uploadHtmlPlan',
-      'filename': fileName,
-      'content': content,
-    };
-    print(
-      "Sende HTML-Plan-Datei: $fileName mit Inhalt: ${content.length} Zeichen",
-    );
+  void sendHtmlPlanFile(String filename, String content, String gemeindeID) {
+    final message = jsonEncode({
+      'content': base64Encode(utf8.encode(content)),
+      'encoding': 'base64',
+      "gemeindeID": gemeindeID,
+    });
+    senden("html_plan_file", message);
 
-    _channel.sink.add(jsonEncode(payload));
+    _channel.sink.add(jsonEncode(message));
   }
 
   void senden(String art, inhalt) {
