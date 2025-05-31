@@ -45,19 +45,16 @@ namespace Server.Logik
                 try
                 {
                     var empfangen = JsonSerializer.Deserialize<Nachrichten>(jsonString);
-                    Console.WriteLine("Kein Problem 1");
 
                     if (empfangen == null)
                     {
                         Console.WriteLine("Ungültiges JSON erhalten.");
                         continue;
                     }
-                    Console.WriteLine("Kein Problem 2");
                     Console.WriteLine("empfangen.art: " + empfangen.art);
                     switch (empfangen.art?.ToLower())
                     {
                         case "anmeldung":
-                            Console.WriteLine("Kein Problem 3");
 
                             Console.WriteLine("Anmeldung empfangen: " + empfangen.inhalt);
 
@@ -122,7 +119,6 @@ namespace Server.Logik
                             Console.WriteLine("HTML-Plan-Datei empfangen");
                             try
                             {
-                                Console.WriteLine("Kein Problem 4");
                                 var inhaltJson = JsonDocument.Parse(empfangen.inhalt!);
                                 var root = inhaltJson.RootElement;
 
@@ -169,7 +165,6 @@ namespace Server.Logik
                             }
                             catch (JsonException e)
                             {
-                                Console.WriteLine("Kein Problem 5");
                                 Console.WriteLine($"Fehler beim Verarbeiten der HTML-Plan-Datei: {e.Message}");
                                 await service.SendMessageAsync(id, "html_plan_file", JsonSerializer.Serialize(new { success = false, message = "Ungültiges JSON." }));
                             }
