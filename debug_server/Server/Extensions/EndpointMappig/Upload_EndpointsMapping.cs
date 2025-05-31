@@ -10,19 +10,16 @@ namespace Server.Extensions
     {
         public static void MapUploadEndpoints(this WebApplication app)
         {
-            app.MapPost("/api/uploadplan/html", async (
-                [FromForm] MiniplanUploadFormDto dto,
-                MinistrantenService ministrantenService,
-                AppDbContext db
-            ) =>
+            app.MapPost("/upload", async (UploadDto dto, AppDbContext db, MinistrantenService ministrantenService) =>
             {
-                if (dto.File == null || dto.File.Length == 0)
-                    return Results.BadRequest("Keine Datei erhalten.");
+                if (string.IsNullOrEmpty(dto.HtmlContent))
+                {
+                    return Results.BadRequest("Kein HTML-Inhalt erhalten.");
+                }
+
+                var htmlContent = dto.HtmlContent;
 
                 var gemeindeId = dto.GemeindeId;
-
-                using var reader = new StreamReader(dto.File.OpenReadStream());
-                var htmlContent = await reader.ReadToEndAsync();
 
                 var parser = new MiniplanParserServices(ministrantenService, gemeindeId);
                 var neueTermine = await parser.ParseHtmlToTermineAsync(htmlContent);
@@ -30,11 +27,7 @@ namespace Server.Extensions
                 foreach (var neuerTermin in neueTermine)
                 {
                     // Verhindere Duplikate
-                    bool existiert = await db.Termine.AnyAsync(t =>
-                        t.Name == neuerTermin.Name &&
-                        t.Start == neuerTermin.Start &&
-                        t.GemeindeID == neuerTermin.GemeindeID
-                    );
+                    bool existiert = await db.Termine.AnyAsync(t => t.Name == neuerTermin.Name && t.Start == neuerTermin.Start && t.GemeindeID == neuerTermin.GemeindeID);
 
                     if (!existiert)
                     {
@@ -44,11 +37,12 @@ namespace Server.Extensions
 
                 await db.SaveChangesAsync();
 
-                return Results.Ok(new { importiert = neueTermine.Count });
-            })
-            .DisableAntiforgery()
-            .WithName("UploadMiniplan")
-            .WithTags("Upload");
+                return Results.Ok(new
+                {
+                    importiert = neueTermine.Count
+                });
+            }).DisableAntiforgery().WithName("UploadMiniplan").WithTags("Upload");
+
         }
     }
 }

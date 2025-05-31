@@ -25,7 +25,8 @@ builder.Services.AddSwaggerGen();
 builder.Services.AddDbContext<AppDbContext>(options =>
     options.UseSqlite("Data Source=datenbank.db")
            .EnableSensitiveDataLogging()
-           .LogTo(Console.WriteLine));
+           // .LogTo(Console.WriteLine)
+           );
 
 
 var app = builder.Build(); // Muss nach der Service-Registrierung erfolgen
@@ -62,7 +63,7 @@ app.Use(async (context, next) =>
 
             webSocketService.AddConnection(id, webSocket);
             Console.WriteLine($"Neue WebSocket-Verbindung: {id}");
-                webSocketService.SendMessageAsync(id, "handshake", "Wenn du das liest, funktioniert irgendwas nicht...").Wait();
+            webSocketService.SendMessageAsync(id, "handshake", "Wenn du das liest, funktioniert irgendwas nicht...").Wait();
 
             try
             {

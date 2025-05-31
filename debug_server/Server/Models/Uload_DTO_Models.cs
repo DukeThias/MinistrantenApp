@@ -1,5 +1,6 @@
-public class MiniplanUploadFormDto
+public class UploadDto
 {
-    public IFormFile File { get; set; }
+    public string? HtmlContent { get; set; }
+
     public int GemeindeId { get; set; }
 }

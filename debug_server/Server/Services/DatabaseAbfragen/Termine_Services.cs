@@ -23,9 +23,14 @@ namespace Server.Services
         public async Task<Termin?> GetTerminByIdAsync(int id)
             => await _db.Termine.FindAsync(id);
 
+        public async Task<bool> ExistiertTerminAsync(string name, DateTime start, int gemeindeId)
+        {
+            return await _db.Termine.AnyAsync(t => t.Name == name && t.Start == start && t.GemeindeID == gemeindeId);
+        }
+
         public async Task AddTerminAsync(Termin termin)
         {
-            await _db.Termine.AddAsync(termin);
+            await _db.Termine.AddRangeAsync(termin);
             await _db.SaveChangesAsync();
         }
 
