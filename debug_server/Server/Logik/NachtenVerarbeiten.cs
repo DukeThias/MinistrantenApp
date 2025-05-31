@@ -10,6 +10,7 @@ namespace Server.Logik
 
     public static class NachrichtenVerarbeiten
     {
+
         public static async Task EchoLoop(
             string id,
             WebSocket socket,
@@ -172,6 +173,9 @@ namespace Server.Logik
                                 Console.WriteLine($"Fehler beim Verarbeiten der HTML-Plan-Datei: {e.Message}");
                                 await service.SendMessageAsync(id, "html_plan_file", JsonSerializer.Serialize(new { success = false, message = "Ungültiges JSON." }));
                             }
+
+                            Console.WriteLine("Sende geupdatete Termine an den Client.");
+                            await service.BroadcastMessageAsync("termine", Termin.TermineToJsonString(await termineService.GetAllTermineAsync()));
                             break;
 
                         case "anfrage":

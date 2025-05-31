@@ -9,7 +9,6 @@ var builder = WebApplication.CreateBuilder(args);
 //für handy
 builder.WebHost.UseUrls("http://*:5205"); // Port 5000 für alle IP-Adressen
 
-//Dictionary<string, WebSocket> _connections = new Dictionary<string, WebSocket>();
 
 // Services registrieren
 builder.Services.AddEndpointsApiExplorer();
@@ -89,7 +88,5 @@ app.Use(async (context, next) =>
         await next();
     }
 });
-
-
 
 app.Run();
