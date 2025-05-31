@@ -84,35 +84,43 @@ class TerminKarte extends StatelessWidget {
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceAround,
                 children: [
-                  Column(
-                    children: [
-                      Text("Beginn", style: TextStyle(color: Colors.grey)),
-                      SizedBox(height: 4),
-                      Text(
-                        uhrzeit,
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Text("Beginn", style: TextStyle(color: Colors.grey)),
+                        SizedBox(height: 4),
+                        Text(
+                          uhrzeit,
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
                   ),
                   VerticalDivider(width: 1),
-                  Column(
-                    children: [
-                      Text("Teilnehmer", style: TextStyle(color: Colors.grey)),
-                      SizedBox(height: 4),
-                      Text(
-                        getMinistrantenNamen(
-                          globals.get("ministranten"),
-                          termin["Teilnehmer"],
-                        )!.join(", "),
-                        style: TextStyle(fontWeight: FontWeight.bold),
-                      ),
-                    ],
+                  Expanded(
+                    child: Column(
+                      children: [
+                        Text(
+                          "Teilnehmer",
+                          style: TextStyle(color: Colors.grey),
+                        ),
+                        SizedBox(height: 4),
+                        Text(
+                          getMinistrantenNamen(
+                            globals.get("ministranten"),
+                            termin["Teilnehmer"],
+                          )!.join(", "),
+                          style: TextStyle(fontWeight: FontWeight.bold),
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ],
+                    ),
                   ),
                 ],
               ),
             ),
           ),
-
+          SizedBox(height: 8), // Abstand zwischen Zusatzinfos und Beschreibung
           // Beschreibung (optional)
           if ((termin["Beschreibung"] ?? "").isNotEmpty)
             Padding(

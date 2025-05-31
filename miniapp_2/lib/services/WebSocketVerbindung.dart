@@ -93,8 +93,6 @@ class Websocketverbindung with ChangeNotifier {
       "gemeindeID": gemeindeID,
     });
     senden("html_plan_file", message);
-
-    _channel.sink.add(jsonEncode(message));
   }
 
   void senden(String art, inhalt) {

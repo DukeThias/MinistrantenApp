@@ -16,11 +16,15 @@ class _HomeState extends State<Home> {
   Widget build(BuildContext context) {
     final globals = context.watch<Globals>();
     final termine =
-        List<Map<String, dynamic>>.from(
-            globals.get("termine"),
-          ).where((t) => t["Start"] != null).toList()
-          // .where((t) => t["Teilnehmer"].contains(globals.get("self")["Id"]))
-          // .toList()
+        List<Map<String, dynamic>>.from(globals.get("termine"))
+            .where((t) => t["Start"] != null)
+            .where(
+              (t) => (t["Teilnehmer"] as List).any(
+                (teilnehmer) =>
+                    teilnehmer["MinistrantId"] == globals.get("self")["Id"],
+              ),
+            )
+            .toList()
           ..sort(
             (a, b) => DateTime.parse(
               a["Start"],
