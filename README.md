@@ -11,7 +11,7 @@
    2.4. Vorab getauschtes
    2.5. VEREINFACHEN!!! (tauschen)
    2.6. Abwesenheiten
-   2.7. Push-Benachrichtigungen besser
+   ✅2.7. Push-Benachrichtigungen besser
    2.8. Administration + Root + OMIs besser
    2.9. Termine usw in App bearbeiten
    ✅2.10. Verschiedene Server für Gemeinden (Database und Websocket immer getrennt)
@@ -26,7 +26,7 @@
 3. Interne Änderungen:
    ✅3.1. von .txt aus .json umsteigen
    ✅3.2. Rollen genauer in App (für z.B. Weihrauch)
-   3.3. Bei Tauschen Dienste beachten
+   ✅3.3. Bei Tauschen Dienste beachten
    ✅3.4. Speicher mit SQL?
    ✅3.5. Supabase lokal
    ✅3.6. Groß-kleinschreibung bei Benutzernamen ignorieren
