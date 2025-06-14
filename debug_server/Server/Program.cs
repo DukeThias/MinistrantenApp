@@ -29,6 +29,11 @@ builder.Services.AddDbContext<AppDbContext>(options =>
 
 
 var app = builder.Build(); // Muss nach der Service-Registrierung erfolgen
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+    db.Database.Migrate(); // Wendet alle Migrationen an und erstellt Datenbank bei Bedarf
+}
 
 using (var scope = app.Services.CreateScope())
 {
